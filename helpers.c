@@ -1,6 +1,7 @@
 #include<stdio.h>
 
 void print_screen(void);
+void place_figures(void);
 
 void print_screen() {
     int elems = sizeof(screen)/sizeof(screen[0]);
@@ -14,4 +15,11 @@ void print_screen() {
         printf("\n");
     }
     printf("i: %d, y: %d \n",i,y);
+}
+
+void place_figures(){
+    screen[character1.x_position][character1.y_position] = *character1.letter;
+    screen[character2.x_position][character2.y_position] = *character2.letter;
+    screen[enemy1.x_position][enemy1.y_position] = *enemy1.letter;
+    screen[enemy2.x_position][enemy2.y_position] = *enemy2.letter;
 }
