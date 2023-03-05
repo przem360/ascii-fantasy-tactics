@@ -1,8 +1,17 @@
-#include<stdio.h>
+#include <stdio.h>
+#include <string.h>
+#include "converters.c"
+#include <stdlib.h>
 
 void print_screen(void);
 void place_figures(void);
 void draw_range(char id[4],int radius);
+void clear_screen(void);
+
+void clear_screen(void){
+    system("clear"); //*nix
+    // system("cls"); //windows
+}
 
 void print_screen() {
     int elems = sizeof(screen)/sizeof(screen[0]);
@@ -34,4 +43,26 @@ void draw_range(char id[3],int radius){
         Function will analyse id and decide if it is an adress or a single letter.
         If it is a letter needs to check if it is unique and find the adress.
     */
+    /* First we'll convert adress command to coordinates */
+    int command_size = strlen(id);
+    int address_x;
+    int address_y;
+    if (command_size>1){
+        address_x = letters_to_numbers(id[0]);
+        char* substr = id + 1;
+        address_y = string_to_number(substr);
+        // printf("ADDRESS X: %d \n", address_x);
+        // printf("ADDRESS Y: %d \n", address_y);
+    }
+    /* Let's try to draw on screen from coordinates */
+    /* drawing straight front and back */
+    int i;
+    for(i=0;i<=radius;i++) {
+        if (screen[address_y-i][address_x] == '.'){
+            screen[address_y-i][address_x] = '+';
+        }
+        if (screen[address_y+i][address_x] == '.'){
+            screen[address_y+i][address_x] = '+';
+        }
+    }
 }

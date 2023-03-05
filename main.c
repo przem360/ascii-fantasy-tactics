@@ -27,4 +27,7 @@ int main (int argc, char *argv[]){
     memcpy(screen, lvl1,sizeof(lvl1));
     place_figures();
     print_screen();
+    clear_screen();
+    draw_range("C12",4);
+    print_screen();
 }
