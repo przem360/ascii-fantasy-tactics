@@ -41,9 +41,14 @@ struct character_pc {
     int y_position;
 };
 
-struct character_pc character1 = {"A",1,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,15,1,1,{"Big Sword",8},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},12,3};
 
-struct character_pc character2 = {"K",2,"Koko",  "Black Mage", "I will eradicate them.",  1,0,2500,40,6,13,1,0,{"Magic Rod",3},{"Light.Bolt","Range 50 + 10 per lvl. DMG 1d6 in 10x40.",50,5,0},{"Fireball","Rnge 100 + 10 per lvl. DMG 1d6 rad 20.",100,6,0},{"","",0,0,0},{"","",0,0,0},12,4};
+struct character_pc pcs[2] = {
+    {"A",1,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,15,1,1,{"Big Sword",8},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},12,3},
+    {"K",2,"Koko",  "Black Mage", "I will eradicate them.",  1,0,2500,40,6,13,1,0,{"Magic Rod",3},{"Light.Bolt","Range 50 + 10 per lvl. DMG 1d6 in 10x40.",50,5,0},{"Fireball","Rnge 100 + 10 per lvl. DMG 1d6 rad 20.",100,6,0},{"","",0,0,0},{"","",0,0,0},12,4}
+};
+
+// struct character_pc character1 = {"A",1,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,15,1,1,{"Big Sword",8},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},12,3};
+// struct character_pc character2 = {"K",2,"Koko",  "Black Mage", "I will eradicate them.",  1,0,2500,40,6,13,1,0,{"Magic Rod",3},{"Light.Bolt","Range 50 + 10 per lvl. DMG 1d6 in 10x40.",50,5,0},{"Fireball","Rnge 100 + 10 per lvl. DMG 1d6 rad 20.",100,6,0},{"","",0,0,0},{"","",0,0,0},12,4};
 
 struct enemy { 
     char letter[1];
@@ -66,5 +71,10 @@ If number + modifier equals or exceeds target number, the roll is success,
 otherwise faild.
 */
 
-struct enemy enemy1 = {"g",3,"Fred","Goblin",4,14,30,4,7,18,1,3};
-struct enemy enemy2 = {"r",4,"Rogue","Human",5,13,40,4,7,18,1,4};
+struct enemy monsters[2] = {
+    {"g",3,"Fred","Goblin",4,14,30,4,7,18,1,3},
+    {"r",4,"Rogue","Human",5,13,40,4,7,18,1,4}
+};
+
+// struct enemy enemy1 = {"g",3,"Fred","Goblin",4,14,30,4,7,18,1,3};
+// struct enemy enemy2 = {"r",4,"Rogue","Human",5,13,40,4,7,18,1,4};

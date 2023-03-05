@@ -27,6 +27,4 @@ int main (int argc, char *argv[]){
     memcpy(screen, lvl1,sizeof(lvl1));
     place_figures();
     print_screen();
-    printf("\n Figure1 name: %s, Figure1 letter: %s \n",character1.name,character1.letter);
-    printf("\n Figure1 X: %d, Figure1 Y: %d \n",character1.x_position,character1.y_position);
 }
