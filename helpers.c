@@ -56,13 +56,43 @@ void draw_range(char id[3],int radius){
     }
     /* Let's try to draw on screen from coordinates */
     /* drawing straight front and back */
-    int i;
+    int i, rad;
+    if (screen[address_y][address_x] == '.'){
+            screen[address_y][address_x] = '@';
+        }
+    for (rad=radius;rad>=0;rad--){
     for(i=0;i<=radius;i++) {
         if (screen[address_y-i][address_x] == '.'){
             screen[address_y-i][address_x] = '+';
         }
         if (screen[address_y+i][address_x] == '.'){
             screen[address_y+i][address_x] = '+';
+        }
+    }
+    /* drawing radius to the right side */
+    /* up */
+    for(i=0;i<=rad;i++) {
+        if (screen[address_y-i][address_x-rad+radius] == '.'){
+            screen[address_y-i][address_x-rad+radius] = '+';
+        }
+        /* down */
+        if (screen[address_y-i+rad][address_x-rad+radius] == '.'){
+            screen[address_y-i+rad][address_x-rad+radius] = '+';
+        }
+    }
+    }
+    /* drawing radius to the left side */
+    // for (rad=0,side_step=0;rad<=radius,side_step<radius;rad++,side_step++){
+    for (rad=0;rad<radius;rad++){
+        /* down */
+        for(i=radius;i>0;i--){
+            if (screen[address_y+rad][address_x-i+rad] == '.'){
+                screen[address_y+rad][address_x-i+rad] = '+';
+            }
+            /* up */
+            if (screen[address_y-rad][address_x-i+rad] == '.'){
+                screen[address_y-rad][address_x-i+rad] = '+';
+            }
         }
     }
 }

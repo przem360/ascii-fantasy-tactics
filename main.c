@@ -28,6 +28,6 @@ int main (int argc, char *argv[]){
     place_figures();
     print_screen();
     clear_screen();
-    draw_range("C12",4);
+    draw_range("J6",4);
     print_screen();
 }
