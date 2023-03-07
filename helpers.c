@@ -7,6 +7,11 @@ void print_screen(void);
 void place_figures(void);
 void draw_range(char id[4],int radius);
 void clear_screen(void);
+void draw_info_panel(void);
+void draw_interface(void);
+void printip(char txt[20], int line_number);
+char analyse_command(char comm[6]);
+int  dice(int maxv);
 
 void clear_screen(void){
     system("clear"); //*nix
@@ -15,8 +20,7 @@ void clear_screen(void){
 
 void print_screen() {
     int elems = sizeof(screen)/sizeof(screen[0]);
-    int rows= sizeof(screen[0]);
-    printf("\n > Screen has %d elements in %d rows. \n",elems,rows);
+    int rows = sizeof(screen[0]); // this is not rows, it's collumns!
     int i,y;
     for (i=0; i<elems; i++){
         for (y=0;y<rows; y++){
@@ -24,7 +28,30 @@ void print_screen() {
         }
         printf("\n");
     }
-    printf("i: %d, y: %d \n",i,y);
+}
+void draw_info_panel(){
+    int elems = sizeof(info_panel)/sizeof(info_panel[0]);
+    int cols = sizeof(info_panel[0]);
+    int i,y;
+    for (i=0; i<elems; i++){
+        for (y=0;y<cols; y++){
+            printf("%c",info_panel[i][y]);
+        }
+        printf("\n");
+    }
+}
+
+void printip(char txt[20], int line_number){
+    int letters = strlen(txt);
+    int i;
+    for (i=0; i<letters; i++){
+        info_panel[line_number][i+1] = txt[i];
+    }
+}
+
+void draw_interface(){
+    print_screen();
+    draw_info_panel();
 }
 
 void place_figures(){
@@ -95,4 +122,22 @@ void draw_range(char id[3],int radius){
             }
         }
     }
+}
+
+char analyse_command(char comm[6]) {
+    if ((strlen(comm) == 1)&&(comm[0] == 'q')){
+        return 'q';
+    }
+    if ((strlen(comm) == 1)&&(comm[0] == 'Q')){
+        return 'q';
+    }
+    return 'K';
+}
+
+int  dice(int maxv) {
+    int lower = 1;
+    int upper = maxv;
+    int rnum;
+    rnum = (rand() % (upper-lower+1))+lower;
+    return rnum;
 }
