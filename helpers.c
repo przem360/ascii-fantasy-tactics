@@ -12,6 +12,10 @@ void draw_interface(void);
 void printip(char txt[20], int line_number);
 char analyse_command(char comm[6]);
 int  dice(int maxv);
+void print_to_side_panel(void);
+
+int side_panel_size = sizeof(side_panel)/sizeof(side_panel[0]);
+
 
 void clear_screen(void){
     system("clear"); //*nix
@@ -21,10 +25,17 @@ void clear_screen(void){
 void print_screen() {
     int elems = sizeof(screen)/sizeof(screen[0]);
     int rows = sizeof(screen[0]); // this is not rows, it's collumns!
-    int i,y;
+    int i,y,z;
+    print_to_side_panel();
     for (i=0; i<elems; i++){
         for (y=0;y<rows; y++){
             printf("%c",screen[i][y]);
+        }
+        if (i<side_panel_size){
+            // printf(" test ");
+            for(z=0;z<sizeof(side_panel[0]);z++){
+                printf("%c",side_panel[i][z]);
+            }
         }
         printf("\n");
     }
@@ -140,4 +151,22 @@ int  dice(int maxv) {
     int rnum;
     rnum = (rand() % (upper-lower+1))+lower;
     return rnum;
+}
+
+void print_to_side_panel(){
+    int i;
+    // for(i=0;i<amount_of_monsters;i++){
+    //     cx = snprintf(mbuff[i],30,"[%c] [%s] %s (%s) HP: %d",monsters[i].letter,monsters[i].id,monsters[i].name,monsters[i].race,monsters[i].hp);
+    // }
+    for(i=0;i<amount_of_monsters;i++){
+        side_panel[i][1] = '[';
+        side_panel[i][2] = *monsters[i].letter;
+        side_panel[i][3] = ']';
+        side_panel[i][4] = ' ';
+        side_panel[i][5] = '[';
+        side_panel[i][6] = monsters[i].id[0];
+        side_panel[i][7] = monsters[i].id[1];
+        side_panel[i][8] = ']';
+        side_panel[i][9] = ' ';
+    }
 }
