@@ -3,7 +3,7 @@
 #include "converters.c"
 #include <stdlib.h>
 
-char selected_fighter[] = "av";
+char selected_fighter[] = "kk";
 
 void print_screen(void);
 void place_figures(void);
@@ -174,16 +174,16 @@ void print_to_side_panel(){
         in_line_position++;
         side_panel[i][in_line_position] = ' ';
         in_line_position++;
-        side_panel[i][in_line_position] = '[';
-        in_line_position++;
-        side_panel[i][in_line_position] = monsters[i].id[0];
-        in_line_position++;
-        side_panel[i][in_line_position] = monsters[i].id[1];
-        in_line_position++;
-        side_panel[i][in_line_position] = ']';
-        in_line_position++;
-        side_panel[i][in_line_position] = ' ';
-        in_line_position++;
+        // side_panel[i][in_line_position] = '[';
+        // in_line_position++;
+        // side_panel[i][in_line_position] = monsters[i].id[0];
+        // in_line_position++;
+        // side_panel[i][in_line_position] = monsters[i].id[1];
+        // in_line_position++;
+        // side_panel[i][in_line_position] = ']';
+        // in_line_position++;
+        // side_panel[i][in_line_position] = ' ';
+        // in_line_position++;
         word_lenght = strlen(monsters[i].name);
         for(y=0;y<word_lenght;y++){
             side_panel[i][in_line_position+y] = monsters[i].name[y];
@@ -216,54 +216,56 @@ void print_to_side_panel(){
     for(i=0;i<amount_of_fighters;i++){
         snprintf(fighter_hp_string,3,"%d",pcs[i].hp);
         in_line_position = 3;
-        if(strcmp(selected_fighter,pcs[i].id)){
-            side_panel[i+free_lines][1] = '>';
+        if((selected_fighter[0] == pcs[i].id[0])&&(selected_fighter[1] == pcs[i].id[1])){
+            side_panel[i+free_lines+amount_of_monsters][1] = '>';
+        } else {
+            side_panel[i+free_lines+amount_of_monsters][1] = ' ';
         }
-        side_panel[i+free_lines][in_line_position] = '[';
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = '[';
         in_line_position++;
-        side_panel[i+free_lines][in_line_position] = *pcs[i].letter;
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = *pcs[i].letter;
         in_line_position++;
-        side_panel[i+free_lines][in_line_position] = ']';
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = ']';
         in_line_position++;
-        side_panel[i+free_lines][in_line_position] = ' ';
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = ' ';
         in_line_position++;
-        side_panel[i+free_lines][in_line_position] = '[';
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = '[';
         in_line_position++;
-        side_panel[i+free_lines][in_line_position] = pcs[i].id[0];
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = pcs[i].id[0];
         in_line_position++;
-        side_panel[i+free_lines][in_line_position] = pcs[i].id[1];
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = pcs[i].id[1];
         in_line_position++;
-        side_panel[i+free_lines][in_line_position] = ']';
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = ']';
         in_line_position++;
-        side_panel[i+free_lines][in_line_position] = ' ';
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = ' ';
         in_line_position++;
         word_lenght = strlen(pcs[i].name);
         for(y=0;y<word_lenght;y++){
-            side_panel[i+free_lines][in_line_position+y] = pcs[i].name[y];
+            side_panel[i+free_lines+amount_of_monsters][in_line_position+y] = pcs[i].name[y];
         }
         in_line_position = in_line_position + y;
-        side_panel[i+free_lines][in_line_position] = ' ';
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = ' ';
         in_line_position++;
-        side_panel[i+free_lines][in_line_position] = '(';
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = '(';
         in_line_position++;
         word_lenght = strlen(pcs[i].pc_class);
         for(y=0;y<word_lenght;y++){
-            side_panel[i+free_lines][in_line_position+y] = pcs[i].pc_class[y];
+            side_panel[i+free_lines+amount_of_monsters][in_line_position+y] = pcs[i].pc_class[y];
         }
         in_line_position = in_line_position + y;
-        side_panel[i+free_lines][in_line_position] = ')';
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = ')';
         in_line_position++;
-        side_panel[i+free_lines][in_line_position] = ' ';
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = ' ';
         in_line_position++;
-        side_panel[i+free_lines][in_line_position] = 'H';
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = 'H';
         in_line_position++;
-        side_panel[i+free_lines][in_line_position] = 'P';
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = 'P';
         in_line_position++;
-        side_panel[i+free_lines][in_line_position] = ':';
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = ':';
         in_line_position++;
         word_lenght = strlen(fighter_hp_string);
         for(y=0;y<word_lenght;y++){
-            side_panel[i+free_lines][in_line_position+y] = fighter_hp_string[y];
+            side_panel[i+free_lines+amount_of_monsters][in_line_position+y] = fighter_hp_string[y];
         }
     }
 }

@@ -77,9 +77,11 @@ struct character_pc {
 };
 
 
-struct character_pc pcs[2] = {
+struct character_pc pcs[4] = {
     {"A","av",1,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,15,1,1,{"bs"},{{'n','n'},{'n','n'},{'n','n'},{'n','n'}},12,3},
-    {"K","kk",2,"Koko",  "Bl__Mage", "I will eradicate them.",  1,0,2500,40,6,13,1,0,{"mr"},{{'l','b'},{'f','b'},{'n','n'},{'n','n'}},12,4}
+    {"K","kk",2,"Koko",  "Bl__Mage","I will eradicate them.",  1,0,2500,40,6,13,1,0,{"mr"},{{'l','b'},{'f','b'},{'n','n'},{'n','n'}},12,4},
+    {"M","mk",3,"Marsh", "Archer","You can\'t escape!",1,0,2500,30,6,13,1,0,{"bw"},{{'n','n'},{'n','n'},{'n','n'},{'n','n'}},12,5},
+    {"Z","zk",4,"Zok",   "Wh__Mage","Need help?",1,0,1500,30,8,13,1,0,{"mr"},{{'l','b'},{'r','e'},{'n','n'},{'n','n'}},12,6}
 };
 int amount_of_fighters = sizeof(pcs) / sizeof(pcs[0]);
 // struct character_pc character1 = {"A",1,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,15,1,1,{"Big Sword",8},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},12,3};
@@ -90,7 +92,8 @@ struct enemy {
     char id[2];         // id is must be unique, since we could have multiple figures with the same letter.
     int initiative;
     char name[10];
-    char race[10];
+    char race[14];
+    char attack_description[40];
     int hp;
     int ac; /*Armor Class*/
     int mov; /*how many squares player can move*/
@@ -107,9 +110,11 @@ If number + modifier equals or exceeds target number, the roll is success,
 otherwise faild.
 */
 
-struct enemy monsters[2] = {
-    {"g","g1",3,"Fred","Goblin",4,14,30,4,7,18,1,3},
-    {"r","r1",4,"Rogue","Human",5,13,40,4,7,18,1,4}
+struct enemy monsters[4] = {
+    {"g","g1",5,"Fred","Goblin","Goblin attacks!",4,14,30,4,7,18,1,3},
+    {"r","r1",6,"Rogue","Human","Rogue attacks",5,13,40,4,7,18,1,4},
+    {"t","t1",7,"Ted",  "Tentacle_Worm","Squeezed you hard!",14,13,30,8,7,18,1,5},
+    {"h","h1",8,"BadBoy", "Hell_Hound","Fire breed attack!",18,14,40,6,9,20,1,6}
 };
 
 int amount_of_monsters = sizeof(monsters) / sizeof(monsters[0]);
