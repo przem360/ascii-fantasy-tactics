@@ -5,8 +5,9 @@
 
 int killed = 0; /* how many monsters were killed by fighters */
 int died = 0;   /* how many fighters were killed by monsters */
-char selected_fighter[5];
+char command[5];
 char command_code; /* what analyse_command things about user input?*/
+
 
 
 int main (int argc, char *argv[]){
@@ -24,7 +25,7 @@ int main (int argc, char *argv[]){
         d20 = dice(20);
         printf("\n D20 throw: %d\n",d20);
         printf("Select fighters \n > ");
-        scanf("%s",selected_fighter);
-        command_code = analyse_command(selected_fighter);
+        scanf("%s",command);
+        command_code = analyse_command(command);
     }
 }

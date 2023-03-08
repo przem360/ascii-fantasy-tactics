@@ -3,6 +3,8 @@
 #include "converters.c"
 #include <stdlib.h>
 
+char selected_fighter[] = "av";
+
 void print_screen(void);
 void place_figures(void);
 void draw_range(char id[4],int radius);
@@ -154,19 +156,114 @@ int  dice(int maxv) {
 }
 
 void print_to_side_panel(){
-    int i;
+    int i, y, free_lines,word_lenght,in_line_position;
+    char monster_hp_string[3];
+    char fighter_hp_string[3];
+    free_lines = (side_panel_size - amount_of_monsters) - amount_of_fighters;
     // for(i=0;i<amount_of_monsters;i++){
     //     cx = snprintf(mbuff[i],30,"[%c] [%s] %s (%s) HP: %d",monsters[i].letter,monsters[i].id,monsters[i].name,monsters[i].race,monsters[i].hp);
     // }
     for(i=0;i<amount_of_monsters;i++){
-        side_panel[i][1] = '[';
-        side_panel[i][2] = *monsters[i].letter;
-        side_panel[i][3] = ']';
-        side_panel[i][4] = ' ';
-        side_panel[i][5] = '[';
-        side_panel[i][6] = monsters[i].id[0];
-        side_panel[i][7] = monsters[i].id[1];
-        side_panel[i][8] = ']';
-        side_panel[i][9] = ' ';
+        snprintf(monster_hp_string,3,"%d",monsters[i].hp);
+        in_line_position = 3;
+        side_panel[i][in_line_position] = '[';
+        in_line_position++;
+        side_panel[i][in_line_position] = *monsters[i].letter;
+        in_line_position++;
+        side_panel[i][in_line_position] = ']';
+        in_line_position++;
+        side_panel[i][in_line_position] = ' ';
+        in_line_position++;
+        side_panel[i][in_line_position] = '[';
+        in_line_position++;
+        side_panel[i][in_line_position] = monsters[i].id[0];
+        in_line_position++;
+        side_panel[i][in_line_position] = monsters[i].id[1];
+        in_line_position++;
+        side_panel[i][in_line_position] = ']';
+        in_line_position++;
+        side_panel[i][in_line_position] = ' ';
+        in_line_position++;
+        word_lenght = strlen(monsters[i].name);
+        for(y=0;y<word_lenght;y++){
+            side_panel[i][in_line_position+y] = monsters[i].name[y];
+        }
+        in_line_position = in_line_position + y;
+        side_panel[i][in_line_position] = ' ';
+        in_line_position++;
+        side_panel[i][in_line_position] = '(';
+        in_line_position++;
+        word_lenght = strlen(monsters[i].race);
+        for(y=0;y<word_lenght;y++){
+            side_panel[i][in_line_position+y] = monsters[i].race[y];
+        }
+        in_line_position = in_line_position + y;
+        side_panel[i][in_line_position] = ')';
+        in_line_position++;
+        side_panel[i][in_line_position] = ' ';
+        in_line_position++;
+        side_panel[i][in_line_position] = 'H';
+        in_line_position++;
+        side_panel[i][in_line_position] = 'P';
+        in_line_position++;
+        side_panel[i][in_line_position] = ':';
+        in_line_position++;
+        word_lenght = strlen(monster_hp_string);
+        for(y=0;y<word_lenght;y++){
+            side_panel[i][in_line_position+y] = monster_hp_string[y];
+        }
+    }
+    for(i=0;i<amount_of_fighters;i++){
+        snprintf(fighter_hp_string,3,"%d",pcs[i].hp);
+        in_line_position = 3;
+        if(strcmp(selected_fighter,pcs[i].id)){
+            side_panel[i+free_lines][1] = '>';
+        }
+        side_panel[i+free_lines][in_line_position] = '[';
+        in_line_position++;
+        side_panel[i+free_lines][in_line_position] = *pcs[i].letter;
+        in_line_position++;
+        side_panel[i+free_lines][in_line_position] = ']';
+        in_line_position++;
+        side_panel[i+free_lines][in_line_position] = ' ';
+        in_line_position++;
+        side_panel[i+free_lines][in_line_position] = '[';
+        in_line_position++;
+        side_panel[i+free_lines][in_line_position] = pcs[i].id[0];
+        in_line_position++;
+        side_panel[i+free_lines][in_line_position] = pcs[i].id[1];
+        in_line_position++;
+        side_panel[i+free_lines][in_line_position] = ']';
+        in_line_position++;
+        side_panel[i+free_lines][in_line_position] = ' ';
+        in_line_position++;
+        word_lenght = strlen(pcs[i].name);
+        for(y=0;y<word_lenght;y++){
+            side_panel[i+free_lines][in_line_position+y] = pcs[i].name[y];
+        }
+        in_line_position = in_line_position + y;
+        side_panel[i+free_lines][in_line_position] = ' ';
+        in_line_position++;
+        side_panel[i+free_lines][in_line_position] = '(';
+        in_line_position++;
+        word_lenght = strlen(pcs[i].pc_class);
+        for(y=0;y<word_lenght;y++){
+            side_panel[i+free_lines][in_line_position+y] = pcs[i].pc_class[y];
+        }
+        in_line_position = in_line_position + y;
+        side_panel[i+free_lines][in_line_position] = ')';
+        in_line_position++;
+        side_panel[i+free_lines][in_line_position] = ' ';
+        in_line_position++;
+        side_panel[i+free_lines][in_line_position] = 'H';
+        in_line_position++;
+        side_panel[i+free_lines][in_line_position] = 'P';
+        in_line_position++;
+        side_panel[i+free_lines][in_line_position] = ':';
+        in_line_position++;
+        word_lenght = strlen(fighter_hp_string);
+        for(y=0;y<word_lenght;y++){
+            side_panel[i+free_lines][in_line_position+y] = fighter_hp_string[y];
+        }
     }
 }
