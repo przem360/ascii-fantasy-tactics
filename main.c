@@ -17,7 +17,7 @@ int main (int argc, char *argv[]){
         place_figures();
         draw_interface();
         clear_screen();
-        draw_range("J6",4);
+        draw_range("C13",4);
         printip("AVAILABLE FIGHTERS...",1);
         draw_interface();
         // printf("Monsters to kill: %d \n",amount_of_monsters);

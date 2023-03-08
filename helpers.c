@@ -69,7 +69,7 @@ void draw_interface(){
 
 void place_figures(){
     int i;
-    for (i=0;i<2;i++){
+    for (i=0;i<4;i++){
         screen[pcs[i].x_position][pcs[i].y_position] = *pcs[i].letter;
         screen[monsters[i].x_position][monsters[i].y_position] = *monsters[i].letter;
     }
@@ -97,9 +97,9 @@ void draw_range(char id[3],int radius){
     /* Let's try to draw on screen from coordinates */
     /* drawing straight front and back */
     int i, rad;
-    if (screen[address_y][address_x] == '.'){
-            screen[address_y][address_x] = '@';
-        }
+    // if (screen[address_y][address_x] == '.'){
+    //         screen[address_y][address_x] = '@';
+    //     }
     for (rad=radius;rad>=0;rad--){
     for(i=0;i<=radius;i++) {
         if (screen[address_y-i][address_x] == '.'){
