@@ -70,19 +70,16 @@ struct character_pc {
     int ac; /*Armor Class*/
     int bonus; /*Attack Bonus*/
     int chain_mail;
-    struct weapon {char w_name[10]; int dmg;}pc_weapon;
-    struct spell_1 {char s1_name[10]; char s1_desc[40]; int s1_range; int s1_dmg; int s1_recov;}pc_spell1;
-    struct spell_2 {char s2_name[10]; char s2_desc[40]; int s2_range; int s2_dmg; int s2_recov;}pc_spell2;
-    struct spell_3 {char s3_name[10]; char s3_desc[40]; int s3_range; int s3_dmg; int s3_recov;}pc_spell3;
-    struct spell_4 {char s4_name[10]; char s4_desc[40]; int s4_range; int s4_dmg; int s4_recov;}pc_spell4;
+    char weapon[1][2];
+    char spells[4][2];
     int x_position;
     int y_position;
 };
 
 
 struct character_pc pcs[2] = {
-    {"A","av",1,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,15,1,1,{"Big Sword",8},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},12,3},
-    {"K","kk",2,"Koko",  "Bl__Mage", "I will eradicate them.",  1,0,2500,40,6,13,1,0,{"Magic Rod",3},{"Light.Bolt","Range 50 + 10 per lvl. DMG 1d6 in 10x40.",50,5,0},{"Fireball","Rnge 100 + 10 per lvl. DMG 1d6 rad 20.",100,6,0},{"","",0,0,0},{"","",0,0,0},12,4}
+    {"A","av",1,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,15,1,1,{"bs"},{{'n','n'},{'n','n'},{'n','n'},{'n','n'}},12,3},
+    {"K","kk",2,"Koko",  "Bl__Mage", "I will eradicate them.",  1,0,2500,40,6,13,1,0,{"mr"},{{'l','b'},{'f','b'},{'n','n'},{'n','n'}},12,4}
 };
 int amount_of_fighters = sizeof(pcs) / sizeof(pcs[0]);
 // struct character_pc character1 = {"A",1,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,15,1,1,{"Big Sword",8},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},12,3};
@@ -116,3 +113,37 @@ struct enemy monsters[2] = {
 };
 
 int amount_of_monsters = sizeof(monsters) / sizeof(monsters[0]);
+
+struct spell {
+    char id[2];
+    char name[12];
+    char desc[40];
+    int range;
+    int dmg;
+    int recov;
+    int inc_mov;
+    int dec_mov;
+};
+
+struct spell spells[3] = {
+    {"lb","Light_Bolt","Light bolt the strikes target",50,5,0,0,0},
+    {"fb","Fire_Ball", "Ball of fire hits the target",100,6,0,0,0},
+    {"re","Recovery",  "Targets HP points has been recovered",10,0,4,0,0}
+};
+
+struct weapon {
+    char id[2];
+    char name[12];
+    int ranged; /*0 if sword or dagger, 1 if i.e. bow*/
+    int range;
+    int inc_dmg;
+    int inc_ac;
+    int inc_mov;
+    int dec_mov;
+};
+
+struct weapon weapons[3] = {
+    {"bs","Big_Sword",0,0,2,0,0,0},
+    {"mr","Magic_Rod",0,0,1,0,0,0},
+    {"bw","Bow",1,60,2,0,0,0}
+};
