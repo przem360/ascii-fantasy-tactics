@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "converters.c"
+#include "defs.h"
 #include <stdlib.h>
 
 char selected_fighter[] = "kk";
@@ -18,6 +19,7 @@ int  dice(int maxv);
 void print_to_side_panel(void);
 
 int side_panel_size = sizeof(side_panel)/sizeof(side_panel[0]);
+char current_command[8];
 
 
 void clear_screen(void){
@@ -150,8 +152,11 @@ void draw_range(char id[3],int radius){
 }
 
 char analyse_command(char comm[12]) {
-    int i;
+    int i,y;
     char *comml = strtolower(comm, 12);
+    int amount_of_available_commands = sizeof(av_commands) / sizeof(av_commands[0]);
+    // selected_fighter[0] = 'n'; /* lets remove what ever is left in select_fighter */
+    // selected_fighter[1] = 'n'; /* to make sure that selection actually took place */
     if (startswith("knock knock",comml)) {
         cleanip();
         printip("Whos there?",1);
@@ -160,11 +165,19 @@ char analyse_command(char comm[12]) {
         return 'q';
     }
     for (i=0;i<amount_of_fighters;i++){
-        if(startswith(pcs[i].id,comml) != 0){
+        if(startswith(comml,pcs[i].id) != 0){
             cleanip();
             printip("Selected new",1);
             selected_fighter[0] = comml[0];
             selected_fighter[1] = comml[1];
+            // printf("Selected fighter: %s",selected_fighter);
+            for (y=0;y<amount_of_available_commands;y++){
+                if(strcmp(av_commands[i], comml)){
+                    cleanip();
+                    printip("Command found!",1);
+                    /* make it return the letter of command*/
+                }
+            }
         }
     }
     return 'K';

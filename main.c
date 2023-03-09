@@ -21,9 +21,7 @@ int main (int argc, char *argv[]){
         // printip("AVAILABLE FIGHTERS...",1);
         draw_interface();
         // printf("Monsters to kill: %d \n",amount_of_monsters);
-        int d20;
-        d20 = dice(20);
-        printf("\n D20 throw: %d\n",d20);
+        // printf("Selected fighter: %s \n",selected_fighter);
         printf("Select fighters \n > ");
         scanf("%s",command);
         command_code = analyse_command(command);
