@@ -11,6 +11,7 @@ void draw_range(char id[4],int radius);
 void clear_screen(void);
 void draw_info_panel(void);
 void draw_interface(void);
+void cleanip(void);
 void printip(char txt[20], int line_number);
 char analyse_command(char comm[6]);
 int  dice(int maxv);
@@ -51,6 +52,17 @@ void draw_info_panel(){
             printf("%c",info_panel[i][y]);
         }
         printf("\n");
+    }
+}
+
+void cleanip(){
+    int info_panel_size = sizeof(info_panel) / sizeof(info_panel[0]);
+    int ip_line_size = sizeof(info_panel[0]);
+    int i,y;
+    for (i=1;i<info_panel_size;i++) {
+        for (y=1;y<ip_line_size-1;y++) {
+            info_panel[i][y] = ' ';
+        }
     }
 }
 
@@ -137,12 +149,23 @@ void draw_range(char id[3],int radius){
     }
 }
 
-char analyse_command(char comm[6]) {
-    if ((strlen(comm) == 1)&&(comm[0] == 'q')){
+char analyse_command(char comm[12]) {
+    int i;
+    char *comml = strtolower(comm, 12);
+    if (startswith("knock knock",comml)) {
+        cleanip();
+        printip("Whos there?",1);
+    }
+    if ((strlen(comml) == 1)&&(comml[0] == 'q')){
         return 'q';
     }
-    if ((strlen(comm) == 1)&&(comm[0] == 'Q')){
-        return 'q';
+    for (i=0;i<amount_of_fighters;i++){
+        if(startswith(pcs[i].id,comml) != 0){
+            cleanip();
+            printip("Selected new",1);
+            selected_fighter[0] = comml[0];
+            selected_fighter[1] = comml[1];
+        }
     }
     return 'K';
 }

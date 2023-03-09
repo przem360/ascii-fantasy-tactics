@@ -5,7 +5,7 @@
 
 int killed = 0; /* how many monsters were killed by fighters */
 int died = 0;   /* how many fighters were killed by monsters */
-char command[5];
+char command[12];
 char command_code; /* what analyse_command things about user input?*/
 
 
@@ -18,7 +18,7 @@ int main (int argc, char *argv[]){
         draw_interface();
         clear_screen();
         draw_range("C13",4);
-        printip("AVAILABLE FIGHTERS...",1);
+        // printip("AVAILABLE FIGHTERS...",1);
         draw_interface();
         // printf("Monsters to kill: %d \n",amount_of_monsters);
         int d20;

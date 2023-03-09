@@ -1,5 +1,11 @@
+#include <ctype.h>
+#include <stdlib.h>
+
+
 int letters_to_numbers(char letter);
 int string_to_number(char* str);
+// const *strtolower(char *str);
+int startswith(const char *a, const char *b);
 
 int letters_to_numbers(char letter) {
     int number;
@@ -119,4 +125,26 @@ int string_to_number(char* str){
         num = num * 10 + (str[i] - 48);
     }
     return num;
+}
+
+// const char* strtolower(char *str) {
+//   for(int i = 0; str[i]; i++){
+//       str[i] = tolower(str[i]);
+//   }
+//   return str;
+// }
+
+char *strtolower(char *str, int len)
+{
+    char *str_l = calloc(len+1, sizeof(char));
+    for (size_t i = 0; i < len; ++i) {
+        str_l[i] = tolower((unsigned char)str[i]);
+    }
+    return str_l;
+}
+
+int startswith(const char *a, const char *b)
+{
+   if(strncmp(a, b, strlen(b)) == 0) return 1;
+   return 0;
 }
