@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "converters.c"
 #include "defs.h"
-#include <stdlib.h>
-
-char selected_fighter[] = "kk";
 
 void print_screen(void);
 void place_figures(void);
@@ -18,9 +16,14 @@ char analyse_command(char comm[6]);
 int  dice(int maxv);
 void print_to_side_panel(void);
 void ascii_battle_init(void);
+void player_action_move(char pid[2]);
 
 int side_panel_size = sizeof(side_panel)/sizeof(side_panel[0]);
 char current_command[8];
+char selected_fighter[] = "kk";
+char output[1];
+char test_comml[] = "W";
+int whoseturn = 0; /* Who's turn is it? 0 -> player, 1 -> monsters */
 
 
 void clear_screen(void){
@@ -99,16 +102,9 @@ void draw_range(char id[3],int radius){
         If it is a letter needs to check if it is unique and find the adress.
     */
     /* First we'll convert adress command to coordinates */
-    int command_size = strlen(id);
-    int address_x;
-    int address_y;
-    if (command_size>1){
-        address_x = letters_to_numbers(id[0]);
-        char* substr = id + 1;
-        address_y = string_to_number(substr);
-        // printf("ADDRESS X: %d \n", address_x);
-        // printf("ADDRESS Y: %d \n", address_y);
-    }
+    adresstocoords(id);
+    int address_x = coords[0];
+    int address_y = coords[1];
     /* Let's try to draw on screen from coordinates */
     /* drawing straight front and back */
     int i, rad;
@@ -162,7 +158,7 @@ char analyse_command(char comm[12]) {
         cleanip();
         printip("Whos there?",1);
     }
-    if ((strlen(comml) == 1)&&(comml[0] == 'q')){
+    if ((strlen(comml) < 3)&&(comml[0] == 'q')){
         return 'q';
     }
     for (i=0;i<amount_of_fighters;i++){
@@ -171,17 +167,18 @@ char analyse_command(char comm[12]) {
             printip("Selected new",1);
             selected_fighter[0] = comml[0];
             selected_fighter[1] = comml[1];
-            // printf("Selected fighter: %s",selected_fighter);
             for (y=0;y<amount_of_available_commands;y++){
-                if(strcmp(av_commands[i], comml)){
+                if(strcmp(av_commands[y], comml)){
                     cleanip();
                     printip("Command found!",1);
                     /* make it return the letter of command*/
+                    output[0] = comml[3];
+                    return output[0];
                 }
             }
         }
     }
-    return 'K';
+    return 'k';
 }
 
 int  dice(int maxv) {
@@ -316,4 +313,15 @@ void ascii_battle_init() {
     draw_interface();
     // printf("Monsters to kill: %d \n",amount_of_monsters);
     // printf("Selected fighter: %s \n",selected_fighter);
+}
+
+void player_action_move(char pid[2]){
+    int i, selected_x, selected_y;
+    for(i=0;i<amount_of_fighters;i++){
+        if (pcs[i].id[0] == pid[0] && pcs[i].id[1] == pid[1]){
+            selected_x = pcs[i].x_position;
+            selected_y = pcs[i].y_position;
+            printip("Moving player",1);
+        }
+    }
 }
