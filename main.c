@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "resources.h"
-#include "helpers.c"
+#include "asciibattle.c"
 
 int killed = 0; /* how many monsters were killed by fighters */
 int died = 0;   /* how many fighters were killed by monsters */
