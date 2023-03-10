@@ -11,18 +11,12 @@ char command_code; /* what analyse_command things about user input?*/
 
 
 int main (int argc, char *argv[]){
+    printf("ASCII FANTASY TACTICS");
+    ascii_battle_init();
     while(killed<amount_of_monsters && died<amount_of_fighters && command_code !='q'){
-        printf("ASCII FANTASY TACTICS");
-        memcpy(screen, lvl1,sizeof(lvl1));
-        place_figures();
-        draw_interface();
         clear_screen();
-        draw_range("C13",4);
-        // printip("AVAILABLE FIGHTERS...",1);
         draw_interface();
-        // printf("Monsters to kill: %d \n",amount_of_monsters);
-        // printf("Selected fighter: %s \n",selected_fighter);
-        printf("Select fighters \n > ");
+        printf("Command > \n");
         scanf("%s",command);
         command_code = analyse_command(command);
     }

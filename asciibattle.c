@@ -17,6 +17,7 @@ void printip(char txt[20], int line_number);
 char analyse_command(char comm[6]);
 int  dice(int maxv);
 void print_to_side_panel(void);
+void ascii_battle_init(void);
 
 int side_panel_size = sizeof(side_panel)/sizeof(side_panel[0]);
 char current_command[8];
@@ -304,4 +305,15 @@ void print_to_side_panel(){
             side_panel[i+free_lines+amount_of_monsters][in_line_position+y] = fighter_hp_string[y];
         }
     }
+}
+void ascii_battle_init() {
+    memcpy(screen, lvl1,sizeof(lvl1));
+    place_figures();
+    draw_interface();
+    clear_screen();
+    draw_range("C13",4);
+    // printip("AVAILABLE FIGHTERS...",1);
+    draw_interface();
+    // printf("Monsters to kill: %d \n",amount_of_monsters);
+    // printf("Selected fighter: %s \n",selected_fighter);
 }
