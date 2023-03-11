@@ -5,6 +5,7 @@
 
 int killed = 0; /* how many monsters were killed by fighters */
 int died = 0;   /* how many fighters were killed by monsters */
+// char selected_fighter[] = "nn"; /* asciibattle.c is storing id of selected fighter here */
 char command[12];
 char command_code[1]; /* what analyse_command things about user input?*/
 
@@ -21,7 +22,7 @@ int main (int argc, char *argv[]){
         fgets(command,12,stdin);
         command_code[0] = analyse_command(command);
         if (command_code[0] == 'm'){
-            player_action_move("av");
+            player_action_move(selected_fighter);
         }
         // printf("Main Command code: %c",command_code[0]);
     }

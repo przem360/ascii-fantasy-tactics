@@ -6,7 +6,7 @@
 
 void print_screen(void);
 void place_figures(void);
-void draw_range(char id[4],int radius);
+void draw_range(int xpos, int ypos,int radius);
 void clear_screen(void);
 void draw_info_panel(void);
 void draw_interface(void);
@@ -20,7 +20,7 @@ void player_action_move(char pid[2]);
 
 int side_panel_size = sizeof(side_panel)/sizeof(side_panel[0]);
 char current_command[8];
-char selected_fighter[] = "nn";
+extern char selected_fighter[] = "nn";
 char output[1];
 int whoseturn = 0; /* Who's turn is it? 0 -> player, 1 -> monsters */
 
@@ -92,7 +92,7 @@ void place_figures(){
     }
 }
 
-void draw_range(char id[3],int radius){
+void draw_range(int xpos, int ypos, int radius){
     /* Function draws range for walking, shooting, spells.
        Arguments: id - adress of figure that needs range specification (center point of range),
                        in form of chess coordinates (i.e. F20),
@@ -101,9 +101,9 @@ void draw_range(char id[3],int radius){
         If it is a letter needs to check if it is unique and find the adress.
     */
     /* First we'll convert adress command to coordinates */
-    adresstocoords(id);
-    int address_x = coords[0];
-    int address_y = coords[1];
+    // adresstocoords(id);
+    int address_x = xpos;
+    int address_y = ypos;
     /* Let's try to draw on screen from coordinates */
     /* drawing straight front and back */
     int i, rad;
@@ -307,7 +307,7 @@ void ascii_battle_init() {
     place_figures();
     draw_interface();
     clear_screen();
-    draw_range("C13",4);
+    // draw_range("C13",4);
     // printip("AVAILABLE FIGHTERS...",1);
     draw_interface();
     // printf("Monsters to kill: %d \n",amount_of_monsters);
@@ -315,12 +315,14 @@ void ascii_battle_init() {
 }
 
 void player_action_move(char pid[2]){
-    int i, selected_x, selected_y;
+    int i, selected_x, selected_y, rad;
     for(i=0;i<amount_of_fighters;i++){
         if (pcs[i].id[0] == pid[0] && pcs[i].id[1] == pid[1]){
             selected_x = pcs[i].x_position;
             selected_y = pcs[i].y_position;
+            rad = pcs[i].mov / 10;
             printip("Moving player",1);
+            draw_range(selected_y,selected_x,rad);
         }
     }
 }
