@@ -24,6 +24,5 @@ int main (int argc, char *argv[]){
             player_action_move("av");
         }
         // printf("Main Command code: %c",command_code[0]);
-        // printf("Main comml 3: %c",test_comml[0]);
     }
 }

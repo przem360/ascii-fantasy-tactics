@@ -20,9 +20,8 @@ void player_action_move(char pid[2]);
 
 int side_panel_size = sizeof(side_panel)/sizeof(side_panel[0]);
 char current_command[8];
-char selected_fighter[] = "kk";
+char selected_fighter[] = "nn";
 char output[1];
-char test_comml[] = "W";
 int whoseturn = 0; /* Who's turn is it? 0 -> player, 1 -> monsters */
 
 
@@ -157,6 +156,7 @@ char analyse_command(char comm[12]) {
     if (startswith("knock knock",comml)) {
         cleanip();
         printip("Whos there?",1);
+        return 'k';
     }
     if ((strlen(comml) < 3)&&(comml[0] == 'q')){
         return 'q';
@@ -172,8 +172,7 @@ char analyse_command(char comm[12]) {
                     cleanip();
                     printip("Command found!",1);
                     /* make it return the letter of command*/
-                    output[0] = comml[3];
-                    return output[0];
+                    return comml[3];
                 }
             }
         }
