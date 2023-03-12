@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h> /* for pausing */
 #include "converters.c"
 #include "defs.h"
+
 
 void print_screen(void);
 void place_figures(void);
@@ -16,16 +18,23 @@ void printip(char txt[20], int line_number);
 char analyse_command(char comm[6]);
 void print_to_side_panel(void);
 void ascii_battle_init(void);
-void player_action_move(char pid[2]);
+int player_action_move(char pid[2]);
 // void move_cursor(int cx, int cy);
-void move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]);
+int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]);
+void let_move(void);
+void monsters_action(void);
+
 
 int  dice(int maxv);
+
+
 int side_panel_size = sizeof(side_panel)/sizeof(side_panel[0]);
 char current_command[8];
 char selected_fighter[] = "nn";
+char selected_monster[] = "nn";
 char output[1];
-int whoseturn = 0; /* Who's turn is it? 0 -> player, 1 -> monsters */
+int whoseturn = 1; /* Initiative selection */
+int player_or_monster = 1; /* 1 = player, 2 = monster */
 
 // int cursor_on = 1;
 const char alphabet[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
@@ -198,7 +207,7 @@ void draw_range(int xpos, int ypos, int radius, char mode){
 }
 
 char analyse_command(char comm[12]) {
-    int i,y;
+    int y;
     char *comml = strtolower(comm, 12);
     int amount_of_available_commands = sizeof(av_commands) / sizeof(av_commands[0]);
     // selected_fighter[0] = 'n'; /* lets remove what ever is left in select_fighter */
@@ -211,24 +220,16 @@ char analyse_command(char comm[12]) {
     if ((strlen(comml) < 3)&&(comml[0] == 'q')){
         return 'q';
     }
-    for (i=0;i<amount_of_fighters;i++){
-        if(startswith(comml,pcs[i].id) != 0){
+    for (y=0;y<amount_of_available_commands;y++){
+        if(strcmp(av_commands[y], comml)){
             cleanip();
-            printip("Selected new",1);
-            selected_fighter[0] = comml[0];
-            selected_fighter[1] = comml[1];
-            for (y=0;y<amount_of_available_commands;y++){
-                if(strcmp(av_commands[y], comml)){
-                    cleanip();
-                    printip("Command found!",1);
-                    /* make it return the letter of command*/
-                    return comml[3];
-                }
-            }
-        }
+            printip("Command found!",1);
+            /* make it return the letter of command*/
+            return comml[0];
+        }   
     }
     return 'k';
-}
+    }
 
 int  dice(int maxv) {
     int lower = 1;
@@ -249,6 +250,11 @@ void print_to_side_panel(){
     for(i=0;i<amount_of_monsters;i++){
         snprintf(monster_hp_string,3,"%d",monsters[i].hp);
         in_line_position = 3;
+        if((selected_monster[0] == monsters[i].id[0])&&(selected_monster[1] == monsters[i].id[1])){
+            side_panel[i][1] = '>';
+        } else {
+            side_panel[i][1] = ' ';
+        }
         side_panel[i][in_line_position] = '[';
         in_line_position++;
         side_panel[i][in_line_position] = *monsters[i].letter;
@@ -312,16 +318,16 @@ void print_to_side_panel(){
         in_line_position++;
         side_panel[i+free_lines+amount_of_monsters][in_line_position] = ' ';
         in_line_position++;
-        side_panel[i+free_lines+amount_of_monsters][in_line_position] = '[';
-        in_line_position++;
-        side_panel[i+free_lines+amount_of_monsters][in_line_position] = pcs[i].id[0];
-        in_line_position++;
-        side_panel[i+free_lines+amount_of_monsters][in_line_position] = pcs[i].id[1];
-        in_line_position++;
-        side_panel[i+free_lines+amount_of_monsters][in_line_position] = ']';
-        in_line_position++;
-        side_panel[i+free_lines+amount_of_monsters][in_line_position] = ' ';
-        in_line_position++;
+        // side_panel[i+free_lines+amount_of_monsters][in_line_position] = '[';
+        // in_line_position++;
+        // side_panel[i+free_lines+amount_of_monsters][in_line_position] = pcs[i].id[0];
+        // in_line_position++;
+        // side_panel[i+free_lines+amount_of_monsters][in_line_position] = pcs[i].id[1];
+        // in_line_position++;
+        // side_panel[i+free_lines+amount_of_monsters][in_line_position] = ']';
+        // in_line_position++;
+        // side_panel[i+free_lines+amount_of_monsters][in_line_position] = ' ';
+        // in_line_position++;
         word_lenght = strlen(pcs[i].name);
         for(y=0;y<word_lenght;y++){
             side_panel[i+free_lines+amount_of_monsters][in_line_position+y] = pcs[i].name[y];
@@ -366,7 +372,7 @@ void ascii_battle_init() {
 //     int keypress;
 // }
 
-void move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]){
+int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]){
     adresstocoords(target);
     /* make move */
     screen[fx][fy] = BASE_CHAR;
@@ -376,6 +382,7 @@ void move_fighter(int number_in_array, char letter, int fx, int fy, char target[
         pcs[number_in_array].y_position = coords[1];
         clear_range('m');
         printip("Moved.",1);
+        return 1;
     }
     else{
         printip("Can\'t move",1);
@@ -383,11 +390,13 @@ void move_fighter(int number_in_array, char letter, int fx, int fy, char target[
         pcs[number_in_array].x_position = fx;
         pcs[number_in_array].y_position = fy;
         draw_interface();
+        return 0;
     }
 }
 
-void player_action_move(char pid[2]){
-    int i, selected_x, selected_y, rad, arrnum;
+int player_action_move(char pid[2]){
+    int i, selected_x, selected_y, rad, arrnum, mv;
+    mv = 0;
     char fighter_letter;
     char addr[3];
     for(i=0;i<amount_of_fighters;i++){
@@ -403,6 +412,32 @@ void player_action_move(char pid[2]){
     }
     draw_interface();
     scanf("%s",addr);
-    move_fighter(arrnum,fighter_letter,selected_x,selected_y,addr);
+    mv = move_fighter(arrnum,fighter_letter,selected_x,selected_y,addr);
     draw_interface();
+    return mv;
+}
+
+void let_move(){
+    int i;
+    for (i=0;i<amount_of_fighters;i++){
+        if (pcs[i].initiative == whoseturn){
+            selected_fighter[0] = pcs[i].id[0];
+            selected_fighter[1] = pcs[i].id[1]; 
+            player_or_monster = 1;
+            printip("Player\'s turn",1);
+        }
+    }
+    for (i=0;i<amount_of_monsters;i++){
+        if (monsters[i].initiative == whoseturn){
+            selected_monster[0] = monsters[i].id[0];
+            selected_monster[1] = monsters[i].id[1]; 
+            player_or_monster = 2;
+            printip("Monster\'s turn",1);
+        }
+    }
+}
+
+void monsters_action(){
+    printip("I\'ll skip",1);
+    whoseturn++;
 }

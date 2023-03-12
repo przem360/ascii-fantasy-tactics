@@ -10,21 +10,43 @@ char command[12];
 char command_code[1]; /* what analyse_command things about user input?*/
 
 
-
 int main (int argc, char *argv[]){
     ascii_battle_init();
+    int wasmoved = 0;
     while(killed<amount_of_monsters && died<amount_of_fighters && *command_code != 'q'){
         clear_screen();
         printf("ASCII FANTASY TACTICS \n");
         place_figures();
+        let_move();
         draw_interface();
-        printf("Command > ");
-        // scanf("%s",command);
-        fgets(command,12,stdin);
-        command_code[0] = analyse_command(command);
-        if (command_code[0] == 'm'){
-            player_action_move(selected_fighter);
+        if (player_or_monster == 1){
+            printf("Command > ");
+            fgets(command,12,stdin);
+            command_code[0] = analyse_command(command);
+            if (command_code[0] == 'm'){
+                // player_action_move(selected_fighter);
+                printip("MOVING",1);
+                wasmoved = player_action_move(selected_fighter);
+                if (wasmoved == 1){
+                    whoseturn++;
+                }
+            }
+            if (command_code[0] == 's'){
+                // player_action_move(selected_fighter);
+                printip("SKIPPING",1);
+                whoseturn++;
+            }
         }
-        // printf("Main Command code: %c",command_code[0]);
+        if (player_or_monster == 2){
+            monsters_action();
+            // draw_interface();
+            sleep(5);
+            printf("Monster here");
+        }
+        }
+        // scanf("%s",command);
+        printf("POM: %d \n",player_or_monster);
+        printf("Turn: %d \n",whoseturn);
+        printf("s. player: %s \n",selected_fighter);
+        printf("s. monster: %s \n",selected_monster);
     }
-}
