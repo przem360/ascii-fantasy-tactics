@@ -56,7 +56,7 @@ char lvl1[14][22] = {
 /*PARTY - PLAYABLE CHARACTERS*/
 
 struct character_pc {
-    char letter[1];
+    char letter;
     char id[2];         // id is must be unique, since we could have multiple figures with the same letter.
     int initiative;
     char name[10];
@@ -78,10 +78,10 @@ struct character_pc {
 
 
 struct character_pc pcs[4] = {
-    {"A","av",1,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,15,1,1,{"bs"},{{'n','n'},{'n','n'},{'n','n'},{'n','n'}},12,3},
-    {"K","kk",2,"Koko",  "Bl__Mage","I will eradicate them.",  1,0,2500,40,6,13,1,0,{"mr"},{{'l','b'},{'f','b'},{'n','n'},{'n','n'}},12,4},
-    {"M","mk",3,"Marsh", "Archer","You can\'t escape!",1,0,2500,30,6,13,1,0,{"bw"},{{'n','n'},{'n','n'},{'n','n'},{'n','n'}},12,5},
-    {"Z","zk",4,"Zok",   "Wh__Mage","Need help?",1,0,1500,30,8,13,1,0,{"mr"},{{'l','b'},{'r','e'},{'n','n'},{'n','n'}},12,6}
+    {'A',"av",1,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,15,1,1,{"bs"},{{'n','n'},{'n','n'},{'n','n'},{'n','n'}},12,3},
+    {'K',"kk",2,"Koko",  "Bl__Mage","I will eradicate them.",  1,0,2500,40,6,13,1,0,{"mr"},{{'l','b'},{'f','b'},{'n','n'},{'n','n'}},12,4},
+    {'M',"mk",3,"Marsh", "Archer","You can\'t escape!",1,0,2500,30,6,13,1,0,{"bw"},{{'n','n'},{'n','n'},{'n','n'},{'n','n'}},12,5},
+    {'Z',"zk",4,"Zok",   "Wh__Mage","Need help?",1,0,1500,30,8,13,1,0,{"mr"},{{'l','b'},{'r','e'},{'n','n'},{'n','n'}},12,6}
 };
 int amount_of_fighters = sizeof(pcs) / sizeof(pcs[0]);
 // struct character_pc character1 = {"A",1,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,15,1,1,{"Big Sword",8},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},12,3};

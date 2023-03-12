@@ -7,12 +7,13 @@ int string_to_number(char* str);
 // const *strtolower(char *str);
 int startswith(const char *a, const char *b);
 int coords[2];
+
 void adresstocoords(char addr[3]){
     int command_size = strlen(addr);
     if (command_size>1){
-        coords[0] = letters_to_numbers(addr[0]);
+        coords[1] = letters_to_numbers(addr[0]);
         char* substr = addr + 1;
-        coords[1] = string_to_number(substr);
+        coords[0] = string_to_number(substr);
     }
 }
 

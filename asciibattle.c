@@ -6,23 +6,29 @@
 
 void print_screen(void);
 void place_figures(void);
-void draw_range(int xpos, int ypos,int radius);
+void draw_range(int xpos, int ypos,int radius, char mode);
+void clear_range(char mode);
 void clear_screen(void);
 void draw_info_panel(void);
 void draw_interface(void);
 void cleanip(void);
 void printip(char txt[20], int line_number);
 char analyse_command(char comm[6]);
-int  dice(int maxv);
 void print_to_side_panel(void);
 void ascii_battle_init(void);
 void player_action_move(char pid[2]);
+// void move_cursor(int cx, int cy);
+void move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]);
 
+int  dice(int maxv);
 int side_panel_size = sizeof(side_panel)/sizeof(side_panel[0]);
 char current_command[8];
-extern char selected_fighter[] = "nn";
+char selected_fighter[] = "nn";
 char output[1];
 int whoseturn = 0; /* Who's turn is it? 0 -> player, 1 -> monsters */
+
+// int cursor_on = 1;
+const char alphabet[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
 
 
 void clear_screen(void){
@@ -33,9 +39,28 @@ void clear_screen(void){
 void print_screen() {
     int elems = sizeof(screen)/sizeof(screen[0]);
     int rows = sizeof(screen[0]); // this is not rows, it's collumns!
-    int i,y,z;
+    int i,y,z,nums,spaces,l;
+    nums = 1;
+    /* print alphabet letters */
+    for (spaces=0;spaces<4;spaces++){
+                printf(" ");
+            }
+    for(l=0;l<rows-2;l++){
+        printf("%c",alphabet[l]);
+    }
+    printf("\n");
+
     print_to_side_panel();
     for (i=0; i<elems; i++){
+        if ((nums!=1)&&(nums!=elems)){
+            printf("%2d ",nums-1);
+        }
+        else {
+            for (spaces=0;spaces<3;spaces++){
+                printf(" ");
+            }
+        }
+        nums++;
         for (y=0;y<rows; y++){
             printf("%c",screen[i][y]);
         }
@@ -51,8 +76,11 @@ void print_screen() {
 void draw_info_panel(){
     int elems = sizeof(info_panel)/sizeof(info_panel[0]);
     int cols = sizeof(info_panel[0]);
-    int i,y;
+    int i,y,spaces;
     for (i=0; i<elems; i++){
+        for (spaces=0;spaces<3;spaces++){
+                printf(" ");
+            }
         for (y=0;y<cols; y++){
             printf("%c",info_panel[i][y]);
         }
@@ -74,12 +102,15 @@ void cleanip(){
 void printip(char txt[20], int line_number){
     int letters = strlen(txt);
     int i;
+    cleanip();
     for (i=0; i<letters; i++){
         info_panel[line_number][i+1] = txt[i];
     }
 }
 
 void draw_interface(){
+    clear_screen();
+    printf("\t\tASCII FANTASY TACTICS \n\n");
     print_screen();
     draw_info_panel();
 }
@@ -87,12 +118,27 @@ void draw_interface(){
 void place_figures(){
     int i;
     for (i=0;i<4;i++){
-        screen[pcs[i].x_position][pcs[i].y_position] = *pcs[i].letter;
+        screen[pcs[i].x_position][pcs[i].y_position] = pcs[i].letter;
         screen[monsters[i].x_position][monsters[i].y_position] = *monsters[i].letter;
     }
 }
 
-void draw_range(int xpos, int ypos, int radius){
+void clear_range(char mode){
+    int i,y;
+    int lines = sizeof(screen)/sizeof(screen[0]);
+    int chars = sizeof(screen[0]); 
+    if (mode == 'm'){
+        for(i=0;i<lines;i++){
+            for(y=0;y<chars;y++){
+                if (screen[i][y] == RANGE_CHAR){
+                    screen[i][y] =  BASE_CHAR;
+                }
+            }
+        }
+    }
+}
+
+void draw_range(int xpos, int ypos, int radius, char mode){
     /* Function draws range for walking, shooting, spells.
        Arguments: id - adress of figure that needs range specification (center point of range),
                        in form of chess coordinates (i.e. F20),
@@ -110,24 +156,26 @@ void draw_range(int xpos, int ypos, int radius){
     // if (screen[address_y][address_x] == '.'){
     //         screen[address_y][address_x] = '@';
     //     }
+
+    if (mode == 'm') {
     for (rad=radius;rad>=0;rad--){
     for(i=0;i<=radius;i++) {
-        if (screen[address_y-i][address_x] == '.'){
-            screen[address_y-i][address_x] = '+';
+        if (screen[address_y-i][address_x] == BASE_CHAR){
+            screen[address_y-i][address_x] = RANGE_CHAR;
         }
-        if (screen[address_y+i][address_x] == '.'){
-            screen[address_y+i][address_x] = '+';
+        if (screen[address_y+i][address_x] == BASE_CHAR){
+            screen[address_y+i][address_x] = RANGE_CHAR;
         }
     }
     /* drawing radius to the right side */
     /* up */
     for(i=0;i<=rad;i++) {
-        if (screen[address_y-i][address_x-rad+radius] == '.'){
-            screen[address_y-i][address_x-rad+radius] = '+';
+        if (screen[address_y-i][address_x-rad+radius] == BASE_CHAR){
+            screen[address_y-i][address_x-rad+radius] = RANGE_CHAR;
         }
         /* down */
-        if (screen[address_y-i+rad][address_x-rad+radius] == '.'){
-            screen[address_y-i+rad][address_x-rad+radius] = '+';
+        if (screen[address_y-i+rad][address_x-rad+radius] == BASE_CHAR){
+            screen[address_y-i+rad][address_x-rad+radius] = RANGE_CHAR;
         }
     }
     }
@@ -136,15 +184,17 @@ void draw_range(int xpos, int ypos, int radius){
     for (rad=0;rad<radius;rad++){
         /* down */
         for(i=radius;i>0;i--){
-            if (screen[address_y+rad][address_x-i+rad] == '.'){
-                screen[address_y+rad][address_x-i+rad] = '+';
+            if (screen[address_y+rad][address_x-i+rad] == BASE_CHAR){
+                screen[address_y+rad][address_x-i+rad] = RANGE_CHAR;
             }
             /* up */
-            if (screen[address_y-rad][address_x-i+rad] == '.'){
-                screen[address_y-rad][address_x-i+rad] = '+';
+            if (screen[address_y-rad][address_x-i+rad] == BASE_CHAR){
+                screen[address_y-rad][address_x-i+rad] = RANGE_CHAR;
             }
         }
     }
+    } /* end if(mode=='m')*/
+
 }
 
 char analyse_command(char comm[12]) {
@@ -256,7 +306,7 @@ void print_to_side_panel(){
         }
         side_panel[i+free_lines+amount_of_monsters][in_line_position] = '[';
         in_line_position++;
-        side_panel[i+free_lines+amount_of_monsters][in_line_position] = *pcs[i].letter;
+        side_panel[i+free_lines+amount_of_monsters][in_line_position] = pcs[i].letter;
         in_line_position++;
         side_panel[i+free_lines+amount_of_monsters][in_line_position] = ']';
         in_line_position++;
@@ -304,25 +354,55 @@ void print_to_side_panel(){
 }
 void ascii_battle_init() {
     memcpy(screen, lvl1,sizeof(lvl1));
-    place_figures();
     draw_interface();
-    clear_screen();
-    // draw_range("C13",4);
-    // printip("AVAILABLE FIGHTERS...",1);
-    draw_interface();
-    // printf("Monsters to kill: %d \n",amount_of_monsters);
-    // printf("Selected fighter: %s \n",selected_fighter);
+}
+
+// void move_cursor(int cx, int cy){
+//     /* Let's forget about it, since imidiete getchar() response
+//     (without the need to hit enter) is not really a standard and
+//     it is not really portable.
+//     We would have to use ncurses for that. */
+//     printip("Move Cursor");
+//     int keypress;
+// }
+
+void move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]){
+    adresstocoords(target);
+    /* make move */
+    screen[fx][fy] = BASE_CHAR;
+    if (screen[coords[0]][coords[1]] == RANGE_CHAR){
+        // screen[coords[0]][coords[1]] = letter;
+        pcs[number_in_array].x_position = coords[0];
+        pcs[number_in_array].y_position = coords[1];
+        clear_range('m');
+        printip("Moved.",1);
+    }
+    else{
+        printip("Can\'t move",1);
+        clear_range('m');
+        pcs[number_in_array].x_position = fx;
+        pcs[number_in_array].y_position = fy;
+        draw_interface();
+    }
 }
 
 void player_action_move(char pid[2]){
-    int i, selected_x, selected_y, rad;
+    int i, selected_x, selected_y, rad, arrnum;
+    char fighter_letter;
+    char addr[3];
     for(i=0;i<amount_of_fighters;i++){
         if (pcs[i].id[0] == pid[0] && pcs[i].id[1] == pid[1]){
             selected_x = pcs[i].x_position;
             selected_y = pcs[i].y_position;
+            fighter_letter = pcs[i].letter;
             rad = pcs[i].mov / 10;
-            printip("Moving player",1);
-            draw_range(selected_y,selected_x,rad);
+            arrnum = i;
+            printip("Specify adress...",1);
+            draw_range(selected_y,selected_x,rad,'m');
         }
     }
+    draw_interface();
+    scanf("%s",addr);
+    move_fighter(arrnum,fighter_letter,selected_x,selected_y,addr);
+    draw_interface();
 }

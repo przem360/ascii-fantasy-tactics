@@ -16,6 +16,7 @@ int main (int argc, char *argv[]){
     while(killed<amount_of_monsters && died<amount_of_fighters && *command_code != 'q'){
         clear_screen();
         printf("ASCII FANTASY TACTICS \n");
+        place_figures();
         draw_interface();
         printf("Command > ");
         // scanf("%s",command);
