@@ -20,6 +20,7 @@ char analyse_command(char comm[6]);
 void print_to_side_panel(void);
 void ascii_battle_init(void);
 int player_action_move(char pid[2]);
+int player_action_cast(char pid[2],char sid[2]);
 // void move_cursor(int cx, int cy);
 int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]);
 void let_move(void);
@@ -39,7 +40,6 @@ int player_or_monster = 1; /* 1 = player, 2 = monster */
 
 // int cursor_on = 1;
 const char alphabet[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
-
 
 void clear_screen(void){
     system("clear"); //*nix
@@ -129,7 +129,7 @@ void place_figures(){
     int i;
     for (i=0;i<4;i++){
         screen[pcs[i].x_position][pcs[i].y_position] = pcs[i].letter;
-        screen[monsters[i].x_position][monsters[i].y_position] = *monsters[i].letter;
+        screen[monsters[i].x_position][monsters[i].y_position] = monsters[i].letter;
     }
 }
 
@@ -149,24 +149,11 @@ void clear_range(char mode){
 }
 
 void draw_range(int xpos, int ypos, int radius, char mode){
-    /* Function draws range for walking, shooting, spells.
-       Arguments: id - adress of figure that needs range specification (center point of range),
-                       in form of chess coordinates (i.e. F20),
-                       or letter.
-        Function will analyse id and decide if it is an adress or a single letter.
-        If it is a letter needs to check if it is unique and find the adress.
-    */
-    /* First we'll convert adress command to coordinates */
     // adresstocoords(id);
     int address_x = xpos;
     int address_y = ypos;
-    /* Let's try to draw on screen from coordinates */
-    /* drawing straight front and back */
-    int i, rad;
-    // if (screen[address_y][address_x] == '.'){
-    //         screen[address_y][address_x] = '@';
-    //     }
-
+    int i, rad, m;
+    clear_range('m');
     if (mode == 'm') {
     for (rad=radius;rad>=0;rad--){
     for(i=0;i<=radius;i++) {
@@ -204,15 +191,86 @@ void draw_range(int xpos, int ypos, int radius, char mode){
         }
     }
     } /* end if(mode=='m')*/
-
+    if (mode == 'c') {
+    for (rad=radius;rad>=0;rad--){
+    for(i=0;i<=radius;i++) {
+        if (screen[address_y-i][address_x] == BASE_CHAR){
+            screen[address_y-i][address_x] = RANGE_CHAR;
+        } else {
+            for (m=0;m<amount_of_monsters;m++){
+                if (screen[address_y-i][address_x] == monsters[m].letter){
+                    screen[address_y-i][address_x] = TARGET_CHAR;
+                }
+            }
+        }
+        if (screen[address_y+i][address_x] == BASE_CHAR){
+            screen[address_y+i][address_x] = RANGE_CHAR;
+        } else {
+            for (m=0;m<amount_of_monsters;m++){
+                if (screen[address_y+i][address_x] == monsters[m].letter){
+                    screen[address_y+i][address_x] = TARGET_CHAR;
+                }
+            }
+        }
+    }
+    /* drawing radius to the right side */
+    /* up */
+    for(i=0;i<=rad;i++) {
+        if (screen[address_y-i][address_x-rad+radius] == BASE_CHAR){
+            screen[address_y-i][address_x-rad+radius] = RANGE_CHAR;
+        } else {
+            for (m=0;m<amount_of_monsters;m++){
+                if (screen[address_y-i][address_x-rad+radius] == monsters[m].letter){
+                    screen[address_y-i][address_x-rad+radius] = TARGET_CHAR;
+                }
+            }
+        }
+        /* down */
+        if (screen[address_y-i+rad][address_x-rad+radius] == BASE_CHAR){
+            screen[address_y-i+rad][address_x-rad+radius] = RANGE_CHAR;
+        } else {
+            for (m=0;m<amount_of_monsters;m++){
+                if (screen[address_y-i+rad][address_x-rad+radius] == monsters[m].letter){
+                    screen[address_y-i+rad][address_x-rad+radius] = TARGET_CHAR;
+                }
+            }
+        }
+    }
+    }
+    /* drawing radius to the left side */
+    // for (rad=0,side_step=0;rad<=radius,side_step<radius;rad++,side_step++){
+    for (rad=0;rad<radius;rad++){
+        /* down */
+        for(i=radius;i>0;i--){
+            if (screen[address_y+rad][address_x-i+rad] == BASE_CHAR){
+                screen[address_y+rad][address_x-i+rad] = RANGE_CHAR;
+            }
+            else {
+            for (m=0;m<amount_of_monsters;m++){
+                if (screen[address_y+rad][address_x-i+rad] == monsters[m].letter){
+                    screen[address_y+rad][address_x-i+rad] = TARGET_CHAR;
+                }
+            }
+            }
+            /* up */
+            if (screen[address_y-rad][address_x-i+rad] == BASE_CHAR){
+                screen[address_y-rad][address_x-i+rad] = RANGE_CHAR;
+            } else {
+            for (m=0;m<amount_of_monsters;m++){
+                if (screen[address_y-rad][address_x-i+rad] == monsters[m].letter){
+                    screen[address_y-rad][address_x-i+rad] = TARGET_CHAR;
+                }
+            }
+        }
+        }
+    }
+    } /* end if((mode=='a')||(mode=='c'))*/
 }
 
 char analyse_command(char comm[12]) {
     int y;
     char *comml = strtolower(comm, 12);
     int amount_of_available_commands = sizeof(av_commands) / sizeof(av_commands[0]);
-    // selected_fighter[0] = 'n'; /* lets remove what ever is left in select_fighter */
-    // selected_fighter[1] = 'n'; /* to make sure that selection actually took place */
     if (startswith("knock knock",comml)) {
         cleanip();
         printip("Whos there?",1);
@@ -245,9 +303,6 @@ void print_to_side_panel(){
     char monster_hp_string[3];
     char fighter_hp_string[3];
     free_lines = (side_panel_size - amount_of_monsters) - amount_of_fighters;
-    // for(i=0;i<amount_of_monsters;i++){
-    //     cx = snprintf(mbuff[i],30,"[%c] [%s] %s (%s) HP: %d",monsters[i].letter,monsters[i].id,monsters[i].name,monsters[i].race,monsters[i].hp);
-    // }
     for(i=0;i<amount_of_monsters;i++){
         snprintf(monster_hp_string,3,"%d",monsters[i].hp);
         in_line_position = 3;
@@ -258,22 +313,12 @@ void print_to_side_panel(){
         }
         side_panel[i][in_line_position] = '[';
         in_line_position++;
-        side_panel[i][in_line_position] = *monsters[i].letter;
+        side_panel[i][in_line_position] = monsters[i].letter;
         in_line_position++;
         side_panel[i][in_line_position] = ']';
         in_line_position++;
         side_panel[i][in_line_position] = ' ';
         in_line_position++;
-        // side_panel[i][in_line_position] = '[';
-        // in_line_position++;
-        // side_panel[i][in_line_position] = monsters[i].id[0];
-        // in_line_position++;
-        // side_panel[i][in_line_position] = monsters[i].id[1];
-        // in_line_position++;
-        // side_panel[i][in_line_position] = ']';
-        // in_line_position++;
-        // side_panel[i][in_line_position] = ' ';
-        // in_line_position++;
         word_lenght = strlen(monsters[i].name);
         for(y=0;y<word_lenght;y++){
             side_panel[i][in_line_position+y] = monsters[i].name[y];
@@ -319,16 +364,6 @@ void print_to_side_panel(){
         in_line_position++;
         side_panel[i+free_lines+amount_of_monsters][in_line_position] = ' ';
         in_line_position++;
-        // side_panel[i+free_lines+amount_of_monsters][in_line_position] = '[';
-        // in_line_position++;
-        // side_panel[i+free_lines+amount_of_monsters][in_line_position] = pcs[i].id[0];
-        // in_line_position++;
-        // side_panel[i+free_lines+amount_of_monsters][in_line_position] = pcs[i].id[1];
-        // in_line_position++;
-        // side_panel[i+free_lines+amount_of_monsters][in_line_position] = ']';
-        // in_line_position++;
-        // side_panel[i+free_lines+amount_of_monsters][in_line_position] = ' ';
-        // in_line_position++;
         word_lenght = strlen(pcs[i].name);
         for(y=0;y<word_lenght;y++){
             side_panel[i+free_lines+amount_of_monsters][in_line_position+y] = pcs[i].name[y];
@@ -416,6 +451,33 @@ int player_action_move(char pid[2]){
     mv = move_fighter(arrnum,fighter_letter,selected_x,selected_y,addr);
     draw_interface();
     return mv;
+}
+
+int player_action_cast(char pid[2], char sid[2]){
+    int i, s, selected_x, selected_y, rad, done;
+    done = 0;
+    for (s=0;s<amount_of_spells;s++){
+        if(spells[s].id[0] == sid[0] && spells[s].id[1] == sid[1]){
+            rad = spells[s].range / 10;
+        }
+    }
+    for(i=0;i<amount_of_fighters;i++){
+        if (pcs[i].id[0] == pid[0] && pcs[i].id[1] == pid[1] && rad>0){
+            selected_x = pcs[i].x_position;
+            selected_y = pcs[i].y_position;
+            // fighter_letter = pcs[i].letter;
+            // rad = pcs[i].mov / 10;
+            // arrnum = i;
+            // printip("Specify adress...",1);
+            draw_range(selected_y,selected_x,rad,'c');
+            printip("Spell target",1);
+        }
+    }
+    draw_interface();
+    /* Spell selection here */
+    // scanf("%s",addr);
+    // draw_interface();
+    return done;
 }
 
 void let_move(){
