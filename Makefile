@@ -1,11 +1,11 @@
 CFLAGS = -Wall -pedantic
 OBJS = main.o
 PROG = aft
-# PROGT = aftest
+PROGT = aftest
 CFLAGST = -Wall -pedantic -g
 CXX = gcc
 
-all: $(PROG) $(PROGT)
+all: $(PROG)
 
 # %.o: resources.h
 # 	$(CXX) $(CFLAGS) -c -s $<
@@ -16,6 +16,15 @@ $(PROG): $(OBJS)
 
 # $(PROGT): $(OBJS)
 # 	$(CXX) -g main.c 
+
+# testing
+test: $(PROGT)
+
+$(PROGT): $(OBJS)
+	$(CXX) -g $(OBJS)
+
+runtest:
+	gdb a.out
 
 # clean
 clean:
