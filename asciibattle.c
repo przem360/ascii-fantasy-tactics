@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h> /* for pausing */
+#include <unistd.h> /* for pausing on POSIX */
+// #include <dos.h> /* for pausing on Windows */
 #include "converters.c"
 #include "defs.h"
 
