@@ -132,7 +132,7 @@ struct spell {
 
 struct spell spells[3] = {
     {"lb","Light_Bolt","Light bolt the strikes target",50,5,0,0,0},
-    {"fb","Fire_Ball ","Ball of fire hits the target",100,6,0,0,0},
+    {"fb","Fire_Ball ","Ball of fire hits the target",60,6,0,0,0},
     {"re","Recovery  ","Targets HP points has been recovered",10,0,4,0,0}
 };
 

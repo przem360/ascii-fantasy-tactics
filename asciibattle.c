@@ -17,10 +17,12 @@ void draw_interface(void);
 void cleanip(void);
 void printip(char txt[20], int line_number);
 char analyse_command(char comm[6]);
+void clean_side_panel(void);
 void print_to_side_panel(void);
+void print_spells_sp(char pid[2]);
 void ascii_battle_init(void);
 int player_action_move(char pid[2]);
-int player_action_cast(char pid[2],char sid[2]);
+int player_action_cast(char pid[2]);
 // void move_cursor(int cx, int cy);
 int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]);
 void let_move(void);
@@ -128,8 +130,12 @@ void draw_interface(){
 void place_figures(){
     int i;
     for (i=0;i<4;i++){
-        screen[pcs[i].x_position][pcs[i].y_position] = pcs[i].letter;
-        screen[monsters[i].x_position][monsters[i].y_position] = monsters[i].letter;
+        if (screen[pcs[i].x_position][pcs[i].y_position] != TARGET_CHAR){
+            screen[pcs[i].x_position][pcs[i].y_position] = pcs[i].letter;
+        }
+        if(screen[monsters[i].x_position][monsters[i].y_position] != TARGET_CHAR){
+            screen[monsters[i].x_position][monsters[i].y_position] = monsters[i].letter;
+        }
     }
 }
 
@@ -259,6 +265,7 @@ void draw_range(int xpos, int ypos, int radius, char mode){
             for (m=0;m<amount_of_monsters;m++){
                 if (screen[address_y-rad][address_x-i+rad] == monsters[m].letter){
                     screen[address_y-rad][address_x-i+rad] = TARGET_CHAR;
+                    testvalue = screen[address_y-rad][address_x-i+rad];
                 }
             }
         }
@@ -298,11 +305,46 @@ int  dice(int maxv) {
     return rnum;
 }
 
+void clean_side_panel(){
+    int i,y, sp_lines, line_chars;
+    line_chars = sizeof(side_panel[0]);
+    sp_lines = sizeof(side_panel) / sizeof(side_panel[0]);
+    for(i=0;i<sp_lines;i++){
+        for(y=0;y<line_chars;y++){
+            side_panel[i][y] = ' ';
+        }
+    }
+}
+
+void print_spells_sp(char pid[2]){
+    /* print fields id and name, from array spells[3],
+       based on spells[4][2] from array pcs */
+    int i,y,amount_of_fighters_spells;
+    char av_spells[4][2];
+    /* Getting spells from fighter */
+    for (i=0;i<amount_of_fighters;i++){
+        if((pcs[i].id[0] = pid[0])&&(pcs[i].id[1] = pid[1])) {
+            amount_of_fighters_spells = sizeof(pcs[i].spells);
+            for(y=0;y<amount_of_fighters_spells;y++){
+                av_spells[y][0] = pcs[i].spells[y][0];
+                av_spells[y][1] = pcs[i].spells[y][1];
+            }
+        }
+    }
+    /* Printing spells to side panel */
+    clean_side_panel();
+    for(i=0;i<4;i++){
+        side_panel[i][2] = av_spells[i][0];
+        side_panel[i][3] = av_spells[i][1];
+    }
+}
+
 void print_to_side_panel(){
     int i, y, free_lines,word_lenght,in_line_position;
     char monster_hp_string[3];
     char fighter_hp_string[3];
     free_lines = (side_panel_size - amount_of_monsters) - amount_of_fighters;
+    clean_side_panel();
     for(i=0;i<amount_of_monsters;i++){
         snprintf(monster_hp_string,3,"%d",monsters[i].hp);
         in_line_position = 3;
@@ -351,6 +393,7 @@ void print_to_side_panel(){
     for(i=0;i<amount_of_fighters;i++){
         snprintf(fighter_hp_string,3,"%d",pcs[i].hp);
         in_line_position = 3;
+        // side_panel[i+free_lines+amount_of_monsters][1] = ' ';
         if((selected_fighter[0] == pcs[i].id[0])&&(selected_fighter[1] == pcs[i].id[1])){
             side_panel[i+free_lines+amount_of_monsters][1] = '>';
         } else {
@@ -453,11 +496,15 @@ int player_action_move(char pid[2]){
     return mv;
 }
 
-int player_action_cast(char pid[2], char sid[2]){
+int player_action_cast(char pid[2]){
     int i, s, selected_x, selected_y, rad, done;
+    char chspell[2];
     done = 0;
+    printf("Choose spell \n");
+    printip("Choosle spell",1);
+    scanf("%s",chspell);
     for (s=0;s<amount_of_spells;s++){
-        if(spells[s].id[0] == sid[0] && spells[s].id[1] == sid[1]){
+        if(spells[s].id[0] == chspell[0] && spells[s].id[1] == chspell[1]){
             rad = spells[s].range / 10;
         }
     }
@@ -470,6 +517,7 @@ int player_action_cast(char pid[2], char sid[2]){
             // arrnum = i;
             // printip("Specify adress...",1);
             draw_range(selected_y,selected_x,rad,'c');
+            // print_spells_sp(pid);
             printip("Spell target",1);
         }
     }

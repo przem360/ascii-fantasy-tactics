@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "resources.h"
+char testvalue = 'z';
 #include "asciibattle.c"
 
 int killed = 0; /* how many monsters were killed by fighters */
@@ -11,8 +12,6 @@ char command_code[1]; /* what analyse_command things about user input?*/
 int wasmoved = 0;
 int tookaction = 0;
 
-char selected_spell[] = "lb";
-
 
 int main (int argc, char *argv[]){
     ascii_battle_init();
@@ -22,9 +21,7 @@ int main (int argc, char *argv[]){
         }
         clear_screen();
         printf("ASCII FANTASY TACTICS \n");
-        if (command_code[0]!='c'){
-            place_figures();
-        }
+        place_figures();
         let_move();
         draw_interface();
         if (player_or_monster == 1){
@@ -41,7 +38,7 @@ int main (int argc, char *argv[]){
             }
             if (command_code[0] == 'c'){
                 // player_action_move(selected_fighter);
-                tookaction = player_action_cast(selected_fighter,selected_spell);
+                tookaction = player_action_cast(selected_fighter);
                 printip("CASTED SPELL",1);
                 if (tookaction == 1){
                     whoseturn++;
@@ -64,4 +61,6 @@ int main (int argc, char *argv[]){
         printf("POM: %d \n",player_or_monster);
         printf("Turn: %d \n",whoseturn);
         printf("Command: %c \n",command_code[0]);
+        printf("Selected fighter: %s \n",selected_fighter);
+        printf("Test value: %c \n",testvalue);
     }
