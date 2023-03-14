@@ -19,7 +19,7 @@ void printip(char txt[20], int line_number);
 char analyse_command(char comm[6]);
 void clean_side_panel(void);
 void print_to_side_panel(void);
-void print_spells_sp(char pid[2]);
+void print_spells(char pid[2]);
 void ascii_battle_init(void);
 int player_action_move(char pid[2]);
 int player_action_cast(char pid[2]);
@@ -61,7 +61,6 @@ void print_screen() {
         printf("%c",alphabet[l]);
     }
     printf("\n");
-
     print_to_side_panel();
     for (i=0; i<elems; i++){
         if ((nums!=1)&&(nums!=elems)){
@@ -158,27 +157,37 @@ void draw_range(int xpos, int ypos, int radius, char mode){
     // adresstocoords(id);
     int address_x = xpos;
     int address_y = ypos;
-    int i, rad, m;
+    int i, rad, m, screen_width, screen_height;
+    screen_width = sizeof(screen[0]);
+    screen_height = sizeof(screen) / sizeof(screen[0]);
     clear_range('m');
     if (mode == 'm') {
     for (rad=radius;rad>=0;rad--){
     for(i=0;i<=radius;i++) {
-        if (screen[address_y-i][address_x] == BASE_CHAR){
-            screen[address_y-i][address_x] = RANGE_CHAR;
+        if((address_y-i)>=0){
+            if (screen[address_y-i][address_x] == BASE_CHAR){
+                screen[address_y-i][address_x] = RANGE_CHAR;
+            }
         }
-        if (screen[address_y+i][address_x] == BASE_CHAR){
-            screen[address_y+i][address_x] = RANGE_CHAR;
+        if((address_y+i)<=screen_height){
+            if (screen[address_y+i][address_x] == BASE_CHAR){
+                screen[address_y+i][address_x] = RANGE_CHAR;
+            }
         }
     }
     /* drawing radius to the right side */
     /* up */
     for(i=0;i<=rad;i++) {
-        if (screen[address_y-i][address_x-rad+radius] == BASE_CHAR){
-            screen[address_y-i][address_x-rad+radius] = RANGE_CHAR;
+        if((address_y-i)>=0 && (address_x-rad+radius)>=0 && (address_x-rad+radius)<=screen_width){
+            if (screen[address_y-i][address_x-rad+radius] == BASE_CHAR){
+                screen[address_y-i][address_x-rad+radius] = RANGE_CHAR;
+            }
         }
-        /* down */
-        if (screen[address_y-i+rad][address_x-rad+radius] == BASE_CHAR){
-            screen[address_y-i+rad][address_x-rad+radius] = RANGE_CHAR;
+        if((address_y-i)>=0 && (address_y-i)<=screen_height && (address_x-rad+radius)>=0 && (address_x-rad+radius)<=screen_width){
+            /* down */
+            if (screen[address_y-i+rad][address_x-rad+radius] == BASE_CHAR){
+                screen[address_y-i+rad][address_x-rad+radius] = RANGE_CHAR;
+            }
         }
     }
     }
@@ -187,12 +196,16 @@ void draw_range(int xpos, int ypos, int radius, char mode){
     for (rad=0;rad<radius;rad++){
         /* down */
         for(i=radius;i>0;i--){
-            if (screen[address_y+rad][address_x-i+rad] == BASE_CHAR){
-                screen[address_y+rad][address_x-i+rad] = RANGE_CHAR;
+            if((address_x-i+rad)>=0){
+                if (screen[address_y+rad][address_x-i+rad] == BASE_CHAR){
+                    screen[address_y+rad][address_x-i+rad] = RANGE_CHAR;
+                }
             }
-            /* up */
-            if (screen[address_y-rad][address_x-i+rad] == BASE_CHAR){
-                screen[address_y-rad][address_x-i+rad] = RANGE_CHAR;
+                /* up */
+            if((address_x-i+rad)>=0){
+                if (screen[address_y-rad][address_x-i+rad] == BASE_CHAR){
+                    screen[address_y-rad][address_x-i+rad] = RANGE_CHAR;
+                }
             }
         }
     }
@@ -248,27 +261,31 @@ void draw_range(int xpos, int ypos, int radius, char mode){
     for (rad=0;rad<radius;rad++){
         /* down */
         for(i=radius;i>0;i--){
-            if (screen[address_y+rad][address_x-i+rad] == BASE_CHAR){
-                screen[address_y+rad][address_x-i+rad] = RANGE_CHAR;
-            }
-            else {
-            for (m=0;m<amount_of_monsters;m++){
-                if (screen[address_y+rad][address_x-i+rad] == monsters[m].letter){
-                    screen[address_y+rad][address_x-i+rad] = TARGET_CHAR;
+            if((address_x-i+rad)>=0){
+                if (screen[address_y+rad][address_x-i+rad] == BASE_CHAR){
+                    screen[address_y+rad][address_x-i+rad] = RANGE_CHAR;
                 }
-            }
+                else {
+                for (m=0;m<amount_of_monsters;m++){
+                    if (screen[address_y+rad][address_x-i+rad] == monsters[m].letter){
+                        screen[address_y+rad][address_x-i+rad] = TARGET_CHAR;
+                    }
+                }
+                }
             }
             /* up */
-            if (screen[address_y-rad][address_x-i+rad] == BASE_CHAR){
-                screen[address_y-rad][address_x-i+rad] = RANGE_CHAR;
-            } else {
-            for (m=0;m<amount_of_monsters;m++){
-                if (screen[address_y-rad][address_x-i+rad] == monsters[m].letter){
-                    screen[address_y-rad][address_x-i+rad] = TARGET_CHAR;
-                    testvalue = screen[address_y-rad][address_x-i+rad];
+            if((address_x-i+rad)>=0){
+                if (screen[address_y-rad][address_x-i+rad] == BASE_CHAR){
+                    screen[address_y-rad][address_x-i+rad] = RANGE_CHAR;
+                } else {
+                for (m=0;m<amount_of_monsters;m++){
+                    if (screen[address_y-rad][address_x-i+rad] == monsters[m].letter){
+                        screen[address_y-rad][address_x-i+rad] = TARGET_CHAR;
+                        testvalue = screen[address_y-rad][address_x-i+rad];
+                    }
+                }
                 }
             }
-        }
         }
     }
     } /* end if((mode=='a')||(mode=='c'))*/
@@ -316,11 +333,18 @@ void clean_side_panel(){
     }
 }
 
-void print_spells_sp(char pid[2]){
+void print_spells(char pid[2]){
     /* print fields id and name, from array spells[3],
        based on spells[4][2] from array pcs */
     int i,y,amount_of_fighters_spells;
+    amount_of_fighters_spells = 4;
     char av_spells[4][2];
+    /* cleaning av_spells*/
+    for(i=0;i<4;i++){
+        for(y=0;y<2;y++){
+            av_spells[i][y] = ' ';
+        }
+    }
     /* Getting spells from fighter */
     for (i=0;i<amount_of_fighters;i++){
         if((pcs[i].id[0] = pid[0])&&(pcs[i].id[1] = pid[1])) {
@@ -331,11 +355,8 @@ void print_spells_sp(char pid[2]){
             }
         }
     }
-    /* Printing spells to side panel */
-    clean_side_panel();
-    for(i=0;i<4;i++){
-        side_panel[i][2] = av_spells[i][0];
-        side_panel[i][3] = av_spells[i][1];
+    for(i=0;i<amount_of_fighters_spells;i++){
+        printf(" [%c%c] Spell name |",av_spells[i][0],av_spells[i][1]);
     }
 }
 
@@ -500,8 +521,11 @@ int player_action_cast(char pid[2]){
     int i, s, selected_x, selected_y, rad, done;
     char chspell[2];
     done = 0;
-    printf("Choose spell \n");
-    printip("Choosle spell",1);
+    printip("Choose spell",1);
+    // clean_side_panel();
+    // draw_interface();
+    printf("Available spells: \n");
+    // print_spells(pid);
     scanf("%s",chspell);
     for (s=0;s<amount_of_spells;s++){
         if(spells[s].id[0] == chspell[0] && spells[s].id[1] == chspell[1]){
@@ -521,7 +545,6 @@ int player_action_cast(char pid[2]){
             printip("Spell target",1);
         }
     }
-    draw_interface();
     /* Spell selection here */
     // scanf("%s",addr);
     // draw_interface();
