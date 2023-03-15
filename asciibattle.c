@@ -197,13 +197,13 @@ void draw_range(int xpos, int ypos, int radius, char mode){
         /* down */
         for(i=radius;i>0;i--){
             if((address_x-i+rad)>=0){
-                if (screen[address_y+rad][address_x-i+rad] == BASE_CHAR){
+                if (screen[address_y+rad][address_x-i+rad] == BASE_CHAR && (rad-i<0)){
                     screen[address_y+rad][address_x-i+rad] = RANGE_CHAR;
                 }
             }
                 /* up */
             if((address_x-i+rad)>=0){
-                if (screen[address_y-rad][address_x-i+rad] == BASE_CHAR){
+                if (screen[address_y-rad][address_x-i+rad] == BASE_CHAR && (rad-i<0)){
                     screen[address_y-rad][address_x-i+rad] = RANGE_CHAR;
                 }
             }
@@ -262,12 +262,12 @@ void draw_range(int xpos, int ypos, int radius, char mode){
         /* down */
         for(i=radius;i>0;i--){
             if((address_x-i+rad)>=0){
-                if (screen[address_y+rad][address_x-i+rad] == BASE_CHAR){
+                if (screen[address_y+rad][address_x-i+rad] == BASE_CHAR && (rad-i<0)){
                     screen[address_y+rad][address_x-i+rad] = RANGE_CHAR;
                 }
                 else {
                 for (m=0;m<amount_of_monsters;m++){
-                    if (screen[address_y+rad][address_x-i+rad] == monsters[m].letter){
+                    if (screen[address_y+rad][address_x-i+rad] == monsters[m].letter && (rad-i<0)){
                         screen[address_y+rad][address_x-i+rad] = TARGET_CHAR;
                     }
                 }
@@ -275,11 +275,11 @@ void draw_range(int xpos, int ypos, int radius, char mode){
             }
             /* up */
             if((address_x-i+rad)>=0){
-                if (screen[address_y-rad][address_x-i+rad] == BASE_CHAR){
+                if (screen[address_y-rad][address_x-i+rad] == BASE_CHAR && (rad-i<0)){
                     screen[address_y-rad][address_x-i+rad] = RANGE_CHAR;
                 } else {
                 for (m=0;m<amount_of_monsters;m++){
-                    if (screen[address_y-rad][address_x-i+rad] == monsters[m].letter){
+                    if (screen[address_y-rad][address_x-i+rad] == monsters[m].letter && (rad-i<0)){
                         screen[address_y-rad][address_x-i+rad] = TARGET_CHAR;
                         testvalue = screen[address_y-rad][address_x-i+rad];
                     }
