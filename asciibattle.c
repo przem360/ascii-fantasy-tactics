@@ -4,13 +4,12 @@
 #include <unistd.h> /* for pausing on POSIX */
 // #include <dos.h> /* for pausing on Windows */
 #include "converters.c"
-#include "defs.h"
 
 
 void print_screen(void);
 void place_figures(void);
 void draw_range(int xpos, int ypos,int radius, char mode);
-void clear_range(char mode);
+void clear_range();
 void clear_screen(void);
 void draw_info_panel(void);
 void draw_interface(void);
@@ -24,11 +23,10 @@ void ascii_battle_init(void);
 int player_action_move(char pid[2]);
 int player_action_cast(char pid[2]);
 // void move_cursor(int cx, int cy);
+int resolve_spell(char pid[2],char taddr[3],char sid[2]);
 int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]);
 void let_move(void);
 void monsters_action(void);
-
-
 int  dice(int maxv);
 
 
@@ -128,7 +126,7 @@ void draw_interface(){
 
 void place_figures(){
     int i;
-    for (i=0;i<4;i++){
+    for (i=0;i<amount_of_fighters;i++){
         if (screen[pcs[i].x_position][pcs[i].y_position] != TARGET_CHAR){
             screen[pcs[i].x_position][pcs[i].y_position] = pcs[i].letter;
         }
@@ -138,29 +136,30 @@ void place_figures(){
     }
 }
 
-void clear_range(char mode){
+void clear_range(){
     int i,y;
     int lines = sizeof(screen)/sizeof(screen[0]);
     int chars = sizeof(screen[0]); 
-    if (mode == 'm'){
-        for(i=0;i<lines;i++){
-            for(y=0;y<chars;y++){
-                if (screen[i][y] == RANGE_CHAR){
-                    screen[i][y] =  BASE_CHAR;
-                }
+    for(i=0;i<lines;i++){
+        for(y=0;y<chars;y++){
+            if (screen[i][y] == RANGE_CHAR){
+                screen[i][y] =  BASE_CHAR;
+            }
+            /* have to remove target marks before placing figures */
+            if (screen[i][y] == TARGET_CHAR){
+                screen[i][y] =  BASE_CHAR;
             }
         }
     }
+    place_figures();
 }
 
 void draw_range(int xpos, int ypos, int radius, char mode){
     // adresstocoords(id);
     int address_x = xpos;
     int address_y = ypos;
-    int i, rad, m, screen_width, screen_height;
-    screen_width = sizeof(screen[0]);
-    screen_height = sizeof(screen) / sizeof(screen[0]);
-    clear_range('m');
+    int i, rad, m;
+    clear_range();
     if (mode == 'm') {
     for (rad=radius;rad>=0;rad--){
     for(i=0;i<=radius;i++) {
@@ -169,7 +168,7 @@ void draw_range(int xpos, int ypos, int radius, char mode){
                 screen[address_y-i][address_x] = RANGE_CHAR;
             }
         }
-        if((address_y+i)<=screen_height){
+        if((address_y+i)<=SCREEN_HEIGHT){
             if (screen[address_y+i][address_x] == BASE_CHAR){
                 screen[address_y+i][address_x] = RANGE_CHAR;
             }
@@ -178,12 +177,12 @@ void draw_range(int xpos, int ypos, int radius, char mode){
     /* drawing radius to the right side */
     /* up */
     for(i=0;i<=rad;i++) {
-        if((address_y-i)>=0 && (address_x-rad+radius)>=0 && (address_x-rad+radius)<=screen_width){
+        if((address_y-i)>=0 && (address_x-rad+radius)>=0 && (address_x-rad+radius)<=SCREEN_WIDTH){
             if (screen[address_y-i][address_x-rad+radius] == BASE_CHAR){
                 screen[address_y-i][address_x-rad+radius] = RANGE_CHAR;
             }
         }
-        if((address_y-i)>=0 && (address_y-i)<=screen_height && (address_x-rad+radius)>=0 && (address_x-rad+radius)<=screen_width){
+        if((address_y-i)>=0 && (address_y-i)<=SCREEN_HEIGHT && (address_x-rad+radius)>=0 && (address_x-rad+radius)<=SCREEN_WIDTH){
             /* down */
             if (screen[address_y-i+rad][address_x-rad+radius] == BASE_CHAR){
                 screen[address_y-i+rad][address_x-rad+radius] = RANGE_CHAR;
@@ -281,7 +280,6 @@ void draw_range(int xpos, int ypos, int radius, char mode){
                 for (m=0;m<amount_of_monsters;m++){
                     if (screen[address_y-rad][address_x-i+rad] == monsters[m].letter && (rad-i<0)){
                         screen[address_y-rad][address_x-i+rad] = TARGET_CHAR;
-                        testvalue = screen[address_y-rad][address_x-i+rad];
                     }
                 }
                 }
@@ -336,7 +334,7 @@ void clean_side_panel(){
 int ask_spells(char pid[2]){
     /* print fields id and name, from array spells[3],
        based on spells[4][2] from array pcs */
-    int i,y,amount_of_fighters_spells,s;
+    int i,y,amount_of_fighters_spells;
     amount_of_fighters_spells = 4;
     char av_spells[4][2];
     char chspell[2];
@@ -470,6 +468,12 @@ void print_to_side_panel(){
     }
 }
 void ascii_battle_init() {
+    int i,j;
+    for (i=0;i<SCREEN_HEIGHT;i++){
+        for(j=0;j<SCREEN_WIDTH;j++){
+            screen[i][j] = ' ';
+        }
+    }
     memcpy(screen, lvl1,sizeof(lvl1));
     draw_interface();
 }
@@ -483,6 +487,66 @@ void ascii_battle_init() {
 //     int keypress;
 // }
 
+int resolve_spell(char pid[2],char taddr[3],char sid[2]){
+    /* player id, target coords, spell id */
+    /* 1) Attack throw: D20+bonuses vs. target's AC.
+        If result is higher or equal to target's AC - success, proceed to 2).
+       2) Saving throw. If d20 is bigger that targets .saves, than target is saved,
+        otherwise deal DMG.*/
+    int dca, dcs, spell_in_array, target_in_array;
+    int i, attack_success, save_success, monster_hp;
+    attack_success = 0;
+    save_success = 0;
+    monster_hp = 0;
+    printip("Resolving spell",0);
+    adresstocoords(taddr);
+    /*target address is in coords[0] and coords[1] */
+    dca = dice(20);
+    dcs = dice(20);
+    if (dca == 1) {
+        printip("MISS!",0);
+        draw_interface();
+        return 0;
+    }
+    if (dcs == 1) {
+        printip("MISS!",0);
+        draw_interface();
+        return 0;
+    }
+    /* Let's find target in monsters array */
+    for (i=0; i<amount_of_monsters;i++){
+        if((monsters[i].x_position == coords[0])&&(monsters[i].y_position == coords[1])){
+            target_in_array = i;
+        }
+    }
+    monster_hp = monsters[target_in_array].hp;
+
+    if (dca == 20){ attack_success = 1; }
+    if (dca >= monsters[target_in_array].ac) {
+        attack_success = 1;
+    } else {
+        attack_success = 0;
+    }
+    if (dcs >= monsters[target_in_array].saves) {
+        printip("MISS!",0);
+        return 0;
+    }
+    
+    /* Let's find target in monsters array */
+    for(i=0;i<amount_of_spells;i++){
+        if((spells[i].id[0]==sid[0])&&(spells[i].id[1]==sid[1])){
+            spell_in_array = i;
+        }
+    }
+
+    if (attack_success == 1){
+        printip("HIT!",0);
+        monsters[target_in_array].hp = monster_hp - spells[spell_in_array].dmg;
+    }
+    draw_interface();
+    return 0;
+}
+
 int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]){
     adresstocoords(target);
     /* make move */
@@ -491,13 +555,13 @@ int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3
         // screen[coords[0]][coords[1]] = letter;
         pcs[number_in_array].x_position = coords[0];
         pcs[number_in_array].y_position = coords[1];
-        clear_range('m');
+        clear_range();
         printip("Moved.",1);
         return 1;
     }
     else{
         printip("Can\'t move",1);
-        clear_range('m');
+        clear_range();
         pcs[number_in_array].x_position = fx;
         pcs[number_in_array].y_position = fy;
         draw_interface();
@@ -530,15 +594,12 @@ int player_action_move(char pid[2]){
 
 int player_action_cast(char pid[2]){
     int i, s, selected_x, selected_y, rad, done;
-    char testid[2];
     done = 0;
+    char targetaddr[3];
     printip("Choose spell",1);
     // clean_side_panel();
     // draw_interface();
     s = ask_spells(pid);
-    testid[0] = spells[s].id[0];
-    testid[1] = spells[s].id[1];
-    printf("TEST ID: %c%c",spells[s].id[0],spells[s].id[1]);
     // scanf("%s",chspell);
     rad = spells[s].range / 10;
     for(i=0;i<amount_of_fighters;i++){
@@ -553,8 +614,12 @@ int player_action_cast(char pid[2]){
             printip("Spell target",1);
         }
     }
-    /* Spell selection here */
-    // scanf("%s",addr);
+    /* Spell target selection here */
+    draw_interface();
+    printip("Spell target",1);
+    scanf("%s",targetaddr);
+    clear_range();
+    resolve_spell(pid,targetaddr,spells[s].id);
     // draw_interface();
     return done;
 }

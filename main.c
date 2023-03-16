@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include "defs.h"
 #include "resources.h"
-char testvalue = 'z';
 #include "asciibattle.c"
 
 int killed = 0; /* how many monsters were killed by fighters */
@@ -62,5 +62,4 @@ int main (int argc, char *argv[]){
         printf("Turn: %d \n",whoseturn);
         printf("Command: %c \n",command_code[0]);
         printf("Selected fighter: %s \n",selected_fighter);
-        printf("Test value: %c \n",testvalue);
     }

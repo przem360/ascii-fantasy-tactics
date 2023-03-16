@@ -1,3 +1,5 @@
+#define SCREEN_HEIGHT 14
+#define SCREEN_WIDTH  22
 #define RANGE_CHAR '+'
 #define BASE_CHAR '.'
 #define TARGET_CHAR 'x'
