@@ -49,6 +49,9 @@ int main (int argc, char *argv[]){
                 // player_action_move(selected_fighter);
                 printip("SKIPPING",1);
                 whoseturn++;
+                // if ((selected_monster[0] = 'n')&&(selected_monster[1] = 'n')) {
+                //     whoseturn++;
+                // }
             }
         }
         if (player_or_monster == 2){

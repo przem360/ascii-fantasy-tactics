@@ -625,6 +625,10 @@ int player_action_cast(char pid[2]){
 
 int let_move(){
     int i;
+    // selected_fighter[0] = 'n';
+    // selected_fighter[1] = 'n';
+    // selected_monster[0] = 'n';
+    // selected_monster[1] = 'n';
     for (i=0;i<amount_of_fighters;i++){
         if (pcs[i].hp<=0) {
             pcs[i].letter = DEAD_BODY_CHAR;
@@ -643,16 +647,16 @@ int let_move(){
         if (monsters[i].hp<=0) {
             monsters[i].letter = DEAD_BODY_CHAR;
             monsters[i].hp = 0;
-            monsters[i].initiative = 0;
+            // monsters[i].initiative = 0;
             // whoseturn++; <- utter nonsense
             }
         if (monsters[i].initiative == whoseturn){
-            if (monsters[i].hp>0) {
+            // if (monsters[i].hp>0) {
                 selected_monster[0] = monsters[i].id[0];
                 selected_monster[1] = monsters[i].id[1]; 
                 player_or_monster = 2;
                 printip("Monster\'s turn",1);
-            }
+            // }
         }
     }
     return 0;
