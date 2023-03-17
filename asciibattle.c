@@ -25,7 +25,7 @@ int player_action_cast(char pid[2]);
 // void move_cursor(int cx, int cy);
 int resolve_spell(char pid[2],char taddr[3],char sid[2]);
 int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]);
-void let_move(void);
+int let_move(void);
 void monsters_action(void);
 int  dice(int maxv);
 
@@ -494,9 +494,8 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
        2) Saving throw. If d20 is bigger that targets .saves, than target is saved,
         otherwise deal DMG.*/
     int dca, dcs, spell_in_array, target_in_array;
-    int i, attack_success, save_success, monster_hp;
+    int i, attack_success, monster_hp;
     attack_success = 0;
-    save_success = 0;
     monster_hp = 0;
     printip("Resolving spell",0);
     adresstocoords(taddr);
@@ -624,27 +623,55 @@ int player_action_cast(char pid[2]){
     return done;
 }
 
-void let_move(){
+int let_move(){
     int i;
     for (i=0;i<amount_of_fighters;i++){
+        if (pcs[i].hp<=0) {
+            pcs[i].letter = DEAD_BODY_CHAR;
+            pcs[i].hp = 0;
+            }
         if (pcs[i].initiative == whoseturn){
-            selected_fighter[0] = pcs[i].id[0];
-            selected_fighter[1] = pcs[i].id[1]; 
-            player_or_monster = 1;
-            printip("Player\'s turn",1);
+            if (pcs[i].hp>0) {
+                selected_fighter[0] = pcs[i].id[0];
+                selected_fighter[1] = pcs[i].id[1]; 
+                player_or_monster = 1;
+                printip("Player\'s turn",1);
+            }
         }
     }
     for (i=0;i<amount_of_monsters;i++){
+        if (monsters[i].hp<=0) {
+            monsters[i].letter = DEAD_BODY_CHAR;
+            monsters[i].hp = 0;
+            monsters[i].initiative = 0;
+            // whoseturn++; <- utter nonsense
+            }
         if (monsters[i].initiative == whoseturn){
-            selected_monster[0] = monsters[i].id[0];
-            selected_monster[1] = monsters[i].id[1]; 
-            player_or_monster = 2;
-            printip("Monster\'s turn",1);
+            if (monsters[i].hp>0) {
+                selected_monster[0] = monsters[i].id[0];
+                selected_monster[1] = monsters[i].id[1]; 
+                player_or_monster = 2;
+                printip("Monster\'s turn",1);
+            }
         }
     }
+    return 0;
 }
 
 void monsters_action(){
-    printip("I\'ll skip",1);
-    whoseturn++;
+    int i;
+    for (i=0;i<amount_of_monsters;i++) {
+        if ((monsters[i].id[0] == selected_monster[0])&&(monsters[i].id[1] == selected_monster[1])){
+            if (monsters[i].hp<=0) {
+                printip("DEAD ONE :(",1);
+                draw_interface();
+                whoseturn++;
+            }
+            else {
+                printip("I\'ll skip",1);
+                draw_interface();
+                whoseturn++;
+            }
+        }
+    }
 }

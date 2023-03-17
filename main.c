@@ -62,4 +62,5 @@ int main (int argc, char *argv[]){
         printf("Turn: %d \n",whoseturn);
         printf("Command: %c \n",command_code[0]);
         printf("Selected fighter: %s \n",selected_fighter);
+        printf("whoseturn: %d, selected monster: %s \n",whoseturn,selected_monster);
     }
