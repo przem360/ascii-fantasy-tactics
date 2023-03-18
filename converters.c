@@ -1,11 +1,12 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-
 int letters_to_numbers(char letter);
 int string_to_number(char* str);
 // const *strtolower(char *str);
 int startswith(const char *a, const char *b);
+void shuffle(int *array, int n);
+
 int coords[2];
 
 void adresstocoords(char addr[3]){
@@ -157,4 +158,15 @@ int startswith(const char *a, const char *b)
 {
    if(strncmp(a, b, strlen(b)) == 0) return 1;
    return 0;
+}
+
+void shuffle(int *array, int n) {
+    srand(495);
+    int i;
+    for (i=0;i<n-1;i++) {
+        int j = i+rand() / (RAND_MAX/(n-1)+1);
+        int t = array[j];
+        array[j] = array[i];
+        array[i] = t;
+    }
 }

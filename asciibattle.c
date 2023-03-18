@@ -37,6 +37,7 @@ char selected_monster[] = "nn";
 char output[1];
 int whoseturn = 1; /* Initiative selection */
 int player_or_monster = 1; /* 1 = player, 2 = monster */
+int targets[] = {0,1,2,3};
 
 // int cursor_on = 1;
 const char alphabet[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
@@ -481,6 +482,7 @@ void print_to_side_panel(){
 }
 void ascii_battle_init() {
     int i,j;
+    shuffle(targets,4);
     for (i=0;i<SCREEN_HEIGHT;i++){
         for(j=0;j<SCREEN_WIDTH;j++){
             screen[i][j] = ' ';
