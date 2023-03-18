@@ -334,7 +334,7 @@ void clean_side_panel(){
 int ask_spells(char pid[2]){
     /* print fields id and name, from array spells[3],
        based on spells[4][2] from array pcs */
-    int i,y,amount_of_fighters_spells;
+    int i,y,amount_of_fighters_spells,sp_counter;
     amount_of_fighters_spells = 4;
     char av_spells[4][2];
     char chspell[2];
@@ -354,19 +354,31 @@ int ask_spells(char pid[2]){
             }
         }
     }
+    sp_counter = 0;
     for(i=0;i<4;i++){
         if (av_spells[i][0] != 'n' && av_spells[i][1] != 'n'){
+            sp_counter++;
             printf(" [%c%c] Spell name |",av_spells[i][0],av_spells[i][1]);
         }
     }
-    scanf("%s",chspell);
-    for (i=0;i<amount_of_spells;i++){
-        if(spells[i].id[0]==chspell[0] && spells[i].id[1]==chspell[1]){
-            // printf("Casting %c%c",spells[i].id[0],spells[i].id[1]);
-            return i;
+    printf("\n");
+    if (sp_counter>0) {
+        // printf("hint av1: %c%c \n",av_spells[0][0],av_spells[0][1]);
+        // printf("Spell counter: %d \n",sp_counter);
+        printf("Select spell > ");
+        scanf("%s",chspell);
+        for (i=0;i<amount_of_fighters_spells;i++){
+            if(av_spells[i][0]==chspell[0] && av_spells[i][1]==chspell[1]){
+                // printf("Casting %c%c",spells[i].id[0],spells[i].id[1]);
+                return i+1;
+            }
         }
+    } else {
+        printf("No spells to cast \n");
+        return 0;
     }
-    return 0;
+    // int amount_of_fighters_spells = sizeof(av_spells) / sizeof(av_spells[0]);
+    return i+1;
 }
 
 void print_to_side_panel(){
@@ -517,6 +529,9 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
         if((monsters[i].x_position == coords[0])&&(monsters[i].y_position == coords[1])){
             target_in_array = i;
         }
+        else {
+            return 0;
+        }
     }
     monster_hp = monsters[target_in_array].hp;
 
@@ -599,27 +614,30 @@ int player_action_cast(char pid[2]){
     // clean_side_panel();
     // draw_interface();
     s = ask_spells(pid);
-    // scanf("%s",chspell);
-    rad = spells[s].range / 10;
-    for(i=0;i<amount_of_fighters;i++){
-        if (pcs[i].id[0] == pid[0] && pcs[i].id[1] == pid[1] && rad>0){
-            selected_x = pcs[i].x_position;
-            selected_y = pcs[i].y_position;
-            // fighter_letter = pcs[i].letter;
-            // rad = pcs[i].mov / 10;
-            // arrnum = i;
-            // printip("Specify adress...",1);
-            draw_range(selected_y,selected_x,rad,'c');
-            printip("Spell target",1);
-        }
-    }
-    /* Spell target selection here */
+    printf("Casted spell no.: %d",s);
+    if (s>0){
+        // s--;
+        rad = spells[s].range / 10;
+        for(i=0;i<amount_of_fighters;i++){
+            if (pcs[i].id[0] == pid[0] && pcs[i].id[1] == pid[1] && rad>0){
+                selected_x = pcs[i].x_position;
+                selected_y = pcs[i].y_position;
+                draw_range(selected_y,selected_x,rad,'c');
+                printip("Spell target",1);
+                /* Spell target selection here */
     draw_interface();
     printip("Spell target",1);
     scanf("%s",targetaddr);
     clear_range();
     resolve_spell(pid,targetaddr,spells[s].id);
+    done = 1;
     // draw_interface();
+            }
+        }
+    }
+    else {
+        done = 0;
+    }
     return done;
 }
 

@@ -19,6 +19,7 @@ int main (int argc, char *argv[]){
         if (whoseturn>(amount_of_fighters+amount_of_monsters)){
             whoseturn = 1;
         }
+        /* check here if selected pcs hp <=0 */
         clear_screen();
         printf("ASCII FANTASY TACTICS \n");
         place_figures();
