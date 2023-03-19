@@ -27,6 +27,7 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]);
 int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]);
 int let_move(void);
 void monsters_action(void);
+int ai_choose_action(char mid[2]);
 int  dice(int maxv);
 
 
@@ -682,6 +683,8 @@ int let_move(){
     return 0;
 }
 
+/* AI */
+
 void monsters_action(){
     int i;
     for (i=0;i<amount_of_monsters;i++) {
@@ -689,13 +692,22 @@ void monsters_action(){
             if (monsters[i].hp<=0) {
                 printip("DEAD ONE :(",1);
                 draw_interface();
-                whoseturn++;
+                // whoseturn++;
             }
             else {
                 printip("I\'ll skip",1);
                 draw_interface();
-                whoseturn++;
+                // whoseturn++;
             }
         }
     }
+}
+
+int ai_choose_action(char mid[2]) {
+    printip("Choosing action",1);
+    /* check neighbour areas for enemies */
+    /* check if have a target */
+    /* calculate distances */
+    /* decide about movement */
+    return 0;
 }

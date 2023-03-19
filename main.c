@@ -19,6 +19,11 @@ int main (int argc, char *argv[]){
         if (whoseturn>(amount_of_fighters+amount_of_monsters)){
             whoseturn = 1;
         }
+        if ((wasmoved > 0)&&(tookaction > 0)){
+            wasmoved = 0;
+            tookaction = 0;
+            whoseturn++;
+        }
         /* check here if selected pcs hp <=0 */
         clear_screen();
         printf("ASCII FANTASY TACTICS \n");
@@ -33,30 +38,31 @@ int main (int argc, char *argv[]){
                 // player_action_move(selected_fighter);
                 printip("MOVING",1);
                 wasmoved = player_action_move(selected_fighter);
-                if (wasmoved == 1){
-                    whoseturn++;
-                }
+                // if (wasmoved == 1){
+                //     whoseturn++;
+                // }
             }
             if (command_code[0] == 'c'){
                 // player_action_move(selected_fighter);
                 tookaction = player_action_cast(selected_fighter);
                 printip("CASTED SPELL",1);
-                if (tookaction == 1){
-                    whoseturn++;
-                }
+                // if (tookaction == 1){
+                //     whoseturn++;
+                // }
                 draw_interface();
             }
             if (command_code[0] == 's'){
                 // player_action_move(selected_fighter);
                 printip("SKIPPING",1);
-                whoseturn++;
-                // if ((selected_monster[0] = 'n')&&(selected_monster[1] = 'n')) {
-                //     whoseturn++;
-                // }
+                // whoseturn++;
+                wasmoved = 1;
+                tookaction = 1;
             }
         }
         if (player_or_monster == 2){
             monsters_action();
+            wasmoved = 1;
+            tookaction = 1;
             // draw_interface();
             sleep(1);
         }
