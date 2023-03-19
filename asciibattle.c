@@ -25,6 +25,7 @@ int player_action_cast(char pid[2]);
 int player_action_attack(char pid[2]);
 // void move_cursor(int cx, int cy);
 int resolve_spell(char pid[2],char taddr[3],char sid[2]);
+int resolve_attack(char pid[2],char taddr[3]);
 int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]);
 int let_move(void);
 void monsters_action(void);
@@ -509,8 +510,9 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
         If result is higher or equal to target's AC - success, proceed to 2).
        2) Saving throw. If d20 is bigger that targets .saves, than target is saved,
         otherwise deal DMG.*/
-    int dca, dcs, spell_in_array, target_in_array;
+    int dca, dcs, spell_in_array, target_in_array, foundm;
     int i, attack_success, monster_hp;
+    foundm = 0;
     attack_success = 0;
     monster_hp = 0;
     printip("Resolving spell",0);
@@ -531,11 +533,14 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
     /* Let's find target in monsters array */
     for (i=0; i<amount_of_monsters;i++){
         if((monsters[i].x_position == coords[0])&&(monsters[i].y_position == coords[1])){
+            foundm = 1;
             target_in_array = i;
         }
-        else {
-            return 0;
-        }
+    }
+    if (foundm == 0) {
+        printip("Nothing there!",1);
+        draw_interface();
+        return 0;
     }
     monster_hp = monsters[target_in_array].hp;
 
@@ -562,6 +567,61 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
         monsters[target_in_array].hp = monster_hp - spells[spell_in_array].dmg;
     }
     draw_interface();
+    return 0;
+}
+
+int resolve_attack(char pid[2],char taddr[3]){
+    /*  player id, target coords */
+    /*  Attack throw: D20+bonuses vs. target's AC.
+        If result is higher or equal to target's AC - success, proceed to 2).
+    */
+    int dca, target_in_array;
+    int i, attack_success, monster_hp, damage, foundm;
+    attack_success = 0;
+    foundm=0;
+    monster_hp = 0;
+    printip("Resolving attack",1);
+    draw_interface();
+    adresstocoords(taddr);
+    // printf("Read coords: %c %c resulting addr: %d %d \n",taddr[0],taddr[1],coords[0],coords[1]);
+    // sleep(3);
+    for (i=0; i<amount_of_monsters;i++){
+        // clear_screen();
+        // printf("I: %d ",i);
+        // sleep(5);
+        if((monsters[i].x_position == coords[0])&&(monsters[i].y_position == coords[1])){
+            target_in_array = i;
+            foundm = 1;
+            // printf("Found in position %d \n",target_in_array);
+            // sleep(3);
+        }
+    }
+    if (foundm == 0) {
+        printip("Nothing there!",1);
+        draw_interface();
+        return 0;
+    }
+    monster_hp = monsters[target_in_array].hp;
+    dca = dice(20);
+    damage = dice(6);
+    if (dca == 1) {
+        attack_success = 0;
+    }
+    if (dca == 20) {
+        attack_success = 1;
+    }
+    if (dca >= monsters[target_in_array].ac) {
+        attack_success = 1;
+    } else {
+        attack_success = 0;
+    }
+
+    if (attack_success == 1){
+        printip("HIT!",1);
+        monsters[target_in_array].hp = monster_hp - damage;
+    } else {
+        printip("MISS",1);
+    }
     return 0;
 }
 
@@ -618,7 +678,7 @@ int player_action_cast(char pid[2]){
     // clean_side_panel();
     // draw_interface();
     s = ask_spells(pid);
-    printf("Casted spell no.: %d",s);
+    // printf("Casted spell no.: %d",s);
     if (s>0){
         // s--;
         rad = spells[s].range / 10;
@@ -649,15 +709,23 @@ int player_action_attack(char pid[2]){
     char targetaddr[3];
     rad = 1;
     done = 0;
-    return done;
     for(i=0;i<amount_of_fighters;i++){
         if (pcs[i].id[0] == pid[0] && pcs[i].id[1] == pid[1]){
             selected_x = pcs[i].x_position;
             selected_y = pcs[i].y_position;
-            draw_range(selected_y,selected_x,rad,'a');
+            draw_range(selected_y,selected_x,rad,'c');
             printip("Choose target",1);
+            draw_interface();
+            scanf("%s",targetaddr);
+            clear_range();
+            if (targetaddr[0]=='q') {done = 0;}
+            /* resolve_attack(); */
+            resolve_attack(pid,targetaddr);
+            draw_interface();
+            done = 1;
         }
     }
+    return done;
 }
 
 int let_move(){

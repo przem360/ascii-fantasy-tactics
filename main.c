@@ -37,20 +37,17 @@ int main (int argc, char *argv[]){
             fgets(command,12,stdin);
             command_code[0] = analyse_command(command);
             if (command_code[0] == 'm'){
-                // player_action_move(selected_fighter);
                 printip("MOVING",1);
                 wasmoved = player_action_move(selected_fighter);
-                // if (wasmoved == 1){
-                //     whoseturn++;
-                // }
+            }
+            if (command_code[0] == 'a'){
+                tookaction = player_action_attack(selected_fighter);
+                printip("ATTACKING",1);
+                draw_interface();
             }
             if (command_code[0] == 'c'){
-                // player_action_move(selected_fighter);
                 tookaction = player_action_cast(selected_fighter);
                 printip("CASTED SPELL",1);
-                // if (tookaction == 1){
-                //     whoseturn++;
-                // }
                 draw_interface();
             }
             if (command_code[0] == 's'){
@@ -69,6 +66,7 @@ int main (int argc, char *argv[]){
             sleep(1);
         }
         }
+        printf("Dice: %d",dice(20));
         // printf("POM: %d \n",player_or_monster);
         // printf("Turn: %d \n",whoseturn);
         // printf("Command: %c \n",command_code[0]);
