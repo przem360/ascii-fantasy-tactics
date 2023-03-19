@@ -22,6 +22,7 @@ int ask_spells(char pid[2]);
 void ascii_battle_init(void);
 int player_action_move(char pid[2]);
 int player_action_cast(char pid[2]);
+int player_action_attack(char pid[2]);
 // void move_cursor(int cx, int cy);
 int resolve_spell(char pid[2],char taddr[3],char sid[2]);
 int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]);
@@ -628,13 +629,12 @@ int player_action_cast(char pid[2]){
                 draw_range(selected_y,selected_x,rad,'c');
                 printip("Spell target",1);
                 /* Spell target selection here */
-    draw_interface();
-    printip("Spell target",1);
-    scanf("%s",targetaddr);
-    clear_range();
-    resolve_spell(pid,targetaddr,spells[s].id);
-    done = 1;
-    // draw_interface();
+                draw_interface();
+                // printip("Spell target",1);
+                scanf("%s",targetaddr);
+                clear_range();
+                resolve_spell(pid,targetaddr,spells[s].id);
+                done = 1;
             }
         }
     }
@@ -642,6 +642,22 @@ int player_action_cast(char pid[2]){
         done = 0;
     }
     return done;
+}
+
+int player_action_attack(char pid[2]){
+    int i, selected_x, selected_y, rad, done;
+    char targetaddr[3];
+    rad = 1;
+    done = 0;
+    return done;
+    for(i=0;i<amount_of_fighters;i++){
+        if (pcs[i].id[0] == pid[0] && pcs[i].id[1] == pid[1]){
+            selected_x = pcs[i].x_position;
+            selected_y = pcs[i].y_position;
+            draw_range(selected_y,selected_x,rad,'a');
+            printip("Choose target",1);
+        }
+    }
 }
 
 int let_move(){

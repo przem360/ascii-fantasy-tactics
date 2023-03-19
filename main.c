@@ -16,7 +16,9 @@ int tookaction = 0;
 int main (int argc, char *argv[]){
     ascii_battle_init();
     while(killed<amount_of_monsters && died<amount_of_fighters && *command_code != 'q'){
-        if (whoseturn>(amount_of_fighters+amount_of_monsters)){
+        if (whoseturn>=(amount_of_fighters+amount_of_monsters)){
+            wasmoved = 0;
+            tookaction = 0;
             whoseturn = 1;
         }
         if ((wasmoved > 0)&&(tookaction > 0)){
