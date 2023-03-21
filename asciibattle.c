@@ -705,7 +705,7 @@ int player_action_cast(char pid[2]){
 }
 
 int player_action_attack(char pid[2]){
-    int i, selected_x, selected_y, rad, done;
+    int i, j, selected_x, selected_y, rad, done;
     char targetaddr[3];
     rad = 1;
     done = 0;
@@ -713,6 +713,13 @@ int player_action_attack(char pid[2]){
         if (pcs[i].id[0] == pid[0] && pcs[i].id[1] == pid[1]){
             selected_x = pcs[i].x_position;
             selected_y = pcs[i].y_position;
+            if ((pcs[i].weapon[0] == 'b')&&(pcs[i].weapon[1] == 'w')) {
+                for(j=0;j<amount_of_weapon;j++){
+                    if ((weapons[j].id[0]=='b')&&(weapons[j].id[1]=='w')) {
+                        rad = weapons[j].range/10;
+                    }
+                }
+            }
             draw_range(selected_y,selected_x,rad,'c');
             printip("Choose target",1);
             draw_interface();
