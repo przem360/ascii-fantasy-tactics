@@ -485,13 +485,16 @@ void print_to_side_panel(){
 }
 void ascii_battle_init() {
     int i,j;
-    shuffle(targets,4);
     for (i=0;i<SCREEN_HEIGHT;i++){
         for(j=0;j<SCREEN_WIDTH;j++){
             screen[i][j] = ' ';
         }
     }
     memcpy(screen, lvl1,sizeof(lvl1));
+    shuffle(targets,4);
+    for (i=0;i<amount_of_monsters;i++) {
+        monsters[i].target_index = i;
+    }
     draw_interface();
 }
 
@@ -796,9 +799,34 @@ void monsters_action(){
 
 int ai_choose_action(char mid[2]) {
     printip("Choosing action",1);
-    /* check neighbour areas for enemies */
+    int i,j,enemy_is_close;
+    enemy_is_close = 0;
+    int my_addr[2];
+    int found_enemy_at[2];
+    // int current_field_to_check[2];
+    for (i=0;i<amount_of_monsters;i++) {
+        if((monsters[i].id[0] == mid[0])&&(monsters[i].id[1] == mid[1])){
+            my_addr[0] = monsters[i].x_position;
+            my_addr[1] = monsters[i].y_position;
+        }
+    }
     /* check if have a target */
     /* calculate distances */
     /* decide about movement */
+
+    /* check neighbour areas for enemies */
+    for(i=0;i<4;i++){
+        for(j=0;j<amount_of_fighters;j++){
+            if(screen[(my_addr[0])-1][my_addr[1]] == monsters[i].letter){
+                enemy_is_close = 1;
+                found_enemy_at[0] = (my_addr[0])-1;
+                found_enemy_at[1] = my_addr[1];
+            }
+        }
+    }
+    if(enemy_is_close>0){
+        printip("I see you!",1);
+        printf("Found enemy at [%d],[%d]\n",found_enemy_at[0],found_enemy_at[1]);
+    }
     return 0;
 }

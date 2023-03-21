@@ -85,6 +85,7 @@ struct enemy {
     int dmg;
     int morale;
     int saves; /*"SAVES AS target, BFT, p. 89"*/
+    int target_index;
     int x_position;
     int y_position;
 };
@@ -96,10 +97,10 @@ otherwise faild.
 */
 
 struct enemy monsters[4] = {
-    {'g',"g1",1,"Fred","Goblin","Goblin attacks!",4,14,30,4,7,18,1,3},
-    {'r',"r1",3,"Rogue","Human","Rogue attacks",5,13,40,4,7,18,1,4},
-    {'t',"t1",5,"Ted",  "Tentacle_Worm","Squeezed you hard!",14,13,30,8,7,18,1,5},
-    {'h',"h1",7,"BadBoy", "Hell_Hound","Fire breed attack!",18,14,40,6,9,20,1,6}
+    {'g',"g1",1,"Fred","Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3},
+    {'r',"r1",3,"Rogue","Human","Rogue attacks",5,13,40,4,7,18,0,1,4},
+    {'t',"t1",5,"Ted",  "Tentacle_Worm","Squeezed you hard!",14,13,30,8,7,18,0,1,5},
+    {'h',"h1",7,"BadBoy", "Hell_Hound","Fire breed attack!",18,14,40,6,9,20,0,1,6}
 };
 
 int amount_of_monsters = sizeof(monsters) / sizeof(monsters[0]);
