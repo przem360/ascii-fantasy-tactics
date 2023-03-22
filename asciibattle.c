@@ -740,10 +740,6 @@ int player_action_attack(char pid[2]){
 
 int let_move(){
     int i;
-    // selected_fighter[0] = 'n';
-    // selected_fighter[1] = 'n';
-    // selected_monster[0] = 'n';
-    // selected_monster[1] = 'n';
     for (i=0;i<amount_of_fighters;i++){
         if (pcs[i].hp<=0) {
             pcs[i].letter = DEAD_BODY_CHAR;
@@ -817,7 +813,12 @@ int ai_choose_action(char mid[2]) {
     /* check neighbour areas for enemies */
     for(i=0;i<4;i++){
         for(j=0;j<amount_of_fighters;j++){
-            if(screen[(my_addr[0])-1][my_addr[1]] == monsters[i].letter){
+            if(screen[(my_addr[0]-1)][my_addr[1]] == pcs[i].letter){
+                enemy_is_close = 1;
+                found_enemy_at[0] = (my_addr[0])-1;
+                found_enemy_at[1] = my_addr[1];
+            }
+            if(screen[(my_addr[0]+1)][my_addr[1]] == pcs[i].letter){
                 enemy_is_close = 1;
                 found_enemy_at[0] = (my_addr[0])-1;
                 found_enemy_at[1] = my_addr[1];
@@ -826,7 +827,9 @@ int ai_choose_action(char mid[2]) {
     }
     if(enemy_is_close>0){
         printip("I see you!",1);
+        sleep(8);
         printf("Found enemy at [%d],[%d]\n",found_enemy_at[0],found_enemy_at[1]);
+        draw_interface();
     }
     return 0;
 }

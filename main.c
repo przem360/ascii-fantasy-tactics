@@ -16,15 +16,15 @@ int tookaction = 0;
 int main (int argc, char *argv[]){
     ascii_battle_init();
     while(killed<amount_of_monsters && died<amount_of_fighters && *command_code != 'q'){
-        if (whoseturn>=(amount_of_fighters+amount_of_monsters)){
-            wasmoved = 0;
-            tookaction = 0;
-            whoseturn = 1;
-        }
         if ((wasmoved > 0)&&(tookaction > 0)){
             wasmoved = 0;
             tookaction = 0;
             whoseturn++;
+        }
+        if (whoseturn>(amount_of_fighters+amount_of_monsters)){
+            wasmoved = 0;
+            tookaction = 0;
+            whoseturn = 1;
         }
         /* check here if selected pcs hp <=0 */
         clear_screen();
@@ -53,12 +53,15 @@ int main (int argc, char *argv[]){
             if (command_code[0] == 's'){
                 // player_action_move(selected_fighter);
                 printip("SKIPPING",1);
-                // whoseturn++;
                 wasmoved = 1;
                 tookaction = 1;
+                // whoseturn++;
             }
         }
         if (player_or_monster == 2){
+            // printip("LOL?",1);
+            // draw_interface();
+            ai_choose_action(selected_monster);
             monsters_action();
             wasmoved = 1;
             tookaction = 1;
@@ -67,9 +70,9 @@ int main (int argc, char *argv[]){
         }
         }
         printf("Dice: %d",dice(20));
-        // printf("POM: %d \n",player_or_monster);
-        // printf("Turn: %d \n",whoseturn);
+        printf("POM: %d \n",player_or_monster);
+        printf("Turn: %d \n",whoseturn);
         // printf("Command: %c \n",command_code[0]);
-        // printf("Selected fighter: %s \n",selected_fighter);
-        // printf("whoseturn: %d, selected monster: %s \n",whoseturn,selected_monster);
+        printf("Selected fighter: %s \n",selected_fighter);
+        printf("whoseturn: %d, selected monster: %s \n",whoseturn,selected_monster);
     }
