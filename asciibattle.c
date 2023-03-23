@@ -27,6 +27,7 @@ int player_action_attack(char pid[2]);
 // void move_cursor(int cx, int cy);
 int resolve_spell(char pid[2],char taddr[3],char sid[2]);
 int resolve_attack(char pid[2],char taddr[3]);
+int resolve_monster_attack(int mnst,int figh);
 int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]);
 int let_move(void);
 void monsters_action(void);
@@ -710,6 +711,23 @@ int resolve_attack(char pid[2],char taddr[3]){
     return 0;
 }
 
+int resolve_monster_attack(int mnst,int figh){
+    int dca, fighter_hp, damage;
+    damage = dice(6);
+    dca = dice(20);
+    fighter_hp = pcs[figh].hp;
+    if ((dca>=pcs[figh].ac)||(dca==20)) {
+        printip("HIT!",1);
+        draw_interface();
+        pcs[figh].hp = fighter_hp - damage;
+    }
+    else {
+        printip("MISS!",1);
+        draw_interface();
+    }
+    return 0;
+}
+
 int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]){
     adresstocoords(target);
     /* make move */
@@ -877,9 +895,10 @@ void monsters_action(){
 
 int ai_choose_action(char mid[2]) {
     printip("Choosing action",1);
-    int i,j,my_range,enemy_is_close;
+    int i,j,my_range,enemy_is_close, me_in_array, fighter_found_in_array;
     my_range = 0;
     enemy_is_close = 0;
+    fighter_found_in_array = 0;
     int my_addr[2];
     int found_enemy_at[2];
     // int current_field_to_check[2];
@@ -887,6 +906,7 @@ int ai_choose_action(char mid[2]) {
         if((monsters[i].id[0] == mid[0])&&(monsters[i].id[1] == mid[1])){
             my_addr[0] = monsters[i].x_position;
             my_addr[1] = monsters[i].y_position;
+            me_in_array = i;
             my_range = monsters[i].mov/10;
         }
     }
@@ -897,22 +917,42 @@ int ai_choose_action(char mid[2]) {
     /* check neighbour areas for enemies */
     for(i=0;i<4;i++){
         for(j=0;j<amount_of_fighters;j++){
+            /* back */
             if(screen[(my_addr[0]-1)][my_addr[1]] == pcs[i].letter){
                 enemy_is_close = 1;
+                fighter_found_in_array = i;
                 found_enemy_at[0] = (my_addr[0])-1;
                 found_enemy_at[1] = my_addr[1];
             }
+            /* front */
             if(screen[(my_addr[0]+1)][my_addr[1]] == pcs[i].letter){
                 enemy_is_close = 1;
+                fighter_found_in_array = i;
                 found_enemy_at[0] = (my_addr[0])-1;
                 found_enemy_at[1] = my_addr[1];
+            }
+            /* left */
+            if(screen[my_addr[0]][(my_addr[1]-1)] == pcs[i].letter){
+                enemy_is_close = 1;
+                fighter_found_in_array = i;
+                found_enemy_at[0] = my_addr[0];
+                found_enemy_at[1] = (my_addr[1]-1);
+            }
+            /* right */
+            if(screen[my_addr[0]][(my_addr[1]+1)] == pcs[i].letter){
+                enemy_is_close = 1;
+                fighter_found_in_array = i;
+                found_enemy_at[0] = my_addr[0];
+                found_enemy_at[1] = (my_addr[1]+1);
             }
         }
     }
     if(enemy_is_close>0){
+        /* attack the first fighter who is close */
         draw_monster_range(my_addr[0],my_addr[1],my_range);
         draw_interface();
         sleep(2);
+        resolve_monster_attack(me_in_array,fighter_found_in_array); // mnst,figh
         clear_range();
         draw_interface();
     }
