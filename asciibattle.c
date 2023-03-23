@@ -9,6 +9,7 @@
 void print_screen(void);
 void place_figures(void);
 void draw_range(int xpos, int ypos,int radius, char mode);
+void draw_monster_range(int xpos, int ypos,int radius);
 void clear_range();
 void clear_screen(void);
 void draw_info_panel(void);
@@ -291,6 +292,87 @@ void draw_range(int xpos, int ypos, int radius, char mode){
         }
     }
     } /* end if((mode=='a')||(mode=='c'))*/
+}
+
+void draw_monster_range(int xpos, int ypos,int radius) {
+    int i, rad, m;
+    clear_range();
+    for (rad=radius;rad>=0;rad--){
+    for(i=0;i<=radius;i++) {
+        if (screen[ypos-i][xpos] == BASE_CHAR){
+            screen[ypos-i][xpos] = RANGE_CHAR;
+        } else {
+            for (m=0;m<amount_of_fighters;m++){
+                if (screen[ypos-i][xpos] == pcs[m].letter){
+                    screen[ypos-i][xpos] = TARGET_CHAR;
+                }
+            }
+        }
+        if (screen[ypos+i][xpos] == BASE_CHAR){
+            screen[ypos+i][xpos] = RANGE_CHAR;
+        } else {
+            for (m=0;m<amount_of_monsters;m++){
+                if (screen[ypos+i][xpos] == pcs[m].letter){
+                    screen[ypos+i][xpos] = TARGET_CHAR;
+                }
+            }
+        }
+    }
+    /* drawing radius to the right side */
+    /* up */
+    for(i=0;i<=rad;i++) {
+        if (screen[ypos-i][xpos-rad+radius] == BASE_CHAR){
+            screen[ypos-i][xpos-rad+radius] = RANGE_CHAR;
+        } else {
+            for (m=0;m<amount_of_monsters;m++){
+                if (screen[ypos-i][xpos-rad+radius] == pcs[m].letter){
+                    screen[ypos-i][xpos-rad+radius] = TARGET_CHAR;
+                }
+            }
+        }
+        /* down */
+        if (screen[ypos-i+rad][xpos-rad+radius] == BASE_CHAR){
+            screen[ypos-i+rad][xpos-rad+radius] = RANGE_CHAR;
+        } else {
+            for (m=0;m<amount_of_monsters;m++){
+                if (screen[ypos-i+rad][xpos-rad+radius] == pcs[m].letter){
+                    screen[ypos-i+rad][xpos-rad+radius] = TARGET_CHAR;
+                }
+            }
+        }
+    }
+    }
+    /* drawing radius to the left side */
+    // for (rad=0,side_step=0;rad<=radius,side_step<radius;rad++,side_step++){
+    for (rad=0;rad<radius;rad++){
+        /* down */
+        for(i=radius;i>0;i--){
+            if((xpos-i+rad)>=0){
+                if (screen[ypos+rad][xpos-i+rad] == BASE_CHAR && (rad-i<0)){
+                    screen[ypos+rad][xpos-i+rad] = RANGE_CHAR;
+                }
+                else {
+                for (m=0;m<amount_of_monsters;m++){
+                    if (screen[ypos+rad][xpos-i+rad] == pcs[m].letter && (rad-i<0)){
+                        screen[ypos+rad][xpos-i+rad] = TARGET_CHAR;
+                    }
+                }
+                }
+            }
+            /* up */
+            if((xpos-i+rad)>=0){
+                if (screen[ypos-rad][xpos-i+rad] == BASE_CHAR && (rad-i<0)){
+                    screen[ypos-rad][xpos-i+rad] = RANGE_CHAR;
+                } else {
+                for (m=0;m<amount_of_monsters;m++){
+                    if (screen[ypos-rad][xpos-i+rad] == pcs[m].letter && (rad-i<0)){
+                        screen[ypos-rad][xpos-i+rad] = TARGET_CHAR;
+                    }
+                }
+                }
+            }
+        }
+    }
 }
 
 char analyse_command(char comm[12]) {
@@ -795,7 +877,8 @@ void monsters_action(){
 
 int ai_choose_action(char mid[2]) {
     printip("Choosing action",1);
-    int i,j,enemy_is_close;
+    int i,j,my_range,enemy_is_close;
+    my_range = 0;
     enemy_is_close = 0;
     int my_addr[2];
     int found_enemy_at[2];
@@ -804,6 +887,7 @@ int ai_choose_action(char mid[2]) {
         if((monsters[i].id[0] == mid[0])&&(monsters[i].id[1] == mid[1])){
             my_addr[0] = monsters[i].x_position;
             my_addr[1] = monsters[i].y_position;
+            my_range = monsters[i].mov/10;
         }
     }
     /* check if have a target */
@@ -826,9 +910,10 @@ int ai_choose_action(char mid[2]) {
         }
     }
     if(enemy_is_close>0){
-        printip("I see you!",1);
-        sleep(8);
-        printf("Found enemy at [%d],[%d]\n",found_enemy_at[0],found_enemy_at[1]);
+        draw_monster_range(my_addr[0],my_addr[1],my_range);
+        draw_interface();
+        sleep(2);
+        clear_range();
         draw_interface();
     }
     return 0;
