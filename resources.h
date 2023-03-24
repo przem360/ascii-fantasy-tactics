@@ -63,8 +63,7 @@ struct character_pc {
 
 
 struct character_pc pcs[4] = {
-    {'A',"av",2,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,15,1,1,{'b','s'},{{'n','n'},{'n','n'},{'n','n'},{'n','n'}},2,3},
-    // {'A',"av",2,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,15,1,1,{'b','s'},{{'n','n'},{'n','n'},{'n','n'},{'n','n'}},12,3},
+    {'A',"av",2,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,15,1,1,{'b','s'},{{'n','n'},{'n','n'},{'n','n'},{'n','n'}},12,3},
     {'K',"kk",4,"Koko",  "Bl__Mage","I will eradicate them.",  1,0,2500,40,6,13,1,0,{'m','r'},{{'l','b'},{'f','b'},{'n','n'},{'n','n'}},12,4},
     {'M',"mk",6,"Marsh", "Archer","You can\'t escape!",1,0,2500,30,6,13,1,0,{'b','w'},{{'n','n'},{'n','n'},{'n','n'},{'n','n'}},12,5},
     {'Z',"zk",8,"Zok",   "Wh__Mage","Need help?",1,0,1500,30,8,13,1,0,{'m','r'},{{'l','b'},{'r','e'},{'n','n'},{'n','n'}},12,6}

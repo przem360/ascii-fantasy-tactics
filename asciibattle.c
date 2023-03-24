@@ -10,6 +10,7 @@ void print_screen(void);
 void place_figures(void);
 void draw_range(int xpos, int ypos,int radius, char mode);
 void draw_monster_range(int xpos, int ypos,int radius);
+void chase_figters(int mnstr, int fightr);
 void clear_range();
 void clear_screen(void);
 void draw_info_panel(void);
@@ -374,6 +375,51 @@ void draw_monster_range(int xpos, int ypos,int radius) {
             }
         }
     }
+}
+
+void chase_figters(int mnstr, int fightr){
+    int mx, my, fx, fy, finalx, finaly;
+    int current_x_dist, current_y_dist, current_distance;
+    int i, j;
+    int shortest[2];
+    mx = monsters[mnstr].x_position;
+    my = monsters[mnstr].y_position;
+    fx = pcs[fightr].x_position;
+    fy = pcs[fightr].y_position;
+    current_distance = 1000; /* just some high value */
+    for (i=0; i<SCREEN_HEIGHT; i++) {
+        for (j=0; j<SCREEN_WIDTH; j++) {
+            if (screen[i][j] == RANGE_CHAR) {
+                /* i is y, j is x */
+                if (j>fx) {
+                    current_x_dist = j - fx;
+                }
+                if (j<fx) {
+                    current_x_dist = fx - j;
+                }
+                if (j==fx) {
+                    current_x_dist = j;
+                }
+                if (i>fy) {
+                    current_y_dist = i - fy;
+                }
+                if (i<fy) {
+                    current_y_dist = fy - i;
+                }
+                if (i==fy) {
+                    current_y_dist = i;
+                }
+                if (current_distance>(current_x_dist+current_y_dist)) {
+                    current_distance = (current_x_dist+current_y_dist);
+                    finalx = j;
+                    finaly = i;
+                }
+            }
+        }
+    }
+    screen[monsters[mnstr].x_position][monsters[mnstr].y_position] = BASE_CHAR;
+    monsters[mnstr].x_position = finalx;
+    monsters[mnstr].y_position = finaly;
 }
 
 char analyse_command(char comm[12]) {
@@ -955,6 +1001,13 @@ int ai_choose_action(char mid[2]) {
         resolve_monster_attack(me_in_array,fighter_found_in_array); // mnst,figh
         clear_range();
         draw_interface();
+    }
+    else {
+        draw_monster_range(my_addr[0],my_addr[1],my_range);
+        draw_interface();
+        sleep(2);
+        chase_figters(me_in_array, monsters[me_in_array].target_index);
+        clear_range();
     }
     return 0;
 }
