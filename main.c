@@ -11,6 +11,8 @@ char command[12];
 char command_code[1]; /* what analyse_command things about user input?*/
 int wasmoved = 0;
 int tookaction = 0;
+int aiaction;
+int fid, mid;
 
 
 int main (int argc, char *argv[]){
@@ -59,14 +61,40 @@ int main (int argc, char *argv[]){
             }
         }
         if (player_or_monster == 2){
-            // printip("LOL?",1);
+            /* monster's move */
             // draw_interface();
-            ai_choose_action(selected_monster);
-            monsters_action();
-            wasmoved = 1;
-            tookaction = 1;
-            // draw_interface();
-            sleep(1);
+            mid = get_array_index('m',selected_monster);
+            if (monsters[mid].hp > 0) {
+                aiaction = ai_choose_action(selected_monster);
+                if (aiaction == 1) {
+                    tookaction = 1;
+                    wasmoved = 0;
+                }
+                if (aiaction == 2) {
+                    tookaction = 0;
+                    wasmoved = 1;
+                }
+                if (wasmoved == 0) {
+                    // fid = get_array_index('f',);
+                    chase_figters(fid,monsters[mid].target_index);
+                    wasmoved = 1;
+                    printf("fid: %d",fid);
+                }
+                if (tookaction == 0) {
+                    tookaction = 1; /* for now */
+                }
+                // monsters_action();
+                // wasmoved = 1;
+                // tookaction = 1;
+                draw_interface();
+                // sleep(1);
+            }
+            else {
+                monsters_action();
+                wasmoved = 1;
+                tookaction = 1;
+                draw_interface();
+            }
         }
         }
         printf("Dice: %d",dice(20));

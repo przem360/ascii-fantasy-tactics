@@ -5,7 +5,7 @@
 // #include <dos.h> /* for pausing on Windows */
 #include "converters.c"
 
-
+int get_array_index(char type, char id[2]);
 void print_screen(void);
 void place_figures(void);
 void draw_range(int xpos, int ypos,int radius, char mode);
@@ -48,9 +48,34 @@ int targets[] = {0,1,2,3};
 // int cursor_on = 1;
 const char alphabet[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
 
+int get_array_index(char type, char id[2]){
+    int i;
+    if (type == 'm') {
+        for (i=0;i<amount_of_monsters;i++){
+            if ((monsters[i].id[0]==id[0])&&(monsters[i].id[1]==id[1])) {
+                return i;
+            }
+        }
+    }
+    if (type == 'f') {
+        for (i=0;i<amount_of_fighters;i++){
+            if ((pcs[i].id[0]==id[0])&&(pcs[i].id[1]==id[1])){
+                return i;
+            }
+        }
+    }
+    return 0;
+}
+
 void clear_screen(void){
-    system("clear"); //*nix
+    // system("clear"); //*nix
     // system("cls"); //windows
+    // dummy:
+    int i,l;
+    l = 50;
+    for (i=0;i<l;i++){
+        printf("\n");
+    }
 }
 
 void print_screen() {
@@ -132,13 +157,29 @@ void draw_interface(){
 }
 
 void place_figures(){
-    int i;
+    int i, pxp, pyp, mxp, myp;
+    pxp = 0;
+    pyp = 0;
+    mxp = 0;
+    myp = 0;
     for (i=0;i<amount_of_fighters;i++){
-        if (screen[pcs[i].x_position][pcs[i].y_position] != TARGET_CHAR){
-            screen[pcs[i].x_position][pcs[i].y_position] = pcs[i].letter;
-        }
-        if(screen[monsters[i].x_position][monsters[i].y_position] != TARGET_CHAR){
-            screen[monsters[i].x_position][monsters[i].y_position] = monsters[i].letter;
+        pxp = pcs[i].x_position;
+        pyp = pcs[i].y_position;
+        printf("pxp: %d pyp: %d \n",pxp,pyp);
+        // if ((pxp>=0)&&(pyp>=0)) {
+            if (screen[pxp][pyp] != TARGET_CHAR){
+                screen[pxp][pyp] = pcs[i].letter;
+            }
+        // }
+    }
+    for (i=0; i<amount_of_monsters;i++) {
+        mxp = monsters[i].x_position;
+        myp = monsters[i].y_position;
+        printf("mxp: %d myp: %d \n",mxp,myp);
+        if ((mxp>=0)&&(myp>=0)&&(mxp<14)&&(myp<22)) {
+            if(screen[mxp][myp] != TARGET_CHAR){
+            screen[mxp][myp] = monsters[i].letter;
+            }
         }
     }
 }
@@ -223,7 +264,7 @@ void draw_range(int xpos, int ypos, int radius, char mode){
             screen[address_y-i][address_x] = RANGE_CHAR;
         } else {
             for (m=0;m<amount_of_monsters;m++){
-                if (screen[address_y-i][address_x] == monsters[m].letter){
+                if ((screen[address_y-i][address_x] == monsters[m].letter)&&(monsters[m].letter != DEAD_BODY_CHAR)){
                     screen[address_y-i][address_x] = TARGET_CHAR;
                 }
             }
@@ -232,7 +273,7 @@ void draw_range(int xpos, int ypos, int radius, char mode){
             screen[address_y+i][address_x] = RANGE_CHAR;
         } else {
             for (m=0;m<amount_of_monsters;m++){
-                if (screen[address_y+i][address_x] == monsters[m].letter){
+                if ((screen[address_y+i][address_x] == monsters[m].letter)&&(monsters[m].letter != DEAD_BODY_CHAR)){
                     screen[address_y+i][address_x] = TARGET_CHAR;
                 }
             }
@@ -245,7 +286,7 @@ void draw_range(int xpos, int ypos, int radius, char mode){
             screen[address_y-i][address_x-rad+radius] = RANGE_CHAR;
         } else {
             for (m=0;m<amount_of_monsters;m++){
-                if (screen[address_y-i][address_x-rad+radius] == monsters[m].letter){
+                if ((screen[address_y-i][address_x-rad+radius] == monsters[m].letter)&&(monsters[m].letter != DEAD_BODY_CHAR)){
                     screen[address_y-i][address_x-rad+radius] = TARGET_CHAR;
                 }
             }
@@ -255,7 +296,7 @@ void draw_range(int xpos, int ypos, int radius, char mode){
             screen[address_y-i+rad][address_x-rad+radius] = RANGE_CHAR;
         } else {
             for (m=0;m<amount_of_monsters;m++){
-                if (screen[address_y-i+rad][address_x-rad+radius] == monsters[m].letter){
+                if ((screen[address_y-i+rad][address_x-rad+radius] == monsters[m].letter)&&(monsters[m].letter != DEAD_BODY_CHAR)){
                     screen[address_y-i+rad][address_x-rad+radius] = TARGET_CHAR;
                 }
             }
@@ -273,7 +314,7 @@ void draw_range(int xpos, int ypos, int radius, char mode){
                 }
                 else {
                 for (m=0;m<amount_of_monsters;m++){
-                    if (screen[address_y+rad][address_x-i+rad] == monsters[m].letter && (rad-i<0)){
+                    if (screen[address_y+rad][address_x-i+rad] == monsters[m].letter && (monsters[m].letter != DEAD_BODY_CHAR) && (rad-i<0)){
                         screen[address_y+rad][address_x-i+rad] = TARGET_CHAR;
                     }
                 }
@@ -285,7 +326,7 @@ void draw_range(int xpos, int ypos, int radius, char mode){
                     screen[address_y-rad][address_x-i+rad] = RANGE_CHAR;
                 } else {
                 for (m=0;m<amount_of_monsters;m++){
-                    if (screen[address_y-rad][address_x-i+rad] == monsters[m].letter && (rad-i<0)){
+                    if (screen[address_y-rad][address_x-i+rad] == monsters[m].letter && (monsters[m].letter != DEAD_BODY_CHAR) && (rad-i<0)){
                         screen[address_y-rad][address_x-i+rad] = TARGET_CHAR;
                     }
                 }
@@ -298,14 +339,21 @@ void draw_range(int xpos, int ypos, int radius, char mode){
 
 void draw_monster_range(int xpos, int ypos,int radius) {
     int i, rad, m;
+    /* lest flip x and y values just for test */
+    // int tmpx, tmpy;
+    // tmpx = xpos;
+    // tmpy = ypos;
+    // xpos = tmpy;
+    // ypos = tmpx;
     clear_range();
     for (rad=radius;rad>=0;rad--){
     for(i=0;i<=radius;i++) {
+        printf("ypos-i: %d",ypos-i);
         if (screen[ypos-i][xpos] == BASE_CHAR){
             screen[ypos-i][xpos] = RANGE_CHAR;
         } else {
             for (m=0;m<amount_of_fighters;m++){
-                if (screen[ypos-i][xpos] == pcs[m].letter){
+                if ((screen[ypos-i][xpos] == pcs[m].letter)&&(pcs[m].letter != DEAD_BODY_CHAR)){
                     screen[ypos-i][xpos] = TARGET_CHAR;
                 }
             }
@@ -314,7 +362,7 @@ void draw_monster_range(int xpos, int ypos,int radius) {
             screen[ypos+i][xpos] = RANGE_CHAR;
         } else {
             for (m=0;m<amount_of_monsters;m++){
-                if (screen[ypos+i][xpos] == pcs[m].letter){
+                if ((screen[ypos+i][xpos] == pcs[m].letter)&&(pcs[m].letter != DEAD_BODY_CHAR)){
                     screen[ypos+i][xpos] = TARGET_CHAR;
                 }
             }
@@ -327,7 +375,7 @@ void draw_monster_range(int xpos, int ypos,int radius) {
             screen[ypos-i][xpos-rad+radius] = RANGE_CHAR;
         } else {
             for (m=0;m<amount_of_monsters;m++){
-                if (screen[ypos-i][xpos-rad+radius] == pcs[m].letter){
+                if ((screen[ypos-i][xpos-rad+radius] == pcs[m].letter)&&(pcs[m].letter != DEAD_BODY_CHAR)){
                     screen[ypos-i][xpos-rad+radius] = TARGET_CHAR;
                 }
             }
@@ -337,7 +385,7 @@ void draw_monster_range(int xpos, int ypos,int radius) {
             screen[ypos-i+rad][xpos-rad+radius] = RANGE_CHAR;
         } else {
             for (m=0;m<amount_of_monsters;m++){
-                if (screen[ypos-i+rad][xpos-rad+radius] == pcs[m].letter){
+                if ((screen[ypos-i+rad][xpos-rad+radius] == pcs[m].letter)&&(pcs[m].letter != DEAD_BODY_CHAR)){
                     screen[ypos-i+rad][xpos-rad+radius] = TARGET_CHAR;
                 }
             }
@@ -355,7 +403,7 @@ void draw_monster_range(int xpos, int ypos,int radius) {
                 }
                 else {
                 for (m=0;m<amount_of_monsters;m++){
-                    if (screen[ypos+rad][xpos-i+rad] == pcs[m].letter && (rad-i<0)){
+                    if (screen[ypos+rad][xpos-i+rad] == pcs[m].letter && (pcs[m].letter != DEAD_BODY_CHAR) && (rad-i<0)){
                         screen[ypos+rad][xpos-i+rad] = TARGET_CHAR;
                     }
                 }
@@ -367,7 +415,7 @@ void draw_monster_range(int xpos, int ypos,int radius) {
                     screen[ypos-rad][xpos-i+rad] = RANGE_CHAR;
                 } else {
                 for (m=0;m<amount_of_monsters;m++){
-                    if (screen[ypos-rad][xpos-i+rad] == pcs[m].letter && (rad-i<0)){
+                    if (screen[ypos-rad][xpos-i+rad] == pcs[m].letter && (pcs[m].letter != DEAD_BODY_CHAR) && (rad-i<0)){
                         screen[ypos-rad][xpos-i+rad] = TARGET_CHAR;
                     }
                 }
@@ -378,12 +426,13 @@ void draw_monster_range(int xpos, int ypos,int radius) {
 }
 
 void chase_figters(int mnstr, int fightr){
-    int mx, my, fx, fy, finalx, finaly;
+    int fx, fy, finalx, finaly;
     int current_x_dist, current_y_dist, current_distance;
     int i, j;
-    int shortest[2];
-    mx = monsters[mnstr].x_position;
-    my = monsters[mnstr].y_position;
+    i = 0;
+    j = 0;
+    finalx = 0;
+    finaly = 0;
     fx = pcs[fightr].x_position;
     fy = pcs[fightr].y_position;
     current_distance = 1000; /* just some high value */
@@ -417,6 +466,7 @@ void chase_figters(int mnstr, int fightr){
             }
         }
     }
+    printf("finalx: %d \n",finalx);
     screen[monsters[mnstr].x_position][monsters[mnstr].y_position] = BASE_CHAR;
     monsters[mnstr].x_position = finalx;
     monsters[mnstr].y_position = finaly;
@@ -946,7 +996,6 @@ int ai_choose_action(char mid[2]) {
     enemy_is_close = 0;
     fighter_found_in_array = 0;
     int my_addr[2];
-    int found_enemy_at[2];
     // int current_field_to_check[2];
     for (i=0;i<amount_of_monsters;i++) {
         if((monsters[i].id[0] == mid[0])&&(monsters[i].id[1] == mid[1])){
@@ -967,29 +1016,23 @@ int ai_choose_action(char mid[2]) {
             if(screen[(my_addr[0]-1)][my_addr[1]] == pcs[i].letter){
                 enemy_is_close = 1;
                 fighter_found_in_array = i;
-                found_enemy_at[0] = (my_addr[0])-1;
-                found_enemy_at[1] = my_addr[1];
+                // found_enemy_at[0] = (my_addr[0])-1;
+                // found_enemy_at[1] = my_addr[1];
             }
             /* front */
             if(screen[(my_addr[0]+1)][my_addr[1]] == pcs[i].letter){
                 enemy_is_close = 1;
                 fighter_found_in_array = i;
-                found_enemy_at[0] = (my_addr[0])-1;
-                found_enemy_at[1] = my_addr[1];
             }
             /* left */
             if(screen[my_addr[0]][(my_addr[1]-1)] == pcs[i].letter){
                 enemy_is_close = 1;
                 fighter_found_in_array = i;
-                found_enemy_at[0] = my_addr[0];
-                found_enemy_at[1] = (my_addr[1]-1);
             }
             /* right */
             if(screen[my_addr[0]][(my_addr[1]+1)] == pcs[i].letter){
                 enemy_is_close = 1;
                 fighter_found_in_array = i;
-                found_enemy_at[0] = my_addr[0];
-                found_enemy_at[1] = (my_addr[1]+1);
             }
         }
     }
@@ -998,9 +1041,10 @@ int ai_choose_action(char mid[2]) {
         draw_monster_range(my_addr[0],my_addr[1],my_range);
         draw_interface();
         sleep(2);
-        resolve_monster_attack(me_in_array,fighter_found_in_array); // mnst,figh
+        resolve_monster_attack(me_in_array,fighter_found_in_array);
         clear_range();
         draw_interface();
+        return 1;
     }
     else {
         draw_monster_range(my_addr[0],my_addr[1],my_range);
@@ -1008,6 +1052,6 @@ int ai_choose_action(char mid[2]) {
         sleep(2);
         chase_figters(me_in_array, monsters[me_in_array].target_index);
         clear_range();
+        return 2;
     }
-    return 0;
 }
