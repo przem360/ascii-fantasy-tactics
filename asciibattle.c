@@ -460,8 +460,10 @@ void chase_figters(int mnstr, int fightr){
                 }
                 if (current_distance>(current_x_dist+current_y_dist)) {
                     current_distance = (current_x_dist+current_y_dist);
-                    finalx = j;
-                    finaly = i;
+                    // finalx = j;
+                    // finaly = i;
+                    finalx = i;
+                    finaly = j;
                 }
             }
         }
@@ -1010,6 +1012,10 @@ int ai_choose_action(char mid[2]) {
     /* decide about movement */
 
     /* check neighbour areas for enemies */
+    // proper monster range drawing:
+    // draw_monster_range(my_addr[1],my_addr[0],1);
+    // draw_interface();
+    // sleep(10);
     for(i=0;i<4;i++){
         for(j=0;j<amount_of_fighters;j++){
             /* back */
@@ -1038,7 +1044,7 @@ int ai_choose_action(char mid[2]) {
     }
     if(enemy_is_close>0){
         /* attack the first fighter who is close */
-        draw_monster_range(my_addr[0],my_addr[1],my_range);
+        draw_monster_range(my_addr[1],my_addr[0],my_range);
         draw_interface();
         sleep(2);
         resolve_monster_attack(me_in_array,fighter_found_in_array);
@@ -1047,7 +1053,7 @@ int ai_choose_action(char mid[2]) {
         return 1;
     }
     else {
-        draw_monster_range(my_addr[0],my_addr[1],my_range);
+        draw_monster_range(my_addr[1],my_addr[0],my_range);
         draw_interface();
         sleep(2);
         chase_figters(me_in_array, monsters[me_in_array].target_index);

@@ -76,7 +76,8 @@ int main (int argc, char *argv[]){
                 }
                 if (wasmoved == 0) {
                     // fid = get_array_index('f',);
-                    chase_figters(fid,monsters[mid].target_index);
+                    chase_figters(mid,monsters[mid].target_index);
+                    // chase_figters(me_in_array, monsters[me_in_array].target_index)
                     wasmoved = 1;
                     printf("fid: %d",fid);
                 }
