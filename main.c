@@ -104,14 +104,10 @@ int main (int argc, char *argv[]){
         // printf("whoseturn: %d, selected monster: %s \n",whoseturn,selected_monster);
         if (died >= amount_of_fighters){
             clear_screen();
-            printf("DIED FIGHTERS: %d / %d",died,amount_of_fighters);
-            printf("KILLED MONSTERS: %d / %d",killed,amount_of_monsters);
-            printf("You won! \n");
+            printf("You lost! \n");
         }
         if (killed >= amount_of_monsters){
             clear_screen();
-            printf("DIED FIGHTERS: %d / %d",died,amount_of_fighters);
-            printf("KILLED MONSTERS: %d / %d",killed,amount_of_monsters);
-            printf("You lost! \n");
+            printf("You won! \n");
         }
     }
