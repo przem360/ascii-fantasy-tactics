@@ -4,8 +4,6 @@
 #include "resources.h"
 #include "asciibattle.c"
 
-int killed = 0; /* how many monsters were killed by fighters */
-int died = 0;   /* how many fighters were killed by monsters */
 // char selected_fighter[] = "nn"; /* asciibattle.c is storing id of selected fighter here */
 char command[12];
 char command_code[1]; /* what analyse_command things about user input?*/
@@ -98,10 +96,22 @@ int main (int argc, char *argv[]){
             }
         }
         }
-        printf("Dice: %d",dice(20));
-        printf("POM: %d \n",player_or_monster);
-        printf("Turn: %d \n",whoseturn);
-        // printf("Command: %c \n",command_code[0]);
-        printf("Selected fighter: %s \n",selected_fighter);
-        printf("whoseturn: %d, selected monster: %s \n",whoseturn,selected_monster);
+        // printf("Dice: %d",dice(20));
+        // printf("POM: %d \n",player_or_monster);
+        // printf("Turn: %d \n",whoseturn);
+        // // printf("Command: %c \n",command_code[0]);
+        // printf("Selected fighter: %s \n",selected_fighter);
+        // printf("whoseturn: %d, selected monster: %s \n",whoseturn,selected_monster);
+        if (died >= amount_of_fighters){
+            clear_screen();
+            printf("DIED FIGHTERS: %d / %d",died,amount_of_fighters);
+            printf("KILLED MONSTERS: %d / %d",killed,amount_of_monsters);
+            printf("You won! \n");
+        }
+        if (killed >= amount_of_monsters){
+            clear_screen();
+            printf("DIED FIGHTERS: %d / %d",died,amount_of_fighters);
+            printf("KILLED MONSTERS: %d / %d",killed,amount_of_monsters);
+            printf("You lost! \n");
+        }
     }

@@ -48,6 +48,9 @@ int targets[] = {0,1,2,3};
 // int cursor_on = 1;
 const char alphabet[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
 
+int killed = 0; /* how many monsters were killed by fighters */
+int died = 0;   /* how many fighters were killed by monsters */
+
 int get_array_index(char type, char id[2]){
     int i;
     if (type == 'm') {
@@ -751,6 +754,7 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
     if (attack_success == 1){
         printip("HIT!",0);
         monsters[target_in_array].hp = monster_hp - spells[spell_in_array].dmg;
+        if (monsters[target_in_array].hp <= 0) {killed++;}
     }
     draw_interface();
     return 0;
@@ -805,6 +809,7 @@ int resolve_attack(char pid[2],char taddr[3]){
     if (attack_success == 1){
         printip("HIT!",1);
         monsters[target_in_array].hp = monster_hp - damage;
+        if (monsters[target_in_array].hp<=0) { killed++; }
     } else {
         printip("MISS",1);
     }
@@ -820,6 +825,7 @@ int resolve_monster_attack(int mnst,int figh){
         printip("HIT!",1);
         draw_interface();
         pcs[figh].hp = fighter_hp - damage;
+        if (pcs[figh].hp<=0) { died++;}
     }
     else {
         printip("MISS!",1);
