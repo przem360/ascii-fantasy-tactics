@@ -468,10 +468,12 @@ void chase_figters(int mnstr, int fightr){
             }
         }
     }
-    printf("finalx: %d \n",finalx);
-    screen[monsters[mnstr].x_position][monsters[mnstr].y_position] = BASE_CHAR;
-    monsters[mnstr].x_position = finalx;
-    monsters[mnstr].y_position = finaly;
+    // printf("finalx: %d \n",finalx);
+    if ((finalx>0)&&(finaly>0)) {
+        screen[monsters[mnstr].x_position][monsters[mnstr].y_position] = BASE_CHAR;
+        monsters[mnstr].x_position = finalx;
+        monsters[mnstr].y_position = finaly;
+    }
 }
 
 char analyse_command(char comm[12]) {
