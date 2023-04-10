@@ -10,6 +10,7 @@ void print_screen(void);
 void place_figures(void);
 void draw_range(int xpos, int ypos,int radius, char mode);
 void draw_monster_range(int xpos, int ypos,int radius);
+// void draw_white_magic_range(int xpos, int ypos,int radius);
 void chase_figters(int mnstr, int fightr);
 void clear_range();
 void clear_screen(void);
@@ -343,11 +344,6 @@ void draw_range(int xpos, int ypos, int radius, char mode){
 void draw_monster_range(int xpos, int ypos,int radius) {
     int i, rad, m;
     /* lest flip x and y values just for test */
-    // int tmpx, tmpy;
-    // tmpx = xpos;
-    // tmpy = ypos;
-    // xpos = tmpy;
-    // ypos = tmpx;
     clear_range();
     for (rad=radius;rad>=0;rad--){
     for(i=0;i<=radius;i++) {
@@ -557,9 +553,15 @@ int ask_spells(char pid[2]){
         // printf("Spell counter: %d \n",sp_counter);
         printf("Select spell > ");
         scanf("%s",chspell);
-        for (i=0;i<amount_of_fighters_spells;i++){
-            if(av_spells[i][0]==chspell[0] && av_spells[i][1]==chspell[1]){
-                // printf("Casting %c%c",spells[i].id[0],spells[i].id[1]);
+        // for (i=0;i<amount_of_fighters_spells;i++){
+        //     if(av_spells[i][0]==chspell[0] && av_spells[i][1]==chspell[1]){
+        //         // printf("Casting %c%c",spells[i].id[0],spells[i].id[1]);
+        //         return i+1;
+        //     }
+        // }
+        for (i=0;i<amount_of_spells;i++) {
+            if (spells[i].id[0]==chspell[0] && spells[i].id[1]==chspell[1]) {
+                printip("Found spell",0);
                 return i+1;
             }
         }
@@ -912,13 +914,21 @@ int player_action_cast(char pid[2]){
     s = ask_spells(pid);
     // printf("Casted spell no.: %d",s);
     if (s>0){
-        // s--;
+        s--;
         rad = spells[s].range / 10;
         for(i=0;i<amount_of_fighters;i++){
             if (pcs[i].id[0] == pid[0] && pcs[i].id[1] == pid[1] && rad>0){
                 selected_x = pcs[i].x_position;
                 selected_y = pcs[i].y_position;
-                draw_range(selected_y,selected_x,rad,'c');
+                if (spells[s].recov > 0) {
+                    /* using monster range for white magic spells */
+                    printf("White spell: %s, s: %d",spells[s].id,s);
+                    draw_monster_range(selected_y,selected_x,rad);
+                }
+                else {
+                    printf("Black spell: %s, s: %d",spells[s].id,s);
+                    draw_range(selected_y,selected_x,rad,'c');
+                }
                 printip("Spell target",1);
                 /* Spell target selection here */
                 draw_interface();
