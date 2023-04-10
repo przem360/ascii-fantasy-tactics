@@ -136,7 +136,7 @@ void cleanip(){
     int info_panel_size = sizeof(info_panel) / sizeof(info_panel[0]);
     int ip_line_size = sizeof(info_panel[0]);
     int i,y;
-    for (i=1;i<info_panel_size;i++) {
+    for (i=0;i<info_panel_size;i++) {
         for (y=1;y<ip_line_size-1;y++) {
             info_panel[i][y] = ' ';
         }
@@ -700,13 +700,43 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
        2) Saving throw. If d20 is bigger that targets .saves, than target is saved,
         otherwise deal DMG.*/
     int dca, dcs, spell_in_array, target_in_array, foundm;
-    int i, attack_success, monster_hp;
+    int i, attack_success, monster_hp, fighter_hp;
     foundm = 0;
     attack_success = 0;
     monster_hp = 0;
     printip("Resolving spell",0);
     adresstocoords(taddr);
     /*target address is in coords[0] and coords[1] */
+
+    /* Let's find spell index */
+    for(i=0;i<amount_of_spells;i++){
+        if((spells[i].id[0]==sid[0])&&(spells[i].id[1]==sid[1])){
+            spell_in_array = i;
+        }
+    }
+    /* check if spells[spell_in_array].recov is greater than 0, 
+    if so, it is white magic, targetting fighter. */
+
+    if (spells[spell_in_array].recov > 0) {
+        /* Let's find target in monsters array */
+        for (i=0; i<amount_of_fighters;i++){
+            if((pcs[i].x_position == coords[0])&&(pcs[i].y_position == coords[1])){
+                foundm = 1;
+                target_in_array = i;
+            }
+        }
+        if (foundm == 0) {
+            printip("Nothing there!",0);
+            draw_interface();
+            return 0;
+        }
+        fighter_hp = pcs[target_in_array].hp + spells[spell_in_array].recov;
+        pcs[target_in_array].hp = fighter_hp;
+        printip("HP recovered!",0);
+        draw_interface();
+        return 1;
+    }
+
     dca = dice(20);
     dcs = dice(20);
     if (dca == 1) {
@@ -742,13 +772,6 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
     if (dcs >= monsters[target_in_array].saves) {
         printip("MISS!",0);
         return 0;
-    }
-    
-    /* Let's find target in monsters array */
-    for(i=0;i<amount_of_spells;i++){
-        if((spells[i].id[0]==sid[0])&&(spells[i].id[1]==sid[1])){
-            spell_in_array = i;
-        }
     }
 
     if (attack_success == 1){
