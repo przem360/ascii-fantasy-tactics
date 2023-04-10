@@ -901,6 +901,17 @@ int player_action_cast(char pid[2]){
                 draw_interface();
                 // printip("Spell target",1);
                 scanf("%s",targetaddr);
+                // clear_range();
+                /* check if target in range before resolving spell */
+                adresstocoords(targetaddr);
+                // printf("Checking %d,%d \n",coords[0],coords[1]);
+                // printf("Found char: %c \n",screen[coords[0]][coords[1]]);
+                if (screen[coords[0]][coords[1]]!=TARGET_CHAR) {
+                    printip("NOT IN RANGE!",0);
+                    done = 0;
+                    clear_range();
+                    return done;
+                }
                 clear_range();
                 resolve_spell(pid,targetaddr,spells[s].id);
                 done = 1;
@@ -933,9 +944,19 @@ int player_action_attack(char pid[2]){
             printip("Choose target",1);
             draw_interface();
             scanf("%s",targetaddr);
-            clear_range();
+            // clear_range();
             if (targetaddr[0]=='q') {done = 0;}
             /* resolve_attack(); */
+            adresstocoords(targetaddr);
+            // printf("Attacking %d,%d",coords[0],coords[1]);
+            // printf("Found char: %c",screen[coords[0]][coords[1]]);
+            if (screen[coords[0]][coords[1]]!=TARGET_CHAR) {
+                    printip("NOT IN RANGE!",0);
+                    done = 0;
+                    clear_range();
+                    return done;
+                }
+            clear_range();
             resolve_attack(pid,targetaddr);
             draw_interface();
             done = 1;
