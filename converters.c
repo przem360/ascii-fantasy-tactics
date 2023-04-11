@@ -1,5 +1,6 @@
 #include <ctype.h>
 #include <stdlib.h>
+#include <time.h> /* for seeding rand() with time */
 
 int letters_to_numbers(char letter);
 int string_to_number(char* str);
@@ -161,7 +162,7 @@ int startswith(const char *a, const char *b)
 }
 
 void shuffle(int *array, int n) {
-    srand(495);
+    srand(time(0));
     int i;
     for (i=0;i<n-1;i++) {
         int j = i+rand() / (RAND_MAX/(n-1)+1);

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h> /* for pausing on POSIX */
 // #include <dos.h> /* for pausing on Windows */
+#include <time.h> /* for seeding rand() with time */
 #include "converters.c"
 
 int get_array_index(char type, char id[2]);
@@ -502,6 +503,7 @@ int  dice(int maxv) {
     int lower = 1;
     int upper = maxv;
     int rnum;
+    srand(time(0));
     rnum = (rand() % (upper-lower+1))+lower;
     return rnum;
 }
