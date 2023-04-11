@@ -522,9 +522,10 @@ void clean_side_panel(){
 int ask_spells(char pid[2]){
     /* print fields id and name, from array spells[3],
        based on spells[4][2] from array pcs */
-    int i,y,amount_of_fighters_spells,sp_counter;
+    int i,y,z,amount_of_fighters_spells,sp_counter;
     amount_of_fighters_spells = 4;
     char av_spells[4][2];
+    char av_spells_names[4][12];
     char chspell[2];
     /* cleaning av_spells*/
     for(i=0;i<4;i++){
@@ -546,7 +547,13 @@ int ask_spells(char pid[2]){
     for(i=0;i<4;i++){
         if (av_spells[i][0] != 'n' && av_spells[i][1] != 'n'){
             sp_counter++;
-            printf(" [%c%c] Spell name |",av_spells[i][0],av_spells[i][1]);
+            for (z=0;z<amount_of_spells;z++) {
+                if((spells[z].id[0] == av_spells[i][0]) && (spells[z].id[1] == av_spells[i][1])){
+                    // av_spells_names[i] = spells[z].name;
+                    memcpy(av_spells_names[i], spells[z].name,sizeof(spells[z].name));
+                }
+            }
+            printf(" [%c%c] %s |",av_spells[i][0],av_spells[i][1],av_spells_names[i]);
         }
     }
     printf("\n");
