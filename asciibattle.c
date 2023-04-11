@@ -563,12 +563,6 @@ int ask_spells(char pid[2]){
         // printf("Spell counter: %d \n",sp_counter);
         printf("Select spell > ");
         scanf("%s",chspell);
-        // for (i=0;i<amount_of_fighters_spells;i++){
-        //     if(av_spells[i][0]==chspell[0] && av_spells[i][1]==chspell[1]){
-        //         // printf("Casting %c%c",spells[i].id[0],spells[i].id[1]);
-        //         return i+1;
-        //     }
-        // }
         for (i=0;i<amount_of_spells;i++) {
             if (spells[i].id[0]==chspell[0] && spells[i].id[1]==chspell[1]) {
                 printip("Found spell",0);
@@ -743,6 +737,9 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
             return 0;
         }
         fighter_hp = pcs[target_in_array].hp + spells[spell_in_array].recov;
+        if (fighter_hp>pcs[target_in_array].max_hp){
+            fighter_hp = pcs[target_in_array].max_hp;
+        }
         pcs[target_in_array].hp = fighter_hp;
         printip("HP recovered!",0);
         draw_interface();
@@ -932,11 +929,11 @@ int player_action_cast(char pid[2]){
                 selected_y = pcs[i].y_position;
                 if (spells[s].recov > 0) {
                     /* using monster range for white magic spells */
-                    printf("White spell: %s, s: %d",spells[s].id,s);
+                    // printf("White spell: %s, s: %d",spells[s].id,s);
                     draw_monster_range(selected_y,selected_x,rad);
                 }
                 else {
-                    printf("Black spell: %s, s: %d",spells[s].id,s);
+                    // printf("Black spell: %s, s: %d",spells[s].id,s);
                     draw_range(selected_y,selected_x,rad,'c');
                 }
                 printip("Spell target",1);
@@ -1084,10 +1081,6 @@ int ai_choose_action(char mid[2]) {
     /* decide about movement */
 
     /* check neighbour areas for enemies */
-    // proper monster range drawing:
-    // draw_monster_range(my_addr[1],my_addr[0],1);
-    // draw_interface();
-    // sleep(10);
     for(i=0;i<4;i++){
         for(j=0;j<amount_of_fighters;j++){
             /* back */
