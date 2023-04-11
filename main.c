@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "defs.h"
+#include "settings.h"
 #include "resources.h"
 #include "asciibattle.c"
 
