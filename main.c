@@ -33,22 +33,29 @@ int main (int argc, char *argv[]){
         let_move();
         draw_interface();
         if (player_or_monster == 1){
+            /* Monster's move */
             printf("Command > ");
             fgets(command,12,stdin);
             command_code[0] = analyse_command(command);
             if (command_code[0] == 'm'){
-                printip("MOVING",1);
-                wasmoved = player_action_move(selected_fighter);
+                if (wasmoved == 0) {
+                    printip("MOVING",1);
+                    wasmoved = player_action_move(selected_fighter);
+                }
             }
             if (command_code[0] == 'a'){
-                tookaction = player_action_attack(selected_fighter);
-                printip("ATTACKING",1);
-                draw_interface();
+                if (tookaction == 0) {
+                    printip("ATTACKING",1);
+                    tookaction = player_action_attack(selected_fighter);
+                    // draw_interface();
+                }
             }
             if (command_code[0] == 'c'){
-                tookaction = player_action_cast(selected_fighter);
-                printip("CASTED SPELL",1);
-                draw_interface();
+                if (tookaction == 0) {
+                    printip("CAST SPELL",1);
+                    tookaction = player_action_cast(selected_fighter);
+                    // draw_interface();
+                }
             }
             if (command_code[0] == 's'){
                 // player_action_move(selected_fighter);
