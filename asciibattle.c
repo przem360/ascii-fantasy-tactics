@@ -35,7 +35,8 @@ int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3
 int let_move(void);
 void monsters_action(void);
 int ai_choose_action(char mid[2]);
-int  dice(int maxv);
+int dice(int maxv);
+void info_screen(void);
 
 
 int side_panel_size = sizeof(side_panel)/sizeof(side_panel[0]);
@@ -1131,4 +1132,29 @@ int ai_choose_action(char mid[2]) {
         clear_range();
         return 2;
     }
+}
+
+void info_screen(void){
+    int i,j;
+    char key[1];
+    clear_screen();
+    printf("-------- FIGHTERS --------\n");
+    printf("\n");
+    for (i=0;i<amount_of_fighters;i++) {
+        if ((pcs[i].id[0] == selected_fighter[0])&&(pcs[i].id[1] == selected_fighter[1])){
+            printf(" > [%c] %s     HP:%d/40\n",pcs[i].letter,pcs[i].name,pcs[i].hp);
+        }
+        else {
+            printf("   [%c] %s     HP:%d/40\n",pcs[i].letter,pcs[i].name,pcs[i].hp);
+        }
+    }
+    printf("\n\n-------- MONSTERS --------\n");
+    printf("\n");
+    for (j=0;j<amount_of_monsters;j++) {
+        printf("   [%c] %s %s     HP:%d\n",monsters[j].letter,monsters[j].name,monsters[j].race, monsters[j].hp);
+    }
+    printf("\n\n--------------------------\n");
+    printf("\n");
+    printf("Press any key... ");
+    scanf("%c",key);
 }

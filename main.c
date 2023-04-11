@@ -33,7 +33,7 @@ int main (int argc, char *argv[]){
         let_move();
         draw_interface();
         if (player_or_monster == 1){
-            /* Monster's move */
+            /* Player's move */
             printf("Command > ");
             fgets(command,12,stdin);
             command_code[0] = analyse_command(command);
@@ -63,6 +63,9 @@ int main (int argc, char *argv[]){
                 wasmoved = 1;
                 tookaction = 1;
                 // whoseturn++;
+            }
+            if (command_code[0] == 'i'){
+                info_screen();
             }
         }
         if (player_or_monster == 2){

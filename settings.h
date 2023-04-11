@@ -4,5 +4,5 @@
 #define BASE_CHAR '.'
 #define TARGET_CHAR 'x'
 #define DEAD_BODY_CHAR '~'
-const char av_commands[5][6] = {"move", "attack", "cast", "skip", "quit"};
+const char av_commands[6][6] = {"move", "attack", "cast", "skip", "quit","info"};
 
