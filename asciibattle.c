@@ -37,6 +37,7 @@ void monsters_action(void);
 int ai_choose_action(char mid[2]);
 int dice(int maxv);
 void info_screen(void);
+int get_fighter_by_position(int x, int y);
 
 
 int side_panel_size = sizeof(side_panel)/sizeof(side_panel[0]);
@@ -74,14 +75,14 @@ int get_array_index(char type, char id[2]){
 }
 
 void clear_screen(void){
-    // system("clear"); //*nix
+    system("clear"); //*nix
     // system("cls"); //windows
     // dummy:
-    int i,l;
-    l = 50;
-    for (i=0;i<l;i++){
-        printf("\n");
-    }
+    // int i,l;
+    // l = 50;
+    // for (i=0;i<l;i++){
+    //     printf("\n");
+    // }
 }
 
 void print_screen() {
@@ -181,7 +182,7 @@ void place_figures(){
     for (i=0; i<amount_of_monsters;i++) {
         mxp = monsters[i].x_position;
         myp = monsters[i].y_position;
-        printf("mxp: %d myp: %d \n",mxp,myp);
+        // printf("mxp: %d myp: %d \n",mxp,myp);
         if ((mxp>=0)&&(myp>=0)&&(mxp<14)&&(myp<22)) {
             if(screen[mxp][myp] != TARGET_CHAR){
             screen[mxp][myp] = monsters[i].letter;
@@ -349,7 +350,7 @@ void draw_monster_range(int xpos, int ypos,int radius) {
     clear_range();
     for (rad=radius;rad>=0;rad--){
     for(i=0;i<=radius;i++) {
-        printf("ypos-i: %d",ypos-i);
+        // printf("ypos-i: %d",ypos-i);
         if (screen[ypos-i][xpos] == BASE_CHAR){
             screen[ypos-i][xpos] = RANGE_CHAR;
         } else {
@@ -857,7 +858,11 @@ int resolve_monster_attack(int mnst,int figh){
         printip("HIT!",1);
         draw_interface();
         pcs[figh].hp = fighter_hp - damage;
-        if (pcs[figh].hp<=0) { died++;}
+        if (pcs[figh].hp<=0) { 
+            pcs[figh].letter = DEAD_BODY_CHAR;
+            died++;
+            draw_interface();
+            }
     }
     else {
         printip("MISS!",1);
@@ -1062,7 +1067,9 @@ void monsters_action(){
 
 int ai_choose_action(char mid[2]) {
     printip("Choosing action",1);
-    int i,j,my_range,enemy_is_close, me_in_array, fighter_found_in_array;
+    int i,j, my_range,enemy_is_close, me_in_array, fighter_found_in_array;
+    // int fighter_in_range,coin;
+    //fighter_in_range = 99;
     my_range = 0;
     enemy_is_close = 0;
     fighter_found_in_array = 0;
@@ -1118,9 +1125,22 @@ int ai_choose_action(char mid[2]) {
         return 1;
     }
     else {
+        // coin = dice(10);
         draw_monster_range(my_addr[1],my_addr[0],my_range);
         draw_interface();
         sleep(2);
+        // if (coin<5) {
+        //     for (i=0;i<SCREEN_HEIGHT;i++){
+        //         for (j=0;j<SCREEN_WIDTH;j++){
+        //             if (screen[i][j]==TARGET_CHAR) {
+        //                 fighter_in_range = get_fighter_by_position(i,j);
+        //                 chase_figters(me_in_array,fighter_in_range);
+        //                 clear_range();
+        //                 return 2;
+        //             }
+        //         }
+        //     }
+        // }
         chase_figters(me_in_array, monsters[me_in_array].target_index);
         clear_range();
         return 2;
@@ -1131,23 +1151,33 @@ void info_screen(void){
     int i,j;
     char key[1];
     clear_screen();
-    printf("-------- FIGHTERS --------\n");
+    printf("------------ FIGHTERS ------------\n");
     printf("\n");
     for (i=0;i<amount_of_fighters;i++) {
         if ((pcs[i].id[0] == selected_fighter[0])&&(pcs[i].id[1] == selected_fighter[1])){
-            printf(" > [%c] %6s  HP:%d/40\n",pcs[i].letter,pcs[i].name,pcs[i].hp);
+            printf(" > [%c] %6s  HP:%d/%d\n",pcs[i].letter,pcs[i].name,pcs[i].hp,pcs[i].max_hp);
         }
         else {
-            printf("   [%c] %6s  HP:%d/40\n",pcs[i].letter,pcs[i].name,pcs[i].hp);
+            printf("   [%c] %6s  HP:%d/%d\n",pcs[i].letter,pcs[i].name,pcs[i].hp,pcs[i].max_hp);
         }
     }
-    printf("\n\n-------- MONSTERS --------\n");
+    printf("\n\n------------ MONSTERS ------------\n");
     printf("\n");
     for (j=0;j<amount_of_monsters;j++) {
         printf(" [%c] %6s %14s  HP:%d\n",monsters[j].letter,monsters[j].name,monsters[j].race, monsters[j].hp);
     }
-    printf("\n\n--------------------------\n");
+    printf("\n\n----------------------------------\n");
     printf("\n");
     printf("Press any key... ");
     scanf("%c",key);
+}
+
+int get_fighter_by_position(int x, int y){
+    int i;
+    for (i=0;i<amount_of_fighters;i++){
+        if ((pcs[i].x_position == x)&&(pcs[i].y_position == y)){
+            return i;
+        }
+    }
+    return 99;
 }
