@@ -478,13 +478,13 @@ void chase_figters(int mnstr, int fightr){
     }
 }
 
-char analyse_command(char comm[12]) {
+char analyse_command(char comm[6]) {
     int y;
     char *comml = strtolower(comm, 12);
     int amount_of_available_commands = sizeof(av_commands) / sizeof(av_commands[0]);
     if (startswith("knock knock",comml)) {
         cleanip();
-        printip("Whos there?",1);
+        printip("Whos there?        ",1);
         return 'k';
     }
     if ((strlen(comml) < 3)&&(comml[0] == 'q')){
@@ -493,7 +493,7 @@ char analyse_command(char comm[12]) {
     for (y=0;y<amount_of_available_commands;y++){
         if(strcmp(av_commands[y], comml)){
             cleanip();
-            printip("Command found!",1);
+            printip("Command found!     ",1);
             /* make it return the letter of command*/
             return comml[0];
         }   
@@ -566,7 +566,7 @@ int ask_spells(char pid[2]){
         scanf("%s",chspell);
         for (i=0;i<amount_of_spells;i++) {
             if (spells[i].id[0]==chspell[0] && spells[i].id[1]==chspell[1]) {
-                printip("Found spell",0);
+                printip("Found spell        ",0);
                 return i+1;
             }
         }
@@ -711,7 +711,7 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
     foundm = 0;
     attack_success = 0;
     monster_hp = 0;
-    printip("Resolving spell",0);
+    printip("Resolving spell    ",0);
     adresstocoords(taddr);
     /*target address is in coords[0] and coords[1] */
 
@@ -733,7 +733,7 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
             }
         }
         if (foundm == 0) {
-            printip("Nothing there!",0);
+            printip("Nothing there!     ",0);
             draw_interface();
             return 0;
         }
@@ -742,7 +742,7 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
             fighter_hp = pcs[target_in_array].max_hp;
         }
         pcs[target_in_array].hp = fighter_hp;
-        printip("HP recovered!",0);
+        printip("HP recovered!      ",0);
         draw_interface();
         return 1;
     }
@@ -750,12 +750,12 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
     dca = dice(20);
     dcs = dice(20);
     if (dca == 1) {
-        printip("MISS!",0);
+        printip("MISS!              ",0);
         draw_interface();
         return 0;
     }
     if (dcs == 1) {
-        printip("MISS!",0);
+        printip("MISS!              ",0);
         draw_interface();
         return 0;
     }
@@ -767,7 +767,7 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
         }
     }
     if (foundm == 0) {
-        printip("Nothing there!",1);
+        printip("Nothing there!     ",1);
         draw_interface();
         return 0;
     }
@@ -780,12 +780,12 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
         attack_success = 0;
     }
     if (dcs >= monsters[target_in_array].saves) {
-        printip("MISS!",0);
+        printip("MISS!              ",0);
         return 0;
     }
 
     if (attack_success == 1){
-        printip("HIT!",0);
+        printip("HIT!               ",0);
         monsters[target_in_array].hp = monster_hp - spells[spell_in_array].dmg;
         if (monsters[target_in_array].hp <= 0) {killed++;}
     }
@@ -803,7 +803,7 @@ int resolve_attack(char pid[2],char taddr[3]){
     attack_success = 0;
     foundm=0;
     monster_hp = 0;
-    printip("Resolving attack",1);
+    printip("Resolving attack...",1);
     draw_interface();
     adresstocoords(taddr);
     // printf("Read coords: %c %c resulting addr: %d %d \n",taddr[0],taddr[1],coords[0],coords[1]);
@@ -820,7 +820,7 @@ int resolve_attack(char pid[2],char taddr[3]){
         }
     }
     if (foundm == 0) {
-        printip("Nothing there!",1);
+        printip("Nothing there!     ",1);
         draw_interface();
         return 0;
     }
@@ -840,11 +840,11 @@ int resolve_attack(char pid[2],char taddr[3]){
     }
 
     if (attack_success == 1){
-        printip("HIT!",1);
+        printip("HIT!               ",1);
         monsters[target_in_array].hp = monster_hp - damage;
         if (monsters[target_in_array].hp<=0) { killed++; }
     } else {
-        printip("MISS",1);
+        printip("MISS!              ",1);
     }
     return 0;
 }
@@ -855,7 +855,7 @@ int resolve_monster_attack(int mnst,int figh){
     dca = dice(20);
     fighter_hp = pcs[figh].hp;
     if ((dca>=pcs[figh].ac)||(dca==20)) {
-        printip("HIT!",1);
+        printip("HIT!               ",1);
         draw_interface();
         pcs[figh].hp = fighter_hp - damage;
         if (pcs[figh].hp<=0) { 
@@ -865,7 +865,7 @@ int resolve_monster_attack(int mnst,int figh){
             }
     }
     else {
-        printip("MISS!",1);
+        printip("MISS!              ",1);
         draw_interface();
     }
     return 0;
@@ -880,11 +880,11 @@ int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3
         pcs[number_in_array].x_position = coords[0];
         pcs[number_in_array].y_position = coords[1];
         clear_range();
-        printip("Moved.",1);
+        printip("Moved...           ",1);
         return 1;
     }
     else{
-        printip("Can\'t move",1);
+        printip("Can\'t move...      ",1);
         clear_range();
         pcs[number_in_array].x_position = fx;
         pcs[number_in_array].y_position = fy;
@@ -905,7 +905,7 @@ int player_action_move(char pid[2]){
             fighter_letter = pcs[i].letter;
             rad = pcs[i].mov / 10;
             arrnum = i;
-            printip("Specify adress...",1);
+            printip("Specify adress...  ",1);
             draw_range(selected_y,selected_x,rad,'m');
         }
     }
@@ -920,7 +920,7 @@ int player_action_cast(char pid[2]){
     int i, s, selected_x, selected_y, rad, done;
     done = 0;
     char targetaddr[3];
-    printip("Choose spell",1);
+    printip("Choose spell       ",1);
     // clean_side_panel();
     // draw_interface();
     s = ask_spells(pid);
@@ -941,7 +941,7 @@ int player_action_cast(char pid[2]){
                     // printf("Black spell: %s, s: %d",spells[s].id,s);
                     draw_range(selected_y,selected_x,rad,'c');
                 }
-                printip("Spell target",1);
+                printip("Spell target       ",1);
                 /* Spell target selection here */
                 draw_interface();
                 // printip("Spell target",1);
@@ -952,7 +952,7 @@ int player_action_cast(char pid[2]){
                 // printf("Checking %d,%d \n",coords[0],coords[1]);
                 // printf("Found char: %c \n",screen[coords[0]][coords[1]]);
                 if (screen[coords[0]][coords[1]]!=TARGET_CHAR) {
-                    printip("NOT IN RANGE!",0);
+                    printip("NOT IN RANGE!      ",0);
                     done = 0;
                     clear_range();
                     return done;
@@ -986,7 +986,7 @@ int player_action_attack(char pid[2]){
                 }
             }
             draw_range(selected_y,selected_x,rad,'c');
-            printip("Choose target",1);
+            printip("Choose target      ",1);
             draw_interface();
             scanf("%s",targetaddr);
             // clear_range();
@@ -996,7 +996,7 @@ int player_action_attack(char pid[2]){
             // printf("Attacking %d,%d",coords[0],coords[1]);
             // printf("Found char: %c",screen[coords[0]][coords[1]]);
             if (screen[coords[0]][coords[1]]!=TARGET_CHAR) {
-                    printip("NOT IN RANGE!",0);
+                    printip("NOT IN RANGE!      ",0);
                     done = 0;
                     clear_range();
                     return done;
@@ -1022,7 +1022,7 @@ int let_move(){
                 selected_fighter[0] = pcs[i].id[0];
                 selected_fighter[1] = pcs[i].id[1]; 
                 player_or_monster = 1;
-                printip("Player\'s turn",1);
+                printip("Player\'s turn      ",1);
             }
         }
     }
@@ -1038,7 +1038,7 @@ int let_move(){
                 selected_monster[0] = monsters[i].id[0];
                 selected_monster[1] = monsters[i].id[1]; 
                 player_or_monster = 2;
-                printip("Monster\'s turn",1);
+                printip("Monster\'s turn     ",1);
             // }
         }
     }
@@ -1052,12 +1052,12 @@ void monsters_action(){
     for (i=0;i<amount_of_monsters;i++) {
         if ((monsters[i].id[0] == selected_monster[0])&&(monsters[i].id[1] == selected_monster[1])){
             if (monsters[i].hp<=0) {
-                printip("DEAD ONE :(",1);
+                printip("DEAD ONE :(        ",1);
                 draw_interface();
                 // whoseturn++;
             }
             else {
-                printip("I\'ll skip",1);
+                printip("I\'ll skip          ",1);
                 draw_interface();
                 // whoseturn++;
             }
@@ -1066,7 +1066,7 @@ void monsters_action(){
 }
 
 int ai_choose_action(char mid[2]) {
-    printip("Choosing action",1);
+    printip("Choosing action    ",1);
     int i,j, my_range,enemy_is_close, me_in_array, fighter_found_in_array;
     // int fighter_in_range,coin;
     //fighter_in_range = 99;

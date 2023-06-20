@@ -39,27 +39,27 @@ int main (int argc, char *argv[]){
             command_code[0] = analyse_command(command);
             if (command_code[0] == 'm'){
                 if (wasmoved == 0) {
-                    printip("MOVING",1);
+                    printip("MOVING             ",1);
                     wasmoved = player_action_move(selected_fighter);
                 }
             }
             if (command_code[0] == 'a'){
                 if (tookaction == 0) {
-                    printip("ATTACKING",1);
+                    printip("ATTACKING          ",1);
                     tookaction = player_action_attack(selected_fighter);
                     // draw_interface();
                 }
             }
             if (command_code[0] == 'c'){
                 if (tookaction == 0) {
-                    printip("CAST SPELL",1);
+                    printip("CAST SPELL         ",1);
                     tookaction = player_action_cast(selected_fighter);
                     // draw_interface();
                 }
             }
             if (command_code[0] == 's'){
                 // player_action_move(selected_fighter);
-                printip("SKIPPING",1);
+                printip("SKIPPING...        ",1);
                 wasmoved = 1;
                 tookaction = 1;
                 // whoseturn++;
