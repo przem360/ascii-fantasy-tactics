@@ -119,10 +119,14 @@ Saving throw - d20 against number. 1 is always failure, 20 alway success.
 If number + modifier equals or exceeds target number, the roll is success,
 otherwise faild.
 */
-
-struct enemy beasts[18] = {
+// todo: 5,7,9,11
+struct enemy beasts[28] = {
     {'b',"b1",1,"Bill","Bat","Bat attacks!",4,14,30,4,7,18,0,1,4,2},
     {'s',"s1",3,"Steve","Bat","Bat attacks!",4,14,30,4,7,18,0,1,3,2},
+    {'g',"g4",1,"Benny","Red_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,4},
+    {'g',"g5",1,"Mitch","Blue_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,4},
+    {'g',"g6",1,"Jim","Red_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,4},
+    {'g',"g7",1,"Phil","Blue_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,4},
     {'g',"g1",1,"Fred","Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,12},
     {'r',"r1",3,"Rogue","Human","Rogue attacks",5,13,40,4,7,18,0,1,4,12},
     {'t',"t1",5,"Ted",  "Tentacle_Worm","Squeezed you hard!",14,13,30,8,7,18,0,1,5,12},
@@ -135,11 +139,18 @@ struct enemy beasts[18] = {
     {'b',"b2",3,"Bob","Squidrakin","Squidrakin attacks",5,13,40,4,7,18,0,1,4,8},
     {'t',"s2",5,"Skinny",  "Skeleton","Whooa!",4,13,30,8,7,18,0,2,5,8},
     {'g',"g2",7,"George", "Ghoul","Fire breed attack!",5,14,40,6,9,20,0,1,6,8},
+    {'m',"m2",1,"Mini","Big Rat","Rat attacks!",4,14,30,4,7,18,0,1,4,16},
+    {'m',"m3",3,"Moe","Big Rat","Rat attacks!",4,14,30,4,7,18,0,1,3,16},
     {'f',"f1",1,"Pixie","Floating_Eye","Eye attacks!",8,14,30,4,7,18,0,1,3,17},
     {'n',"n1",3,"Nina","Dryad","Dryad attacks",4,13,40,4,7,18,0,1,4,17},
     {'d',"d1",5,"Danny",  "Red_Dragon","eat you alive!",10,13,30,8,7,18,0,1,5,17},
     {'z',"z1",7,"ZooZoo", "Zalera","Zalera attacks!",6,14,40,6,9,20,0,1,6,17},
+    {'g',"g3",1,"Red","Red_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,21},
+    {'b',"b4",3,"Boby","Bomb","Bomb attacks!",5,13,40,4,7,18,0,2,4,21},
+    {'t',"t1",5,"Tipy",  "Treant","Treant attacks!",14,13,30,8,7,18,0,1,5,21},
+    {'h',"h2",7,"Bixy", "Behemoth","Fire breed attack!",18,14,40,6,9,20,0,1,6,21},
 };
+
 
 struct enemy monsters[4];
 
