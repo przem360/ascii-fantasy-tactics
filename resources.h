@@ -120,13 +120,25 @@ If number + modifier equals or exceeds target number, the roll is success,
 otherwise faild.
 */
 
-struct enemy beasts[6] = {
+struct enemy beasts[18] = {
+    {'b',"b1",1,"Bill","Bat","Bat attacks!",4,14,30,4,7,18,0,1,4,2},
+    {'s',"s1",3,"Steve","Bat","Bat attacks!",4,14,30,4,7,18,0,1,3,2},
     {'g',"g1",1,"Fred","Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,12},
     {'r',"r1",3,"Rogue","Human","Rogue attacks",5,13,40,4,7,18,0,1,4,12},
     {'t',"t1",5,"Ted",  "Tentacle_Worm","Squeezed you hard!",14,13,30,8,7,18,0,1,5,12},
     {'h',"h1",7,"BadBoy", "Hell_Hound","Fire breed attack!",18,14,40,6,9,20,0,1,6,12},
-    {'b',"b1",1,"Bill","Bat","Bat attacks!",4,14,30,4,7,18,0,1,4,2},
-    {'s',"s1",3,"Steve","Bat","Bat attacks!",4,14,30,4,7,18,0,1,3,2}
+    {'m',"m1",1,"Max","Minotaur","Minotaur attacks!",8,14,30,4,7,18,0,3,8,13},
+    {'b',"b3",3,"Badok","Malboro","Malboro attacks",8,13,30,4,7,18,0,1,4,13},
+    {'c',"c1",5,"Baghun",  "Cúchulainn","Cúchulainn attacks!",14,13,30,8,7,18,0,2,10,13},
+    {'z',"z2",7,"Ziggy", "Zombie_Vampire","Vampire attacks!",4,14,40,6,9,20,0,1,6,13},
+    {'p',"p1",1,"Purr","Wampire_Cat","Cat attacks!",6,14,40,4,7,18,0,3,5,8},
+    {'b',"b2",3,"Bob","Squidrakin","Squidrakin attacks",5,13,40,4,7,18,0,1,4,8},
+    {'t',"s2",5,"Skinny",  "Skeleton","Whooa!",4,13,30,8,7,18,0,2,5,8},
+    {'g',"g2",7,"George", "Ghoul","Fire breed attack!",5,14,40,6,9,20,0,1,6,8},
+    {'f',"f1",1,"Pixie","Floating_Eye","Eye attacks!",8,14,30,4,7,18,0,1,3,17},
+    {'n',"n1",3,"Nina","Dryad","Dryad attacks",4,13,40,4,7,18,0,1,4,17},
+    {'d',"d1",5,"Danny",  "Red_Dragon","eat you alive!",10,13,30,8,7,18,0,1,5,17},
+    {'z',"z1",7,"ZooZoo", "Zalera","Zalera attacks!",6,14,40,6,9,20,0,1,6,17},
 };
 
 struct enemy monsters[4];
