@@ -23,7 +23,7 @@ char analyse_command(char comm[6]);
 void clean_side_panel(void);
 void print_to_side_panel(void);
 int ask_spells(char pid[2]);
-void ascii_battle_init(void);
+void ascii_battle_init(int location);
 int player_action_move(char pid[2]);
 int player_action_cast(char pid[2]);
 int player_action_attack(char pid[2]);
@@ -38,6 +38,7 @@ int ai_choose_action(char mid[2]);
 int dice(int maxv);
 void info_screen(void);
 int get_fighter_by_position(int x, int y);
+void restore_fighters_hp(void);
 
 
 int side_panel_size = sizeof(side_panel)/sizeof(side_panel[0]);
@@ -110,10 +111,14 @@ void print_screen() {
         }
         nums++;
         for (y=0;y<rows; y++){
-            printf("%c",screen[i][y]);
+            if (COLOURS_ON == 1) {
+                if (screen[i][y] == DEAD_BODY_CHAR)  {printf(RED  "%c" reset,screen[i][y]);}
+                else if (screen[i][y] == RANGE_CHAR) {printf(BLUB "%c" reset,screen[i][y]);}
+                else printf(GRNB "%c" reset,screen[i][y]);
+                }
+            else { printf("%c",screen[i][y]); }
         }
-        if (i<side_panel_size){
-            // printf(" test ");
+        if (i<side_panel_size){ 
             for(z=0;z<sizeof(side_panel[0]);z++){
                 printf("%c",side_panel[i][z]);
             }
@@ -172,7 +177,7 @@ void place_figures(){
     for (i=0;i<amount_of_fighters;i++){
         pxp = pcs[i].x_position;
         pyp = pcs[i].y_position;
-        printf("pxp: %d pyp: %d \n",pxp,pyp);
+        // printf("pxp: %d pyp: %d \n",pxp,pyp);
         // if ((pxp>=0)&&(pyp>=0)) {
             if (screen[pxp][pyp] != TARGET_CHAR){
                 screen[pxp][pyp] = pcs[i].letter;
@@ -189,6 +194,7 @@ void place_figures(){
             }
         }
     }
+    if (screen[0][0] == DEAD_BODY_CHAR) screen[0][0] = WALL_CHAR;
 }
 
 void clear_range(){
@@ -464,6 +470,8 @@ void chase_figters(int mnstr, int fightr){
                     current_distance = (current_x_dist+current_y_dist);
                     // finalx = j;
                     // finaly = i;
+                }
+                else {
                     finalx = i;
                     finaly = j;
                 }
@@ -592,41 +600,43 @@ void print_to_side_panel(){
         } else {
             side_panel[i][1] = ' ';
         }
-        side_panel[i][in_line_position] = '[';
-        in_line_position++;
-        side_panel[i][in_line_position] = monsters[i].letter;
-        in_line_position++;
-        side_panel[i][in_line_position] = ']';
-        in_line_position++;
-        side_panel[i][in_line_position] = ' ';
-        in_line_position++;
-        word_lenght = strlen(monsters[i].name);
-        for(y=0;y<word_lenght;y++){
-            side_panel[i][in_line_position+y] = monsters[i].name[y];
-        }
-        in_line_position = in_line_position + y;
-        side_panel[i][in_line_position] = ' ';
-        in_line_position++;
-        side_panel[i][in_line_position] = '(';
-        in_line_position++;
-        word_lenght = strlen(monsters[i].race);
-        for(y=0;y<word_lenght;y++){
-            side_panel[i][in_line_position+y] = monsters[i].race[y];
-        }
-        in_line_position = in_line_position + y;
-        side_panel[i][in_line_position] = ')';
-        in_line_position++;
-        side_panel[i][in_line_position] = ' ';
-        in_line_position++;
-        side_panel[i][in_line_position] = 'H';
-        in_line_position++;
-        side_panel[i][in_line_position] = 'P';
-        in_line_position++;
-        side_panel[i][in_line_position] = ':';
-        in_line_position++;
-        word_lenght = strlen(monster_hp_string);
-        for(y=0;y<word_lenght;y++){
-            side_panel[i][in_line_position+y] = monster_hp_string[y];
+        if (monsters[i].name[0]) {
+            side_panel[i][in_line_position] = '[';
+            in_line_position++;
+            side_panel[i][in_line_position] = monsters[i].letter;
+            in_line_position++;
+            side_panel[i][in_line_position] = ']';
+            in_line_position++;
+            side_panel[i][in_line_position] = ' ';
+            in_line_position++;
+            word_lenght = strlen(monsters[i].name);
+            for(y=0;y<word_lenght;y++){
+                side_panel[i][in_line_position+y] = monsters[i].name[y];
+            }
+            in_line_position = in_line_position + y;
+            side_panel[i][in_line_position] = ' ';
+            in_line_position++;
+            side_panel[i][in_line_position] = '(';
+            in_line_position++;
+            word_lenght = strlen(monsters[i].race);
+            for(y=0;y<word_lenght;y++){
+                side_panel[i][in_line_position+y] = monsters[i].race[y];
+            }
+            in_line_position = in_line_position + y;
+            side_panel[i][in_line_position] = ')';
+            in_line_position++;
+            side_panel[i][in_line_position] = ' ';
+            in_line_position++;
+            side_panel[i][in_line_position] = 'H';
+            in_line_position++;
+            side_panel[i][in_line_position] = 'P';
+            in_line_position++;
+            side_panel[i][in_line_position] = ':';
+            in_line_position++;
+            word_lenght = strlen(monster_hp_string);
+            for(y=0;y<word_lenght;y++){
+                side_panel[i][in_line_position+y] = monster_hp_string[y];
+            }
         }
     }
     for(i=0;i<amount_of_fighters;i++){
@@ -676,8 +686,21 @@ void print_to_side_panel(){
         }
     }
 }
-void ascii_battle_init() {
+void ascii_battle_init(int location) {
+    killed = 0;
+    died = 0;
+    int amount_of_beasts = sizeof(beasts) / sizeof(beasts[0]);
     int i,j;
+    if (location > 0){
+        j = 0;
+        for (i=0;i<amount_of_beasts;i++){
+            if (beasts[i].location == location){
+                monsters[j] = beasts[i];
+                printf("Copying %s to index %d\n",beasts[i].name,j);
+                j++;
+            }
+        }
+    }
     for (i=0;i<SCREEN_HEIGHT;i++){
         for(j=0;j<SCREEN_WIDTH;j++){
             screen[i][j] = ' ';
@@ -1083,6 +1106,18 @@ int ai_choose_action(char mid[2]) {
             my_range = monsters[i].mov/10;
         }
     }
+    /* retargetting if current monster's target is already dead */
+    if (pcs[monsters[me_in_array].target_index].hp <=0) {
+        if (monsters[me_in_array].target_index+1 < amount_of_monsters) {
+            monsters[me_in_array].target_index = monsters[me_in_array].target_index+1;
+        }
+        else {
+            monsters[me_in_array].target_index = monsters[me_in_array].target_index-1;
+        }
+        printip("Retargetting       ",1);
+        draw_interface();
+        sleep(1);
+    }
     /* check if have a target */
     /* calculate distances */
     /* decide about movement */
@@ -1180,4 +1215,11 @@ int get_fighter_by_position(int x, int y){
         }
     }
     return 99;
+}
+
+void restore_fighters_hp(void) {
+    int i = 0;
+    for (i=0; i<amount_of_fighters; i++){
+        pcs[i].hp = pcs[i].max_xp;
+    }
 }

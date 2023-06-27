@@ -1,7 +1,7 @@
 CFLAGS = -Wall -pedantic
 OBJS = main.o
-PROG = aft
-PROGT = aftest
+PROG = adv
+PROGT = advtest
 CFLAGST = -Wall -pedantic -g
 CXX = gcc
 
