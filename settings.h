@@ -2,7 +2,7 @@
 #define SCREEN_WIDTH  22
 #define COMMAND_LENGHT 12
 #define WALL_CHAR '#'
-#define RANGE_CHAR '+'
+#define RANGE_CHAR ' '
 //#define RANGE_CHAR '■'
 #define BASE_CHAR '.'
 #define TARGET_CHAR 'x'
