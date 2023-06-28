@@ -7,6 +7,7 @@ int string_to_number(char* str);
 // const *strtolower(char *str);
 int startswith(const char *a, const char *b);
 void shuffle(int *array, int n);
+int numcmp(int i, int j);
 
 int coords[2];
 
@@ -170,4 +171,12 @@ void shuffle(int *array, int n) {
         array[j] = array[i];
         array[i] = t;
     }
+}
+
+int numcmp(int i, int j) {
+    int diff = 0;
+    if (i>j) diff = i - j;
+    if (i<j) diff = j - i;
+    if (i==j) diff = i;
+    return diff;
 }

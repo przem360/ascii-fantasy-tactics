@@ -435,55 +435,97 @@ void draw_monster_range(int xpos, int ypos,int radius) {
 
 void chase_figters(int mnstr, int fightr){
     int fx, fy, finalx, finaly;
-    int current_x_dist, current_y_dist, current_distance;
-    int i, j;
-    i = 0;
-    j = 0;
+    int current_x_dist, current_y_dist, current_distance, shortest_x_distance, shortest_y_distance;
+    int i, j, k, dc;
+    int legal_moves[max_mov_fields][2];
+    int best_moves[2][2]; // shortest by x, shortest by y
+    int the_move[2];
+    for (i=0;i<max_mov_fields;i++){
+        legal_moves[i][0] = 0;
+        legal_moves[i][1] = 0;
+    }
+    for (i=0;i<2;i++){
+        best_moves[i][0] = 0;
+        best_moves[i][1] = 0;
+    }
+    the_move[0] = 0;
+    the_move[1] = 0;
     finalx = 0;
     finaly = 0;
+    k = 0;
+    dc = 0;
     fx = pcs[fightr].x_position;
     fy = pcs[fightr].y_position;
-    current_distance = 1000; /* just some high value */
+    current_distance = 0;
+    current_x_dist = 0;
+    current_y_dist = 0;
+    shortest_x_distance = 1000; /* just some high value */
+    shortest_y_distance = 1000; /* just some high value */
     for (i=0; i<SCREEN_HEIGHT; i++) {
         for (j=0; j<SCREEN_WIDTH; j++) {
             if (screen[i][j] == RANGE_CHAR) {
-                /* i is y, j is x */
-                if (j>fx) {
-                    current_x_dist = j - fx;
-                }
-                if (j<fx) {
-                    current_x_dist = fx - j;
-                }
-                if (j==fx) {
-                    current_x_dist = j;
-                }
-                if (i>fy) {
-                    current_y_dist = i - fy;
-                }
-                if (i<fy) {
-                    current_y_dist = fy - i;
-                }
-                if (i==fy) {
-                    current_y_dist = i;
-                }
-                if (current_distance>(current_x_dist+current_y_dist)) {
-                    current_distance = (current_x_dist+current_y_dist);
-                    // finalx = j;
-                    // finaly = i;
-                }
-                else {
-                    finalx = i;
-                    finaly = j;
-                }
+                legal_moves[k][0] = i;
+                legal_moves[k][1] = j;
+                k++;
             }
         }
     }
-    // printf("finalx: %d \n",finalx);
-    if ((finalx>0)&&(finaly>0)) {
-        screen[monsters[mnstr].x_position][monsters[mnstr].y_position] = BASE_CHAR;
-        monsters[mnstr].x_position = finalx;
-        monsters[mnstr].y_position = finaly;
+    // screen[mxp][myp] = monsters[i].letter;
+    for (i=0;i<max_mov_fields;i++){
+        if ((legal_moves[i][0]>0)&&(legal_moves[i][1]>0)) {
+            current_x_dist = numcmp(fx, legal_moves[i][0]);
+            if (current_x_dist<shortest_x_distance) { 
+                shortest_x_distance = current_x_dist;
+                best_moves[0][0] = legal_moves[i][0];
+                best_moves[0][1] = legal_moves[i][1];
+            }
+            // else {
+            //     best_moves[0][0] = legal_moves[i][0];
+            //     best_moves[0][1] = legal_moves[i][1];
+            //     }
+            current_y_dist = numcmp(fy, legal_moves[i][1]);
+            if (current_y_dist<shortest_y_distance) { 
+                shortest_y_distance = current_y_dist;
+                best_moves[1][0] = legal_moves[i][0];
+                best_moves[1][1] = legal_moves[i][1]; 
+                } 
+            // else {
+            //     best_moves[1][0] = legal_moves[i][0];
+            //     best_moves[1][1] = legal_moves[i][1];
+            //     }
+        }
     }
+    dc = dice(10); // we will select one move at random
+    if (dc <=5) {
+        the_move[0] = best_moves[0][0];
+        the_move[1] = best_moves[0][1];
+        }
+    else {
+        the_move[0] = best_moves[1][0];
+        the_move[1] = best_moves[1][1];
+        }
+    if (numcmp(fx, best_moves[0][0])>(monsters[mnstr].mov/10)){
+        the_move[0] = best_moves[0][0];
+        the_move[1] = best_moves[0][1];
+    }
+    // test legal_moves
+    for (i=0;i<100;i++) {
+        if ((legal_moves[i][0]>0)&&(legal_moves[i][1]>0)) printf("Legal vertically: %d          legal horisontally: %d \n",legal_moves[i][0],legal_moves[i][1]);
+    }
+    printf("Best by X:  [%d %d]     best by Y: [%d %d]\n",best_moves[0][0],best_moves[0][1],best_moves[1][0],best_moves[1][1]);
+    printf("My target is: %c at [%d %d] \n",pcs[fightr].letter,fx,fy);
+    printf("I decide to move to: [%d %d] \n",the_move[0],the_move[1]);
+
+    screen[monsters[mnstr].x_position][monsters[mnstr].y_position] = BASE_CHAR;
+    monsters[mnstr].x_position = the_move[0];
+    monsters[mnstr].y_position = the_move[1];
+    printf("Now I am at: [%d %d] \n",monsters[mnstr].x_position,monsters[mnstr].y_position);
+    // printf("finalx: %d \n",finalx);
+    // if ((finalx>0)&&(finaly>0)) {
+    //     screen[monsters[mnstr].x_position][monsters[mnstr].y_position] = BASE_CHAR;
+    //     monsters[mnstr].x_position = finalx;
+    //     monsters[mnstr].y_position = finaly;
+    // }
 }
 
 char analyse_command(char comm[6]) {
