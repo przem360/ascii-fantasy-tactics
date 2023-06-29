@@ -91,6 +91,7 @@ int play_battle(int enemy_location){
         // printf("\nPOM value 1: %d TURN: %d\n",player_or_monster,whoseturn);
         if (player_or_monster == 1){
             /* Player's move */
+            clear_range();
             printf("Command > ");
             // fgets(command,COMMAND_LENGHT,stdin);
             scanf("%s", command);
@@ -142,7 +143,9 @@ int play_battle(int enemy_location){
                 }
                 if (wasmoved == 0) {
                     // fid = get_array_index('f',);
+                    draw_monster_range(monsters[mid].y_position,monsters[mid].y_position,monsters[mid].mov/10);
                     chase_figters(mid,monsters[mid].target_index);
+                    clear_range();
                     // chase_figters(me_in_array, monsters[me_in_array].target_index)
                     wasmoved = 1;
                     // printf("fid: %d",fid);

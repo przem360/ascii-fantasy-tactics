@@ -19,7 +19,6 @@ The game was tested on Linux but since there is no any *weird* dependencies, sho
   
 ## TODO
 
- - Function `chase_figters` needs love (monsters moves like drunk)
  - Need to make better descriptions, current are based on adventures from BFRPG
  - Will add more monsters
  - More rooms

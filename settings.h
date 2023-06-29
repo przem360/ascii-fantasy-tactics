@@ -12,5 +12,5 @@
 const char av_commands[6][6] = {"move", "attack", "cast", "skip", "quit","info"};
 int max_mov_fields = MAX_MOV * MAX_MOV;
 
-#define DBG_MODE 1
+#define DBG_MODE 0
 
