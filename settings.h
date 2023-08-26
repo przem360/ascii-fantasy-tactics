@@ -14,3 +14,5 @@ int max_mov_fields = MAX_MOV * MAX_MOV;
 
 #define DBG_MODE 0
 
+int invisible = 0;
+

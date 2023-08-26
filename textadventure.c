@@ -55,6 +55,7 @@ int display_current_location(int loc){
     printf("\n\n");
     if (DBG_MODE == 1) {
         printf("\nroom number: %d\n",rooms[cloc].id);
+        printf("  Invisible: %d\n\n",invisible);
     }
     return 0;
 }
@@ -73,7 +74,7 @@ int explore_dungeon(){
     int previous_location = 0;
     while (current_location != 22 && qresult != 0 && game_mode == 2) {
         clear_screen();
-        if(rooms[cloc].is_enemy == 1){
+        if(rooms[cloc].is_enemy == 1 && invisible == 0){
             battle_result = play_battle(current_location);
             if (battle_result == 1) rooms[cloc].is_enemy = 0;
             if (battle_result == 2) {

@@ -32,12 +32,13 @@ void welcome_screen(){
     if (mode_sel[0] == 's') game_mode = 1;
     if (mode_sel[0] == 'a') game_mode = 2;
     if (mode_sel[0] == 'q') game_mode = 3;
+    if (mode_sel[0] == 'i') invisible = 1;
 }
 
 int main (int argc, char *argv[]){
     while(game_mode<3){
         if (game_mode == 0) welcome_screen();
-        if (game_mode == 1) play_battle(2);
+        if (game_mode == 1) {invisible = 0; play_battle(2);}
         if (game_mode == 2) {
             explore_dungeon();
             qresult = 1;

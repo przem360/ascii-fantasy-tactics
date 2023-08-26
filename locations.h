@@ -16,8 +16,8 @@ struct locations {
 };
 
 
-struct locations rooms[35] = {
-    {1,{4,6},"Large hall","This large room has a row of heavy, cobweb-laden columns down each side. \n The floor is dusty, and you can clearly see a beaten path to \n the door on the far side of the room.", "Nothing to do here.",0,0,0,0,/* c */101,0,2,0},
+struct locations rooms[36] = {
+    {1,{4,6},"Large hall","This large room has a row of heavy, cobweb-laden columns down each side. \n The floor is dusty, and you can clearly see a beaten path to \n the door on the far side of the room.", "Nothing to do here.",0,0,0,0,/* c */102,0,2,0},
     {2,{4,4},"Secret room","Description yet to come...",  "Also yet to come",1,0,0,0,/* c */1,0,0,0},
     {3,{6,5},"Room","A row of pegs such as one might hang a cloak \n from run along the wall to your left. The floor is \n littered with scraps of gray and brown fabric.", "Nothing here",0,0,0,0,/* c */101,1,103,5},
     {4,{4,3},"Storage room","This is obviously a storeroom. The walls to the left \n and right are lined with shelves containing what \n appear to be many bottles of wine. The far wall \n is lined with large barrels.", "Nothing here",0,0,0,0,/* c */103,0,0,0},
@@ -40,7 +40,8 @@ struct locations rooms[35] = {
     {21,{5,4},"Dread altar","There is an altar against the left wall of this room and an unusual blue flame \n burns in a small brazier in the center.",  "Nothing here...",0,0,0,0,/* c */0,121,0,20},
     {22,{2,3},"Stairs","You see stone stairs leading up and above the gate through which the rays of the sun fall. You found a way out.",  "Nothing here...",0,0,0,0,/* c */0,0,0,121},
     /* corridors */
-    {101,{10,1},"Corridor","This corridor leads east and west, with a north tunnel in the middle.", "Nothing to do here.",0,0,0,0,/* c */9,1,3,8},
+    {101,{10,1},"Corridor","This corridor crossing leads east, west and north, there are doors on the southern wall.", "Nothing to do here.",0,0,0,0,/* c */9,102,3,8},
+    {102,{10,1},"Corridor","This corridor is turning. You can go  west or south.", "Nothing to do here.",0,0,0,0,/* c */0,0,1,101},
     {103,{1,2},"Corridor","Short corridor leads north and south.", "Nothing to do here.",0,0,0,0,/* c */3,0,4,0},
     {105,{1,2},"Corridor","Short corridor leads north and south.", "Nothing to do here.",0,0,0,0,/* c */6,0,5,0},
     {108,{10,1},"Corridor","This corridor leads north and south, with a east tunnel in the middle.", "Nothing to do here.",0,0,0,0,/* c */11,0,8,10},

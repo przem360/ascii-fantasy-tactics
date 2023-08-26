@@ -1,9 +1,11 @@
 CFLAGS = -Wall -pedantic
 OBJS = main.o
-PROG = adv
+PROG = aft
 PROGT = advtest
+PROGW = adv.wasm
 CFLAGST = -Wall -pedantic -g
 CXX = gcc
+WCC=/opt/wasi-sdk/bin/clang --sysroot=/opt/wasi-sdk/share/wasi-sysroot -v -fuse-ld=lld
 
 all: $(PROG)
 
@@ -26,9 +28,12 @@ $(PROGT): $(OBJS)
 runtest:
 	gdb a.out
 
+wasm:
+	$(WCC) main.c -o $(PROGW)
+
 # clean
 clean:
-	rm $(PROG) *.o
+	rm $(PROG) *.o *.wasm
 
 tclean:
 	rm *.out
