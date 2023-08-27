@@ -508,13 +508,14 @@ char analyse_command(char comm[6]) {
     if ((strlen(comml) < 3)&&(comml[0] == 'q')){
         return 'q';
     }
-    for (y=0;y<amount_of_available_commands;y++){
+    for (y=0;y<=amount_of_available_commands;y++){
         if(strcmp(av_commands[y], comml)){
             cleanip();
             printip("Command found!     ",1);
             /* make it return the letter of command*/
             return comml[0];
         }   
+        // printf("Command %s does not math available command %s",comml,av_commands[y]);
     }
     return 'k';
     }
@@ -931,8 +932,9 @@ int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3
 }
 
 int player_action_move(char pid[2]){
-    int i, selected_x, selected_y, rad, arrnum, mv;
+    int i, selected_x, selected_y, rad, arrnum, mv, addr_test;
     mv = 0;
+    addr_test = 0;
     char fighter_letter;
     char addr[3];
     for(i=0;i<amount_of_fighters;i++){
@@ -942,12 +944,17 @@ int player_action_move(char pid[2]){
             fighter_letter = pcs[i].letter;
             rad = pcs[i].mov / 10;
             arrnum = i;
-            printip("Specify adress...  ",1);
+            printip("Specify address... ",1);
             draw_range(selected_y,selected_x,rad,'m');
         }
     }
     draw_interface();
-    scanf("%s",addr);
+    /* need to validate if addr is an address, not some random stuff */
+    while (addr_test == 0) {
+        addr[0] = '\0';
+        scanf("%3s",addr);
+        addr_test = validate_coords(addr);
+    }
     mv = move_fighter(arrnum,fighter_letter,selected_x,selected_y,addr);
     draw_interface();
     return mv;
@@ -1203,6 +1210,7 @@ void info_screen(void){
     int i,j;
     char key[1];
     clear_screen();
+    getchar();
     printf("------------ FIGHTERS ------------\n");
     printf("\n");
     for (i=0;i<amount_of_fighters;i++) {

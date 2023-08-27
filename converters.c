@@ -1,6 +1,7 @@
 #include <ctype.h>
 #include <stdlib.h>
-#include <time.h> /* for seeding rand() with time */
+#include <time.h>  /* for seeding rand() with time */
+#include <ctype.h> /* for checking if char is a letter or a number */
 
 int letters_to_numbers(char letter);
 int string_to_number(char* str);
@@ -8,6 +9,7 @@ int string_to_number(char* str);
 int startswith(const char *a, const char *b);
 void shuffle(int *array, int n);
 int numcmp(int i, int j);
+int validate_coords(char coords[3]);
 
 int coords[2];
 
@@ -179,4 +181,30 @@ int numcmp(int i, int j) {
     if (i<j) diff = j - i;
     if (i==j) diff = i;
     return diff;
+}
+
+int validate_coords(char coords[3]) {
+
+    int is_1st_position_a_letter = 0;
+    int is_2nd_position_a_number = 0;
+
+    if (isalpha(coords[0])) {
+        is_1st_position_a_letter = 1;
+    } else {
+        is_1st_position_a_letter = 0;
+    }
+
+    if (isdigit(coords[1])) {
+        is_2nd_position_a_number = 1;
+    } else {
+        is_2nd_position_a_number = 0;
+    }
+
+    if ((is_1st_position_a_letter == 1)&&(is_2nd_position_a_number == 1)) {
+        return 1;
+    }
+    else {
+        printf("\nERROR: type coords in correct format: letter followed by number, i.e.: A1\n");
+        return 0;   
+    }
 }

@@ -1,3 +1,4 @@
+# CFLAGS = -Wall -pedantic -fno-stack-protector
 CFLAGS = -Wall -pedantic
 OBJS = main.o
 PROG = aft
