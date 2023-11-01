@@ -446,7 +446,7 @@ void draw_monster_range(int xpos, int ypos,int radius) {
 }
 
 void chase_figters(int mnstr, int fightr){
-    int fx, fy, finalx, finaly;
+    int fx, fy;
     int current_distance;
     int i, j, k;
     int legal_moves[max_mov_fields][3];
@@ -458,8 +458,6 @@ void chase_figters(int mnstr, int fightr){
     }
     the_move[0] = 0;
     the_move[1] = 0;
-    finalx = 0;
-    finaly = 0;
     k = 0;
     fx = pcs[fightr].x_position;
     fy = pcs[fightr].y_position;
@@ -606,7 +604,7 @@ int ask_spells(char pid[2]){
 }
 
 void print_stats_horisontal(char mode){
-    int i,j, in_line_position;
+    int i;
     if (mode == 'm'){
         for(i=0;i<amount_of_monsters;i++){
             if (monsters[i].name[0]) {

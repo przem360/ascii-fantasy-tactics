@@ -9,7 +9,7 @@
 #define DEAD_BODY_CHAR '~'
 #define COLOURS_ON 1
 #define MAX_MOV 10
-#define NO_SIDEPANEL 1
+#define NO_SIDEPANEL 0
 const char av_commands[6][6] = {"move", "attack", "cast", "skip", "quit","info"};
 int max_mov_fields = MAX_MOV * MAX_MOV;
 
