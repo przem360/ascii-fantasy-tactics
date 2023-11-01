@@ -21,6 +21,7 @@ void cleanip(void);
 void printip(char txt[20], int line_number);
 char analyse_command(char comm[6]);
 void clean_side_panel(void);
+void print_stats_horisontal(char mode);
 void print_to_side_panel(void);
 int ask_spells(char pid[2]);
 void ascii_battle_init(int location);
@@ -103,7 +104,7 @@ void print_screen() {
         printf("%c",alphabet[l]);
     }
     printf("\n");
-    print_to_side_panel();
+    if (!NO_SIDEPANEL) { print_to_side_panel(); }
     for (i=0; i<elems; i++){
         if ((nums!=1)&&(nums!=elems)){
             printf("%2d ",nums-1);
@@ -168,7 +169,14 @@ void printip(char txt[20], int line_number){
 void draw_interface(){
     clear_screen();
     printf("\t\tASCII FANTASY TACTICS \n\n");
+    if (NO_SIDEPANEL) {
+        print_stats_horisontal('m');
+        printf("\n");
+    }
     print_screen();
+    if (NO_SIDEPANEL) {
+        print_stats_horisontal('f');
+    }
     draw_info_panel();
 }
 
@@ -595,6 +603,29 @@ int ask_spells(char pid[2]){
     }
     // int amount_of_fighters_spells = sizeof(av_spells) / sizeof(av_spells[0]);
     return i+1;
+}
+
+void print_stats_horisontal(char mode){
+    int i,j, in_line_position;
+    if (mode == 'm'){
+        for(i=0;i<amount_of_monsters;i++){
+            if (monsters[i].name[0]) {
+                if((selected_monster[0] == monsters[i].id[0])&&(selected_monster[1] == monsters[i].id[1])){ printf(">[%c] HP:%d  ",monsters[i].letter,monsters[i].hp); }
+                else {printf("[%c] HP:%d  ",monsters[i].letter,monsters[i].hp);}
+            }
+        }
+        printf("\n");
+    }
+    else if (mode == 'f'){
+        for(i=0;i<amount_of_fighters;i++){
+            if((selected_fighter[0] == pcs[i].id[0])&&(selected_fighter[1] == pcs[i].id[1])){ printf(">[%c] HP:%d  ",pcs[i].letter,pcs[i].hp); }
+            else { printf("[%c] HP:%d  ",pcs[i].letter,pcs[i].hp); }
+        }
+        printf("\n");
+    }
+    else {
+        printf("! Error in print_stats_horisontal - use only m or f modes!");
+    }
 }
 
 void print_to_side_panel(){
