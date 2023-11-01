@@ -28,10 +28,13 @@ void welcome_screen(){
     printf("     [a] adventure mode     \n");
     printf("     [q] quit game        \n\n");
     printf(" > ");
+    // getcomm(mode_sel,2);
     fgets(mode_sel,2,stdin);
+    char *q = strchr(mode_sel, '\n');
+    if (q) *q = 0;
     if (mode_sel[0] == 's') game_mode = 1;
     if (mode_sel[0] == 'a') game_mode = 2;
-    if (mode_sel[0] == 'q') game_mode = 3;
+    if (mode_sel[0] == 'q') game_mode = 4;
     if (mode_sel[0] == 'i') invisible = 1;
 }
 

@@ -9,10 +9,25 @@ int current_location = 1;
 char command[12];
 int qresult = 1;
 
+char *getcomm(char *inpstr,int inpsiz) {
+    char    *seachr;                    /* Result of search via strchr()     */
+
+    if (inpstr==NULL) {
+        return(NULL);
+    }
+    if (fgets(inpstr,inpsiz,stdin)==NULL) {
+        return(NULL);
+    }
+    seachr=strchr(inpstr,'\n');
+    if (seachr!=NULL) *seachr=0;
+
+    return(inpstr);
+}
+
 int compareST(char a[],char b[])  
 {  
     int flag=0,i=0;  // integer variables declaration  
-    while(a[i]!='\0' &&b[i]!='\0')  // while loop  
+    while(a[i]!='\0' &&b[i]!='\0')  // do until the end of one string 
     {  
        if(a[i]!=b[i])  
        {  
@@ -38,11 +53,15 @@ int get_location_by_id(int lid){
     return 99;
 }
 
+void show_intro(void){
+    printf(DSC "%s" reset,intro_text);
+    printf("Y/N? > ");
+}
 
 int display_current_location(int loc){
     int cloc = get_location_by_id(loc);
     if (COLOURS_ON == 1){
-        printf(GRN "%s \n\n\n\n" reset,rooms[cloc].description);
+        printf(DSC "%s \n\n\n\n" reset,rooms[cloc].description);
     }
     else {
         printf("%s \n\n\n\n",rooms[cloc].description);
@@ -72,6 +91,15 @@ int explore_dungeon(){
     int cloc = get_location_by_id(current_location);
     int battle_result = 0;
     int previous_location = 0;
+    clear_screen();
+    while((strstr(command, "n") == NULL) && (strstr(command, "y") == NULL)){
+        show_intro();
+        while( (command[0] = getchar() != '\n') && (command[0] != EOF)); 
+        read_command();
+        // getcomm(int_sel,2);
+        if (command[0] == 'n') { game_mode = 0; }
+        if (command[0] == 'y') { game_mode = 2; }
+    }
     while (current_location != 22 && qresult != 0 && game_mode == 2) {
         clear_screen();
         if(rooms[cloc].is_enemy == 1 && invisible == 0){

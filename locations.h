@@ -1,3 +1,5 @@
+char intro_text[] = "Welcome to the Mines of Yaradow!\nSomewhere in these dark corridors the old demon Agth is keeping his soul.\nA undead demon terrorizes the inhabitants of the town of Yaradow,\nthe only way to get rid of the demon is to find and destroy its soul.\n\nWill you be brave enough to go deep into the Mines of Yaradow and find the soul of Agth?\n\n";
+
 struct locations {
     int id; // number of room on map
     int size[2]; // width west to east, lenght north to south
