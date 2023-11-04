@@ -40,6 +40,7 @@ int dice(int maxv);
 void info_screen(void);
 int get_fighter_by_position(int x, int y);
 void restore_fighters_hp(void);
+void cheat_max_hp(void);
 
 
 int side_panel_size = sizeof(side_panel)/sizeof(side_panel[0]);
@@ -118,10 +119,11 @@ void print_screen() {
         for (y=0;y<rows; y++){
             if (COLOURS_ON == 1) {
                 if (screen[i][y] == DEAD_BODY_CHAR)  {printf(RED  "%c" reset,screen[i][y]);}
+                else if (screen[i][y] == WATER_CHAR) {printf(BLUB "%c" reset,screen[i][y]);}
                 else if (screen[i][y] == RANGE_CHAR) {printf(BLUB "%c" reset,screen[i][y]);}
                 else printf(GRNB "%c" reset,screen[i][y]);
                 }
-            else { printf("%c",screen[i][y]); }
+            else {printf("%c",screen[i][y]); }
         }
         if (i<side_panel_size){ 
             for(z=0;z<sizeof(side_panel[0]);z++){
@@ -730,6 +732,8 @@ void ascii_battle_init(int location) {
     killed = 0;
     died = 0;
     int amount_of_beasts = sizeof(beasts) / sizeof(beasts[0]);
+    int amount_of_locations = sizeof(rooms) / sizeof(rooms[0]);
+    int arena_id;
     int i,j;
     if (location > 0){
         j = 0;
@@ -740,13 +744,17 @@ void ascii_battle_init(int location) {
                 j++;
             }
         }
+        for (i=0; i<amount_of_locations; i++) {
+            if (rooms[i].id == location) { arena_id = rooms[i].arena; }
+        }
     }
     for (i=0;i<SCREEN_HEIGHT;i++){
         for(j=0;j<SCREEN_WIDTH;j++){
             screen[i][j] = ' ';
         }
     }
-    memcpy(screen, lvl1,sizeof(lvl1));
+    // memcpy(screen, lvl1,sizeof(lvl1));
+    memcpy(screen, lvls[arena_id],sizeof(lvls[arena_id]));
     shuffle(targets,4);
     for (i=0;i<amount_of_monsters;i++) {
         monsters[i].target_index = i;
@@ -1275,5 +1283,12 @@ void restore_fighters_hp(void) {
     int i = 0;
     for (i=0; i<amount_of_fighters; i++){
         pcs[i].hp = pcs[i].max_xp;
+    }
+}
+
+void cheat_max_hp(void) {
+    int i = 0;
+    for (i=0; i<amount_of_fighters; i++){
+        pcs[i].hp = MAX_POW;
     }
 }

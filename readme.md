@@ -10,17 +10,13 @@ Sometimes monsters will attack you, you will need to fight them. In battle mode 
   
 ![alt text](https://github.com/przem360/ascii-fantasy-tactics/blob/master/screenshot.png?raw=true)
 
-Fighters with *Mage* class hawe spells, you can cast them by using `cast` command than specify ID of a spell, i.e. `fb` for Fire Ball.  
+Fighters with *Mage* class have spells, you can cast them by using `cast` command than specify ID of a spell, i.e. `fb` for Fire Ball.  
 You can also `skip` if you like.  
   
-TIP: type `i` and then `a` on welcome screen to triger invisibility - you can explore the dungeon without fighting with monsters.
+TIPS:  
+Type `i` and then `a` on welcome screen to triger invisibility - you can explore the dungeon without fighting with monsters.  
+Type `p` on welcome screen, before selecting game mode to set HP values of your team members to 99.  
 
 ## Build
 
 The game was tested on Linux but since there is no any *weird* dependencies, should also compile on Mac. Just make sure that `build-essential` package is installed and use `make` to build. 
-  
-## TODO
-
- - Need to make better descriptions, current are based on adventures from BFRPG
- - Will add more monsters
- - More rooms

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "settings.h"
+#include "locations.h"
 #include "colors.h"
 #include "resources.h"
 #include "asciibattle.c"
@@ -36,6 +37,8 @@ void welcome_screen(){
     if (mode_sel[0] == 'a') game_mode = 2;
     if (mode_sel[0] == 'q') game_mode = 4;
     if (mode_sel[0] == 'i') invisible = 1;
+    if (mode_sel[0] == 'l') load_state();
+    if (mode_sel[0] == 'p') cheat_max_hp();
 }
 
 int main (int argc, char *argv[]){

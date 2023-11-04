@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "locations.h"
+// #include "locations.h"
 
 #include <unistd.h> /* for pausing on POSIX */
 // #include <dos.h> /* for pausing on Windows */
@@ -22,6 +22,57 @@ char *getcomm(char *inpstr,int inpsiz) {
     if (seachr!=NULL) *seachr=0;
 
     return(inpstr);
+}
+
+int save_state(){
+    char *filename = SAVE_FILE;
+    int amount_of_locations = sizeof(rooms) / sizeof(rooms[0]);
+    int i;
+
+    // open the file for writing
+    FILE *fp = fopen(filename, "w");
+    if (fp == NULL)
+    {
+        printf("Error opening the file %s", filename);
+        return -1;
+    }
+    fprintf(fp, "CL:%d\n", current_location);
+    for (i=0; i<amount_of_locations; i++) {
+        fprintf(fp, "%d:%d\n", rooms[i].id, rooms[i].is_enemy);
+    }
+    fclose(fp);
+    return 0;
+}
+
+int load_state(){
+    char *filename = SAVE_FILE;
+    char ch;
+    int lines = 0;
+
+    // opening the file for reading
+    FILE *fp = fopen(filename, "r");
+
+    char state[100];
+
+    if(fp != NULL) {
+        while(!feof(fp)) {
+            ch = fgetc(fp);
+            if(ch == '\n') {
+                lines++;
+                }
+        }
+        printf ("State file loaded, %d lines found. \n",lines);
+        while(fgets(state, 100, fp)) {
+            // printf("%s", state);
+            char * token = strtok(state, ":");
+        }
+    }
+    else {
+        printf("Error opening the file %s", filename);
+        return -1;
+    }
+    fclose(fp);
+    return 0;
 }
 
 int compareST(char a[],char b[])  
@@ -54,8 +105,13 @@ int get_location_by_id(int lid){
 }
 
 void show_intro(void){
-    printf(DSC "%s" reset,intro_text);
-    printf("Y/N? > ");
+    if (COLOURS_ON == 1) {
+        printf(DSC "%s" reset,intro_text);
+        printf("Y/N? > ");
+    } else {
+        printf("%s", intro_text);
+        printf("Y/N? > ");
+    }
 }
 
 int display_current_location(int loc){
@@ -112,6 +168,7 @@ int explore_dungeon(){
         display_current_location(current_location);
         read_command();
         qresult = compareST(command, "quit");
+        if (strstr(command, "save") != NULL) { save_state(); }
         if (command[0]=='g'&&command[1]=='o'){
             if (strstr(command, "north") != NULL) {
                 if (rooms[cloc].go_north > 0) {

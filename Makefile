@@ -34,7 +34,7 @@ wasm:
 
 # clean
 clean:
-	rm $(PROG) *.o *.wasm
+	rm $(PROG) *.o save.aft
 
 tclean:
 	rm *.out
