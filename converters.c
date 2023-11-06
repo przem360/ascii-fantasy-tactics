@@ -1,15 +1,10 @@
+#include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <time.h>  /* for seeding rand() with time */
 #include <ctype.h> /* for checking if char is a letter or a number */
-
-int letters_to_numbers(char letter);
-int string_to_number(char* str);
-// const *strtolower(char *str);
-int startswith(const char *a, const char *b);
-void shuffle(int *array, int n);
-int numcmp(int i, int j);
-int validate_coords(char coords[3]);
+#include <string.h>
+#include "converters.h"
 
 int coords[2];
 

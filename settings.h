@@ -13,10 +13,8 @@
 #define NO_SIDEPANEL 0
 #define MAX_POW 99
 #define SAVE_FILE "save.aft"
-const char av_commands[6][6] = {"move", "attack", "cast", "skip", "quit","info"};
-int max_mov_fields = MAX_MOV * MAX_MOV;
+#define MAX_MONSTERS_ATTACKING 4
 
-#define DBG_MODE 0
+#define DBG_MODE 1
 
-int invisible = 0;
 

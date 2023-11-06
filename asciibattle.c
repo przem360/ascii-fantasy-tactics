@@ -4,59 +4,37 @@
 #include <unistd.h> /* for pausing on POSIX */
 // #include <dos.h> /* for pausing on Windows */
 #include <time.h> /* for seeding rand() with time */
-#include "converters.c"
+#include "settings.h"
+#include "colors.h"
+#include "converters.h"
+// #include "locations.h"
+#include "asciibattle.h"
+#include "helpers.h"
+#include "globals.h"
+#include "resources.h"
 
-int get_array_index(char type, char id[2]);
-void print_screen(void);
-void place_figures(void);
-void draw_range(int xpos, int ypos,int radius, char mode);
-void draw_monster_range(int xpos, int ypos,int radius);
-// void draw_white_magic_range(int xpos, int ypos,int radius);
-void chase_figters(int mnstr, int fightr);
-void clear_range();
-void clear_screen(void);
-void draw_info_panel(void);
-void draw_interface(void);
-void cleanip(void);
-void printip(char txt[20], int line_number);
-char analyse_command(char comm[6]);
-void clean_side_panel(void);
-void print_stats_horisontal(char mode);
-void print_to_side_panel(void);
-int ask_spells(char pid[2]);
-void ascii_battle_init(int location);
-int player_action_move(char pid[2]);
-int player_action_cast(char pid[2]);
-int player_action_attack(char pid[2]);
-// void move_cursor(int cx, int cy);
-int resolve_spell(char pid[2],char taddr[3],char sid[2]);
-int resolve_attack(char pid[2],char taddr[3]);
-int resolve_monster_attack(int mnst,int figh);
-int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3]);
-int let_move(void);
-void monsters_action(void);
-int ai_choose_action(char mid[2]);
-int dice(int maxv);
-void info_screen(void);
-int get_fighter_by_position(int x, int y);
-void restore_fighters_hp(void);
-void cheat_max_hp(void);
+const char av_commands[6][6] = {"move", "attack", "cast", "skip", "quit","info"};
+int max_mov_fields = MAX_MOV * MAX_MOV;
+char command_code[2]; /* what analyse_command things about user input?*/
+int wasmoved = 0;
+int tookaction = 0;
+char tb_command[12] = {'c','o','d','e','e','\0'};
+int aiaction;
+int fid, mid; /* fighter id, monster id*/
+// int max_power;
 
 
 int side_panel_size = sizeof(side_panel)/sizeof(side_panel[0]);
-char current_command[8];
-char selected_fighter[] = "nn";
-char selected_monster[] = "nn";
-char output[1];
-int whoseturn = 1; /* Initiative selection */
-int player_or_monster = 1; /* 1 = player, 2 = monster */
-int targets[] = {0,1,2,3};
 
-// int cursor_on = 1;
-const char alphabet[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
 
-int killed = 0; /* how many monsters were killed by fighters */
-int died = 0;   /* how many fighters were killed by monsters */
+int tb_read_command(void){
+    // while( (tb_command[0] = getchar() != '\n') && (tb_command[0] != EOF));
+    printf("Command > ");
+    fgets(tb_command,12,stdin);
+    char *p = strchr(tb_command, '\n');
+    if (p) *p = 0;
+    return 0;
+}
 
 int get_array_index(char type, char id[2]){
     int i;
@@ -75,21 +53,6 @@ int get_array_index(char type, char id[2]){
         }
     }
     return 0;
-}
-
-void clear_screen(void){
-    if (DBG_MODE == 0){
-        system("clear"); //*nix
-        // system("cls"); //windows
-    }
-    else {
-        // dummy:
-        int i,l;
-        l = 50;
-        for (i=0;i<l;i++){
-             printf("\n");
-        }
-    }
 }
 
 void print_screen() {
@@ -594,6 +557,7 @@ int ask_spells(char pid[2]){
         for (i=0;i<amount_of_spells;i++) {
             if (spells[i].id[0]==chspell[0] && spells[i].id[1]==chspell[1]) {
                 printip("Found spell        ",0);
+                if (DBG_MODE == 1) {printf("Found spell: %s", spells[i].name);}
                 return i+1;
             }
         }
@@ -728,24 +692,21 @@ void print_to_side_panel(){
         }
     }
 }
-void ascii_battle_init(int location) {
+
+void ascii_battle_init(int arena_id) {
     killed = 0;
     died = 0;
     int amount_of_beasts = sizeof(beasts) / sizeof(beasts[0]);
-    int amount_of_locations = sizeof(rooms) / sizeof(rooms[0]);
-    int arena_id;
     int i,j;
-    if (location > 0){
+    if (max_power == 1) {cheat_max_hp();}
+    if (current_location > 0){
         j = 0;
         for (i=0;i<amount_of_beasts;i++){
-            if (beasts[i].location == location){
+            if (beasts[i].location == current_location){
                 monsters[j] = beasts[i];
                 printf("Copying %s to index %d\n",beasts[i].name,j);
                 j++;
             }
-        }
-        for (i=0; i<amount_of_locations; i++) {
-            if (rooms[i].id == location) { arena_id = rooms[i].arena; }
         }
     }
     for (i=0;i<SCREEN_HEIGHT;i++){
@@ -758,6 +719,10 @@ void ascii_battle_init(int location) {
     shuffle(targets,4);
     for (i=0;i<amount_of_monsters;i++) {
         monsters[i].target_index = i;
+    }
+    if(DBG_MODE==1) {
+        printf("current_location: %d\n",current_location);
+        printf("amount_of_monsters: %d\nfirst monster: %c\n",amount_of_monsters,monsters[0].letter);
     }
     draw_interface();
 }
@@ -814,6 +779,7 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
         }
         pcs[target_in_array].hp = fighter_hp;
         printip("HP recovered!      ",0);
+        if (DBG_MODE == 1) {printf("HP recovered!\n");}
         draw_interface();
         return 1;
     }
@@ -822,11 +788,13 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
     dcs = dice(20);
     if (dca == 1) {
         printip("MISS!              ",0);
+        if (DBG_MODE == 1) {printf("MISS! DCA == 1\n");}
         draw_interface();
         return 0;
     }
     if (dcs == 1) {
         printip("MISS!              ",0);
+        if (DBG_MODE == 1) {printf("MISS! DCS == 1\n");}
         draw_interface();
         return 0;
     }
@@ -839,19 +807,23 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
     }
     if (foundm == 0) {
         printip("Nothing there!     ",1);
+        if (DBG_MODE == 1) {printf("Nothing at this address.\n");}
         draw_interface();
         return 0;
     }
     monster_hp = monsters[target_in_array].hp;
 
-    if (dca == 20){ attack_success = 1; }
+    if (dca == 20){ if (DBG_MODE == 1) {printf("HIT! DCA == 20\n");} attack_success = 1; }
     if (dca >= monsters[target_in_array].ac) {
         attack_success = 1;
+        if (DBG_MODE == 1) {printf("HIT! DCA >= AC\n");}
     } else {
         attack_success = 0;
+        if (DBG_MODE == 1) {printf("MISS! DCA < AC\n");}
     }
     if (dcs >= monsters[target_in_array].saves) {
         printip("MISS!              ",0);
+        if (DBG_MODE == 1) {printf("MISS! DCS >= Monster saving throw\n");}
         return 0;
     }
 
@@ -1104,6 +1076,7 @@ int let_move(){
                 selected_fighter[1] = pcs[i].id[1]; 
                 player_or_monster = 1;
                 printip("Player\'s turn      ",1);
+                // return 0;
             }
         }
     }
@@ -1286,6 +1259,150 @@ void restore_fighters_hp(void) {
     }
 }
 
+int play_battle(int enemy_location){
+    // problem: po wygranej w adventure wyrzuca do ekranu głównego
+    int amount_of_beasts = sizeof(beasts) / sizeof(beasts[0]);
+    int amount_of_monsters_in_room = 0;
+    int i = 0;
+    for (i=0;i<amount_of_beasts;i++){
+        if (beasts[i].location == enemy_location) amount_of_monsters_in_room++;
+    }
+    current_location = enemy_location;
+    ascii_battle_init(selected_arena);
+    while(killed<amount_of_monsters_in_room && died<amount_of_fighters && *command_code != 'q'){
+        if ((wasmoved > 0)&&(tookaction > 0)){
+            wasmoved = 0;
+            tookaction = 0;
+            whoseturn++;
+        }
+        // check if fighter of monster with geaven whoseturn (initiative) egzists, if not increase whoseturn
+        int found;
+        found = 0;
+        for (i=0;i<amount_of_monsters;i++){
+            if ((monsters[i].initiative == whoseturn) || (pcs[i].initiative == whoseturn)) {
+                // printf("\nNo turn number: %d ",whoseturn);
+                // whoseturn++;
+                // printf(" turn increased to: %d \n",whoseturn);
+                found = 1;
+            }
+        }
+        if (found == 0) whoseturn++;
+
+        if (whoseturn>(amount_of_fighters+amount_of_monsters)){
+            wasmoved = 0;
+            tookaction = 0;
+            whoseturn = 1;
+        }
+        /* check here if selected pcs hp <=0 */
+        clear_screen();
+        printf("ASCII FANTASY TACTICS \n");
+        place_figures();
+        let_move();
+        draw_interface();
+        // printf("\nPOM value 1: %d TURN: %d\n",player_or_monster,whoseturn);
+        if (player_or_monster == 1){
+            /* Player's move */
+            clear_range();
+            // printf("Command > ");
+            // fgets(command,COMMAND_LENGHT,stdin);
+            // scanf("%s", tb_command);
+            tb_read_command();
+            command_code[0] = analyse_command(tb_command);
+            if (command_code[0] == 'm'){
+                if (wasmoved == 0) {
+                    printip("MOVING             ",1);
+                    wasmoved = player_action_move(selected_fighter);
+                }
+            }
+            if (command_code[0] == 'a'){
+                if (tookaction == 0) {
+                    printip("ATTACKING          ",1);
+                    tookaction = player_action_attack(selected_fighter);
+                    // draw_interface();
+                }
+            }
+            if (command_code[0] == 'c'){
+                if (tookaction == 0) {
+                    printip("CAST SPELL         ",1);
+                    tookaction = player_action_cast(selected_fighter);
+                    // draw_interface();
+                }
+            }
+            if (command_code[0] == 's'){
+                // player_action_move(selected_fighter);
+                printip("SKIPPING           ",1);
+                wasmoved = 1;
+                tookaction = 1;
+                // whoseturn++;
+            }
+            if (command_code[0] == 'i'){
+                info_screen();
+            }
+        }
+        if (player_or_monster == 2){
+            /* monster's move */
+            // draw_interface();
+            mid = get_array_index('m',selected_monster);
+            if (monsters[mid].hp > 0) {
+                aiaction = ai_choose_action(selected_monster);
+                if (aiaction == 1) {
+                    tookaction = 1;
+                    wasmoved = 0;
+                }
+                if (aiaction == 2) {
+                    tookaction = 0;
+                    wasmoved = 1;
+                }
+                if (wasmoved == 0) {
+                    // fid = get_array_index('f',);
+                    draw_monster_range(monsters[mid].y_position,monsters[mid].y_position,monsters[mid].mov/10);
+                    chase_figters(mid,monsters[mid].target_index);
+                    clear_range();
+                    // chase_figters(me_in_array, monsters[me_in_array].target_index)
+                    wasmoved = 1;
+                    // printf("fid: %d",fid);
+                }
+                if (tookaction == 0) {
+                    tookaction = 1; /* for now */
+                }
+                // monsters_action();
+                // wasmoved = 1;
+                // tookaction = 1;
+                draw_interface();
+                // sleep(1);
+            }
+            else {
+                monsters_action();
+                wasmoved = 1;
+                tookaction = 1;
+                draw_interface();
+            }
+        }
+        }
+
+        if (*command_code == 'q') {
+            game_mode = 0;
+        }
+        
+        if (died >= amount_of_fighters){
+            game_mode = 3;
+            restore_fighters_hp();
+            clear_screen();
+            printf("You lost! \n");
+            sleep(2);
+            if (game_mode == 1) { game_mode = 0; }
+            return 2;
+        }
+        if (killed >= amount_of_monsters || killed >= amount_of_monsters_in_room){
+            game_mode = 2;
+            clear_screen();
+            printf("You won! \n");
+            sleep(2);
+            if (game_mode == 1) { game_mode = 0; }
+            return 1;
+        }
+    return 0;
+}
 void cheat_max_hp(void) {
     int i = 0;
     for (i=0; i<amount_of_fighters; i++){

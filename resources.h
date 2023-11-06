@@ -189,6 +189,7 @@ struct spell {
     int recov;
     int inc_mov;
     int dec_mov;
+    int always;
 };
 
 struct spell spells[3] = {

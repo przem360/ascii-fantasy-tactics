@@ -4,10 +4,24 @@
 
 #include <unistd.h> /* for pausing on POSIX */
 // #include <dos.h> /* for pausing on Windows */
+#include "settings.h"
+#include "colors.h"
+#include "helpers.h"
+#include "globals.h"
+#include "locations.h"
+#include "textadventure.h"
 
+// int invisible;
 int current_location = 1;
+int attackers[MAX_MONSTERS_ATTACKING];
+int qresult;
 char command[12];
-int qresult = 1;
+
+void get_attackers(void){
+    int i;
+    for (i=0; i<MAX_MONSTERS_ATTACKING;i++){}
+}
+
 
 char *getcomm(char *inpstr,int inpsiz) {
     char    *seachr;                    /* Result of search via strchr()     */
@@ -24,7 +38,7 @@ char *getcomm(char *inpstr,int inpsiz) {
     return(inpstr);
 }
 
-int save_state(){
+int save_state(void){
     char *filename = SAVE_FILE;
     int amount_of_locations = sizeof(rooms) / sizeof(rooms[0]);
     int i;
@@ -44,7 +58,7 @@ int save_state(){
     return 0;
 }
 
-int load_state(){
+int load_state(void){
     char *filename = SAVE_FILE;
     char ch;
     int lines = 0;
@@ -116,11 +130,12 @@ void show_intro(void){
 
 int display_current_location(int loc){
     int cloc = get_location_by_id(loc);
+    printf("\t\tASCII FANTASY TACTICS\n\t\t---------------------\nLocation: %s\n\n",rooms[cloc].name);
     if (COLOURS_ON == 1){
-        printf(DSC "%s \n\n\n\n" reset,rooms[cloc].description);
+        printf(DSC "%s \n\n" reset,rooms[cloc].description);
     }
     else {
-        printf("%s \n\n\n\n",rooms[cloc].description);
+        printf("%s \n\n",rooms[cloc].description);
     }
     printf("Available directions: ");
     if (rooms[cloc].go_north > 0) printf("NORTH ");
@@ -135,7 +150,7 @@ int display_current_location(int loc){
     return 0;
 }
 
-int read_command(){
+int read_command(void){
     printf("What to do? \n\n > ");
     fgets(command,12,stdin);
     char *p = strchr(command, '\n');
@@ -143,7 +158,7 @@ int read_command(){
     return 0;
 }
 
-int explore_dungeon(){
+int explore_dungeon(void){
     int cloc = get_location_by_id(current_location);
     int battle_result = 0;
     int previous_location = 0;
@@ -153,12 +168,14 @@ int explore_dungeon(){
         while( (command[0] = getchar() != '\n') && (command[0] != EOF)); 
         read_command();
         // getcomm(int_sel,2);
-        if (command[0] == 'n') { game_mode = 0; }
-        if (command[0] == 'y') { game_mode = 2; }
+        if (command[0] == 'n') { qresult = 0; game_mode = 0; }
+        if (command[0] == 'y') { qresult = 1; game_mode = 2; }
+        if (DBG_MODE == 1) {printf("Command: %c\ngame_mode: %d\nqresult: %d\n",command[0],game_mode,qresult);}
     }
     while (current_location != 22 && qresult != 0 && game_mode == 2) {
         clear_screen();
         if(rooms[cloc].is_enemy == 1 && invisible == 0){
+            selected_arena = rooms[cloc].arena;
             battle_result = play_battle(current_location);
             if (battle_result == 1) rooms[cloc].is_enemy = 0;
             if (battle_result == 2) {
