@@ -1269,7 +1269,7 @@ int play_battle(int enemy_location){
     }
     current_location = enemy_location;
     ascii_battle_init(selected_arena);
-    while(killed<amount_of_monsters_in_room && died<amount_of_fighters && *command_code != 'q'){
+    while(killed<amount_of_monsters_in_room && died<amount_of_fighters && command_code[0] != 'q'){
         if ((wasmoved > 0)&&(tookaction > 0)){
             wasmoved = 0;
             tookaction = 0;
@@ -1380,8 +1380,10 @@ int play_battle(int enemy_location){
         }
         }
 
-        if (*command_code == 'q') {
+        if (command_code[0] == 'q') {
             game_mode = 0;
+            if (DBG_MODE == 1) {printf("[q] pressed, quitting...\ngame_mode: %d\n", game_mode);}
+            return 0;
         }
         
         if (died >= amount_of_fighters){

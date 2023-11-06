@@ -41,6 +41,7 @@ void welcome_screen(){
     if (mode_sel[0] == 'i') invisible = 1;
     if (mode_sel[0] == 'l') load_state();
     if (mode_sel[0] == 'p') cheat_max_hp();
+    if (DBG_MODE == 1) {printf("selection: %c, game_mode: %d \n",mode_sel[0], game_mode);}
 }
 
 int main (int argc, char *argv[]){
@@ -48,6 +49,7 @@ int main (int argc, char *argv[]){
         if (game_mode == 0) welcome_screen();
         if (game_mode == 1) {invisible = 0; play_battle(2);}
         if (game_mode == 2) {
+            current_location = 1;
             explore_dungeon();
         }
     }

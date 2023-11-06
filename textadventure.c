@@ -12,7 +12,7 @@
 #include "textadventure.h"
 
 // int invisible;
-int current_location = 1;
+int current_location;
 int attackers[MAX_MONSTERS_ATTACKING];
 int qresult;
 char command[12];
@@ -145,13 +145,14 @@ int display_current_location(int loc){
     printf("\n\n");
     if (DBG_MODE == 1) {
         printf("\nroom number: %d\n",rooms[cloc].id);
-        printf("  Invisible: %d\n\n",invisible);
+        printf("  Invisible: %d\n",invisible);
+        printf("  game_mode: %d\n", game_mode);
     }
     return 0;
 }
 
 int read_command(void){
-    printf("What to do? \n\n > ");
+    printf("\n\nWhat to do?  > ");
     fgets(command,12,stdin);
     char *p = strchr(command, '\n');
     if (p) *p = 0;
@@ -162,6 +163,7 @@ int explore_dungeon(void){
     int cloc = get_location_by_id(current_location);
     int battle_result = 0;
     int previous_location = 0;
+    qresult = 1;
     clear_screen();
     while((strstr(command, "n") == NULL) && (strstr(command, "y") == NULL)){
         show_intro();
@@ -173,10 +175,12 @@ int explore_dungeon(void){
         if (DBG_MODE == 1) {printf("Command: %c\ngame_mode: %d\nqresult: %d\n",command[0],game_mode,qresult);}
     }
     while (current_location != 22 && qresult != 0 && game_mode == 2) {
+        if (DBG_MODE == 1) {printf("game_mode: %d\nqresult: %d\n",game_mode,qresult);}
         clear_screen();
         if(rooms[cloc].is_enemy == 1 && invisible == 0){
             selected_arena = rooms[cloc].arena;
             battle_result = play_battle(current_location);
+            if (game_mode != 2) {break;} /* re-checking: play_battle(); can change game_mode */
             if (battle_result == 1) rooms[cloc].is_enemy = 0;
             if (battle_result == 2) {
                 current_location = previous_location;
