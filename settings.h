@@ -14,7 +14,10 @@
 #define MAX_POW 99
 #define SAVE_FILE "save.aft"
 #define MAX_MONSTERS_ATTACKING 4
+/*  If LIMIT_TXT_WIDH is greater that 0 text adventure will break line after
+    LIMIT_TXT_WIDH amount of characters. */
+#define LIMIT_TXT_WIDH 0
 
-#define DBG_MODE 1
+#define DBG_MODE 0
 
 

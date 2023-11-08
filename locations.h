@@ -23,7 +23,7 @@ struct locations {
 // rewritten locations: 1 - 11, 22
 
 struct locations rooms[36] = {
-    {1,{4,6},"Entry hall","You entered between gray brick walls, old and torn,\nprotruding from the ground like the teeth of an ancient beast.\n\nIn the northern wall there is a passage leading\nto the corridor, in the southern wall there is a heavy door.\n\nThere are sounds of giggling and wild growling.", "These sounds are coming from the south.",0,0,0,0,/* a */0,/* c */102,0,2,0},
+    {1,{4,6},"Entry hall","You entered between gray brick walls, old and torn,\nprotruding from the ground like the teeth of an ancient beast.\n\nIn the northern wall there is a passage leading to the corridor, in the southern wall there is a heavy door.\n\nThere are sounds of giggling and wild growling.", "These sounds are coming from the south.",0,0,0,0,/* a */0,/* c */102,0,2,0},
     {2,{4,4},"The bat chamber","This small chamber is empty.\nBats hang from the rotting ceiling beams.\nYou see that there are deep grooves in the walls.",  "Whatever was clawing at the walls was a big beast.",1,0,0,0,/* a */0,/* c */1,0,0,0},
     {3,{6,5},"Old library","This is the sorcerer\'s library.\nThe shelves stretching along the walls to the ceiling\nare bending under the weight of thousands of books.", "The collection is impressive.",0,0,0,0,/* a */0,/* c */101,1,103,5},
     {4,{4,3},"Sorcerer\'s collection","In this small room there are cabinets with dozens of small drawers.\nThere are jars with strange things and a collection of magic wands.", "These items may be cursed.",0,0,0,0,/* a */0,/* c */103,0,0,0},

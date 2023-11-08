@@ -63,24 +63,32 @@ int load_state(void){
     char *filename = SAVE_FILE;
     char ch;
     int lines = 0;
+    int i = 0;
 
     // opening the file for reading
     FILE *fp = fopen(filename, "r");
 
-    char state[100];
+    char the_line[6];
 
     if(fp != NULL) {
         while(!feof(fp)) {
             ch = fgetc(fp);
             if(ch == '\n') {
                 lines++;
+                // i=0;
+            }
+            else {
+                the_line[i] = ch;
+                i++;
+            }
+            if (i>=6) {
+                i=0;
                 }
         }
-        printf ("State file loaded, %d lines found. \n",lines);
-        while(fgets(state, 100, fp)) {
-            // printf("%s", state);
-            char * token = strtok(state, ":");
-        }
+        if (DBG_MODE == 1) {
+            printf ("State file loaded, %d lines found. \n",lines);
+            printf ("Last line: %s \n",the_line);
+            }
     }
     else {
         printf("Error opening the file %s", filename);
@@ -133,10 +141,12 @@ int display_current_location(int loc){
     int cloc = get_location_by_id(loc);
     printf("\t\tASCII FANTASY TACTICS\n\t\t---------------------\nLocation: %s\n\n",rooms[cloc].name);
     if (COLOURS_ON == 1){
-        printf(DSC "%s \n\n" reset,rooms[cloc].description);
+        // printf(DSC "%s \n\n" reset,rooms[cloc].description);
+        wprint(rooms[cloc].description,LIMIT_TXT_WIDH,1);
     }
     else {
-        printf("%s \n\n",rooms[cloc].description);
+        // printf("%s \n\n",rooms[cloc].description);
+        wprint(rooms[cloc].description,LIMIT_TXT_WIDH,0);
     }
     if (loc == FINAL_LOCATION) {
         printf("\t Press [ENTER] to quit...");
