@@ -3,10 +3,6 @@
 #include <unistd.h>
 #include "helpers.h"
 #include "settings.h"
-// #include "locations.h"
-#include "colors.h"
-// #include "resources.h"
-// #include "asciibattle.h"
 #include "globals.h"
 #include "textadventure.h"
 

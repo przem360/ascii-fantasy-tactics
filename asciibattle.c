@@ -7,7 +7,6 @@
 #include "settings.h"
 #include "colors.h"
 #include "converters.h"
-// #include "locations.h"
 #include "asciibattle.h"
 #include "helpers.h"
 #include "globals.h"

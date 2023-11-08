@@ -26,10 +26,10 @@ wasm:
 
 
 
-main.o: locations.h colors.h resources.h asciibattle.h globals.h textadventure.h main.c
+main.o: globals.h textadventure.h main.c
 	$(CXX) $(CFLAGS) -c main.c -o main.o # Main
 
-asciibattle.o: settings.h colors.h resources.h locations.h asciibattle.h asciibattle.c
+asciibattle.o: settings.h colors.h resources.h asciibattle.h asciibattle.c
 	$(CXX) $(CFLAGS) -c asciibattle.c -o asciibattle.o # Ascii Battle
 
 textadventure.o: settings.h locations.h colors.h textadventure.h globals.h textadventure.c
