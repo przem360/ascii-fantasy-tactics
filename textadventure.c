@@ -10,6 +10,7 @@
 #include "globals.h"
 #include "locations.h"
 #include "textadventure.h"
+#include "asciibattle.h"
 
 // int invisible;
 int current_location;

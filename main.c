@@ -4,6 +4,7 @@
 #include "helpers.h"
 #include "settings.h"
 #include "globals.h"
+#include "asciibattle.h"
 #include "textadventure.h"
 
 int invisible;

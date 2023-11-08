@@ -12,6 +12,21 @@
 #include "globals.h"
 #include "resources.h"
 
+const char alphabet[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+
+char current_command[8];
+char selected_fighter[] = "nn";
+char selected_monster[] = "nn";
+char output[1];
+int whoseturn = 1; /* Initiative selection */
+int player_or_monster = 1; /* 1 = player, 2 = monster */
+int targets[] = {0,1,2,3};
+
+// int cursor_on = 1;
+
+int killed = 0; /* how many monsters were killed by fighters */
+int died = 0;   /* how many fighters were killed by monsters */
+
 const char av_commands[6][6] = {"move", "attack", "cast", "skip", "quit","info"};
 int max_mov_fields = MAX_MOV * MAX_MOV;
 char command_code[2]; /* what analyse_command things about user input?*/

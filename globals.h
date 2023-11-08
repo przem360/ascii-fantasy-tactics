@@ -1,4 +1,4 @@
-int play_battle(int enemy_array);
+// int play_battle(int enemy_array);
 extern int game_mode;
 extern int invisible;
 
