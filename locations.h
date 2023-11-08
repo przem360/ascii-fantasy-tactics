@@ -1,13 +1,13 @@
-char intro_text[] = "These are the ruins of Yaradow Castle,\nwhere Lord Agth ruled long ago.\nMany years after the sorcerer's death,\nnature is taking over what was left of his castle.\nThe brick walls have become overgrown with moss\nand the cracked remains of the floors are now covered\nwith a carpet of grass.\n\nRumors circulating among locals say that old Agth\nhas trapped a fragment of his soul somewhere here\nand now, as an undead demon, he drains the energy\nof unlucky people who wander into the area.\n\nWill you be brave enough to go deep into the Yaradow Castle\nand find the soul of Agth?\n\n";
+#define FINAL_LOCATION 22
 
-// 
+char intro_text[] = "These are the ruins of Yaradow Castle,\nwhere Lord Agth ruled long ago.\nMany years after the sorcerer's death,\nnature is taking over what was left of his castle.\nThe brick walls have become overgrown with moss\nand the cracked remains of the floors are now covered\nwith a carpet of grass.\n\nRumors circulating among locals say that old Agth\nhas trapped a fragment of his soul somewhere here\nand now, as an undead demon, he drains the energy\nof unlucky people who wander into the area.\n\nWill you be brave enough to go deep into the Yaradow Castle\nand find the soul of Agth?\n\n";
 
 struct locations {
     int id; // number of room on map
     int size[2]; // width west to east, lenght north to south
-    char name[32];
-    char description[285];
-    char action_description[110];
+    char name[33];
+    char description[321];
+    char action_description[111];
     int is_enemy; // 0 - no enemy, 1 - look in enemy_array_index
     int enemy_array_index;
     int found; /* 0 - nothing found, 1 - look in search_array_index*/
@@ -20,7 +20,7 @@ struct locations {
     int go_west;
 };
 
-// rewritten locations: 1 - 11
+// rewritten locations: 1 - 11, 22
 
 struct locations rooms[36] = {
     {1,{4,6},"Entry hall","You entered between gray brick walls, old and torn,\nprotruding from the ground like the teeth of an ancient beast.\n\nIn the northern wall there is a passage leading\nto the corridor, in the southern wall there is a heavy door.\n\nThere are sounds of giggling and wild growling.", "These sounds are coming from the south.",0,0,0,0,/* a */0,/* c */102,0,2,0},
@@ -44,7 +44,7 @@ struct locations rooms[36] = {
     {19,{4,5},"Mystery room","Cobwebs hang thickly from the ceiling in the far left corner of this room, partially covering the \n doorway there.\n A trail of blood leads from the center \n of the room to the door on the right.", "Nothing here!",0,0,0,0,/* a */0,/* c */0,117,0,0},
     {20,{5,4},"Midden","A faint odor of ancient foulness fills the air of this room. \n The top and part of the sides of the piles are covered in mushrooms, \n from the size of your hand up to the size of your head.",  "This room was used as a midden, an area for waste disposal.",0,0,0,0,/* a */0,/* c */0,21,120,0}, // traps!
     {21,{5,4},"Dread altar","There is an altar against the left wall of this room and an unusual blue flame \n burns in a small brazier in the center.",  "Nothing here...",0,0,0,0,/* a */0,/* c */0,121,0,20},
-    {22,{2,3},"Stairs","You see stone stairs leading up and above the gate through which the rays of the sun fall. You found a way out.",  "Nothing here...",0,0,0,0,/* a */0,/* c */0,0,0,121},
+    {22,{2,3},"The Chamber of immortality","\t\t CONGRATULATIONS !\n\nYou entered a small, dark room.\nIt's empty here, except for the decorated plinth in the middle.\nOn the pedestal there is a glass vessel with opalescent contents.\nHere you have found the soul of a demon.\n\nBy breaking the vessel, you bring death to Agth.\n\nYour mission has been completed.",  "The nightmare is over.",0,0,0,0,/* a */0,/* c */0,0,0,121},
     /* corridors */
     {101,{10,1},"Corridor","This corridor crossing leads east, west and north, there are doors on the southern wall.", "Nothing to do here.",0,0,0,0,/* a */0,/* c */9,102,3,8},
     {102,{10,1},"Corridor","This corridor is turning. You can go  west or south.", "Nothing to do here.",0,0,0,0,/* a */0,/* c */0,0,1,101},
@@ -61,4 +61,3 @@ struct locations rooms[36] = {
     {120,{1,2},"Corridor","Short corridor leads north and south.", "Nothing to do here.",0,0,0,0,/* a */0,/* c */20,0,17,0},
     {121,{5,1},"Corridor","This corridor leads east and west.", "Nothing to do here.",0,0,0,0,/* a */0,/* c */0,22,0,21},
 };
-

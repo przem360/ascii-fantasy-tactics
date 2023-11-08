@@ -137,12 +137,17 @@ int display_current_location(int loc){
     else {
         printf("%s \n\n",rooms[cloc].description);
     }
-    printf("Available directions: ");
-    if (rooms[cloc].go_north > 0) printf("NORTH ");
-    if (rooms[cloc].go_east  > 0) printf("EAST ");
-    if (rooms[cloc].go_south > 0) printf("SOUTH ");
-    if (rooms[cloc].go_west  > 0) printf("WEST ");
-    printf("\n\n");
+    if (loc == FINAL_LOCATION) {
+        printf("\t Press [ENTER] to quit...");
+    }
+    else {
+        printf("Available directions: ");
+        if (rooms[cloc].go_north > 0) printf("NORTH ");
+        if (rooms[cloc].go_east  > 0) printf("EAST ");
+        if (rooms[cloc].go_south > 0) printf("SOUTH ");
+        if (rooms[cloc].go_west  > 0) printf("WEST ");
+        printf("\n\n");
+    }
     if (DBG_MODE == 1) {
         printf("\nroom number: %d\n",rooms[cloc].id);
         printf("  Invisible: %d\n",invisible);
@@ -174,7 +179,7 @@ int explore_dungeon(void){
         if (command[0] == 'y') { qresult = 1; game_mode = 2; }
         if (DBG_MODE == 1) {printf("Command: %c\ngame_mode: %d\nqresult: %d\n",command[0],game_mode,qresult);}
     }
-    while (current_location != 22 && qresult != 0 && game_mode == 2) {
+    while (qresult != 0 && game_mode == 2) {
         if (DBG_MODE == 1) {printf("game_mode: %d\nqresult: %d\n",game_mode,qresult);}
         clear_screen();
         if(rooms[cloc].is_enemy == 1 && invisible == 0){
@@ -187,6 +192,11 @@ int explore_dungeon(void){
                 }
         }
         display_current_location(current_location);
+        if (current_location == FINAL_LOCATION) {
+            read_command();
+            game_mode = 0;
+            break;
+        }
         read_command();
         qresult = compareST(command, "quit");
         if (strstr(command, "save") != NULL) { save_state(); }
