@@ -699,6 +699,10 @@ void ascii_battle_init(int arena_id) {
     int amount_of_beasts = sizeof(beasts) / sizeof(beasts[0]);
     int i,j;
     if (max_power == 1) {cheat_max_hp();}
+    for (i=0;i<amount_of_fighters;i++){
+        pcs[i].x_position = pcs[i].start_x_position;
+        pcs[i].y_position = pcs[i].start_y_position;
+    }
     if (current_location > 0){
         j = 0;
         for (i=0;i<amount_of_beasts;i++){
