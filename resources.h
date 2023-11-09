@@ -76,7 +76,7 @@ char lvls[3][14][22] = {
 
 struct character_pc {
     char letter;
-    char id[2];         // id is must be unique, since we could have multiple figures with the same letter.
+    int id;         // id is must be unique, since we could have multiple figures with the same letter.
     int initiative;
     char name[10];
     char pc_class[10];
@@ -100,10 +100,10 @@ struct character_pc {
 
 
 struct character_pc pcs[4] = {
-    {'A',"av",2,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,8,15,1,1,{'b','s'},{{'n','n'},{'n','n'},{'n','n'},{'n','n'}},12,3,12,3},
-    {'K',"kk",4,"Koko",  "Bl__Mage","I will eradicate them.",  1,0,2500,40,6,6,13,1,0,{'m','r'},{{'l','b'},{'f','b'},{'n','n'},{'n','n'}},12,4,12,4},
-    {'M',"mk",6,"Marsh", "Archer","You can\'t escape!",1,0,2500,30,6,6,13,1,0,{'b','w'},{{'n','n'},{'n','n'},{'n','n'},{'n','n'}},12,5,12,5},
-    {'Z',"zk",8,"Zok",   "Wh__Mage","Need help?",1,0,1500,30,8,8,13,1,0,{'m','r'},{{'l','b'},{'r','e'},{'n','n'},{'n','n'}},12,6,12,6}
+    {'A',1,2,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,8,15,1,1,{'b','s'},{{'n','n'},{'n','n'},{'n','n'},{'n','n'}},12,3,12,3},
+    {'K',2,4,"Koko",  "Bl__Mage","I will eradicate them.",  1,0,2500,40,6,6,13,1,0,{'m','r'},{{'l','b'},{'f','b'},{'n','n'},{'n','n'}},12,4,12,4},
+    {'M',3,6,"Marsh", "Archer","You can\'t escape!",1,0,2500,30,6,6,13,1,0,{'b','w'},{{'n','n'},{'n','n'},{'n','n'},{'n','n'}},12,5,12,5},
+    {'Z',4,8,"Zok",   "Wh__Mage","Need help?",1,0,1500,30,8,8,13,1,0,{'m','r'},{{'l','b'},{'r','e'},{'n','n'},{'n','n'}},12,6,12,6}
 };
 int amount_of_fighters = sizeof(pcs) / sizeof(pcs[0]);
 // struct character_pc character1 = {"A",1,"Avery", "Fighter","This one is protagonist.",1,0,2000,40,8,15,1,1,{"Big Sword",8},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},{"","",0,0,0},12,3};
@@ -111,7 +111,7 @@ int amount_of_fighters = sizeof(pcs) / sizeof(pcs[0]);
 
 struct enemy { 
     char letter;
-    char id[2];         // id is must be unique, since we could have multiple figures with the same letter.
+    int id;         // id is must be unique, since we could have multiple figures with the same letter.
     int initiative;
     char name[10];
     char race[14];
@@ -135,46 +135,46 @@ otherwise faild.
 */
 
 struct enemy beasts[40] = {
-    {'b',"b1",1,"Bill","Bat","Bat attacks!",4,14,30,4,7,18,0,1,4,2},
-    {'s',"s1",3,"Steve","Bat","Bat attacks!",4,14,30,4,7,18,0,1,3,2},
-    {'g',"g4",1,"Benny","Red_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,4},
-    {'g',"g5",3,"Mitch","Blue_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,4},
-    {'g',"g6",5,"Jim","Red_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,4},
-    {'g',"g7",7,"Phil","Blue_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,4},
-    {'f',"f1",1,"Kool","Floating_Eye","Eye attacks!",8,14,30,4,7,18,0,1,3,5},
-    {'p',"p1",3,"Spotty","Vampire_Cat","Cat attacks!",6,14,40,4,7,18,0,3,5,5},
-    {'z',"z1",1,"Corpse", "Zombie","Zombie attacks!",4,14,40,6,9,20,0,1,6,7},
-    {'z',"z2",3,"Rotter", "Zombie","Zombie attacks!",4,14,40,6,9,20,0,1,6,7},
-    {'p',"p2",1,"Purr","Vampire_Cat","Cat attacks!",6,14,40,4,7,18,0,3,5,8},
-    {'b',"b2",3,"Bob","Squidrakin","Squidrakin attacks",5,13,40,4,7,18,0,1,4,8},
-    {'t',"s2",5,"Skinny",  "Skeleton","Whooa!",4,13,30,8,7,18,0,2,5,8},
-    {'g',"g2",7,"George", "Ghoul","Fire breed attack!",5,14,40,6,9,20,0,1,6,8},
-    {'m',"m1",1,"Max","Minotaur","Minotaur attacks!",8,14,30,4,7,18,0,3,8,9},
-    {'b',"b3",3,"Badok","Malboro","Malboro attacks",8,13,30,4,7,18,0,1,4,9},
-    {'t',"t1",5,"Ted",  "Tentacle_Worm","Squeezed you hard!",14,13,30,8,7,18,0,1,5,9},
-    {'h',"h1",7,"BadBoy", "Hell_Hound","Fire breed attack!",18,14,40,6,9,20,0,1,6,9},
-    {'g',"g8",1,"Peek","Blue_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,11},
-    {'m',"m5",3,"Noom","Big Rat","Rat attacks!",4,14,30,4,7,18,0,1,3,11},
-    {'g',"g9",5,"Poke","Red_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,11},
-    {'d',"n1",7,"Leel","Dryad","Dryad attacks",4,13,40,4,7,18,0,1,4,11},
-    {'g',"g1",1,"Fred","Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,12},
-    {'r',"r1",3,"Rogue","Human","Rogue attacks",5,13,40,4,7,18,0,1,4,12},
-    {'t',"t2",5,"Ted",  "Tentacle_Worm","Squeezed you hard!",14,13,30,8,7,18,0,1,5,12},
-    {'h',"h2",7,"BadBoy", "Hell_Hound","Fire breed attack!",18,14,40,6,9,20,0,1,6,12},
-    {'m',"m2",1,"Max","Minotaur","Minotaur attacks!",8,14,30,4,7,18,0,3,8,13},
-    {'b',"b4",3,"Badok","Malboro","Malboro attacks",8,13,30,4,7,18,0,1,4,13},
-    {'c',"c1",5,"Baghun",  "Cúchulainn","Cúchulainn attacks!",14,13,30,8,7,18,0,2,10,13},
-    {'z',"z3",7,"Ziggy", "Zombie_Vampire","Vampire attacks!",4,14,40,6,9,20,0,1,6,13},
-    {'m',"m3",1,"Mini","Big Rat","Rat attacks!",4,14,30,4,7,18,0,1,4,16},
-    {'m',"m4",3,"Moe","Big Rat","Rat attacks!",4,14,30,4,7,18,0,1,3,16},
-    {'f',"f2",1,"Pixie","Floating_Eye","Eye attacks!",8,14,30,4,7,18,0,1,3,17},
-    {'n',"n2",3,"Nina","Dryad","Dryad attacks",4,13,40,4,7,18,0,1,4,17},
-    {'d',"d1",5,"Danny",  "Red_Dragon","eat you alive!",10,13,30,8,7,18,0,1,5,17},
-    {'z',"z4",7,"ZooZoo", "Zalera","Zalera attacks!",6,14,40,6,9,20,0,1,6,17},
-    {'g',"g3",1,"Red","Red_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,21},
-    {'b',"b4",3,"Boby","Bomb","Bomb attacks!",5,13,40,4,7,18,0,2,4,21},
-    {'t',"t1",5,"Tipy",  "Treant","Treant attacks!",14,13,30,8,7,18,0,1,5,21},
-    {'h',"h2",7,"Bixy", "Behemoth","Fire breed attack!",18,14,40,6,9,20,0,1,6,21},
+    {'b',1,1,"Bill","Bat","Bat attacks!",4,14,30,4,7,18,0,1,4,2},
+    {'s',2,3,"Steve","Bat","Bat attacks!",4,14,30,4,7,18,0,1,3,2},
+    {'g',3,1,"Benny","Red_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,4},
+    {'g',4,3,"Mitch","Blue_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,4},
+    {'g',5,5,"Jim","Red_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,4},
+    {'g',6,7,"Phil","Blue_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,4},
+    {'f',7,1,"Kool","Floating_Eye","Eye attacks!",8,14,30,4,7,18,0,1,3,5},
+    {'p',8,3,"Spotty","Vampire_Cat","Cat attacks!",6,14,40,4,7,18,0,3,5,5},
+    {'z',9,1,"Corpse", "Zombie","Zombie attacks!",4,14,40,6,9,20,0,1,6,7},
+    {'z',10,3,"Rotter", "Zombie","Zombie attacks!",4,14,40,6,9,20,0,1,6,7},
+    {'p',11,1,"Purr","Vampire_Cat","Cat attacks!",6,14,40,4,7,18,0,3,5,8},
+    {'b',12,3,"Bob","Squidrakin","Squidrakin attacks",5,13,40,4,7,18,0,1,4,8},
+    {'t',13,5,"Skinny",  "Skeleton","Whooa!",4,13,30,8,7,18,0,2,5,8},
+    {'g',14,7,"George", "Ghoul","Fire breed attack!",5,14,40,6,9,20,0,1,6,8},
+    {'m',15,1,"Max","Minotaur","Minotaur attacks!",8,14,30,4,7,18,0,3,8,9},
+    {'b',16,3,"Badok","Malboro","Malboro attacks",8,13,30,4,7,18,0,1,4,9},
+    {'t',17,5,"Ted",  "Tentacle_Worm","Squeezed you hard!",14,13,30,8,7,18,0,1,5,9},
+    {'h',18,7,"BadBoy", "Hell_Hound","Fire breed attack!",18,14,40,6,9,20,0,1,6,9},
+    {'g',19,1,"Peek","Blue_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,11},
+    {'m',20,3,"Noom","Big Rat","Rat attacks!",4,14,30,4,7,18,0,1,3,11},
+    {'g',21,5,"Poke","Red_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,11},
+    {'d',22,7,"Leel","Dryad","Dryad attacks",4,13,40,4,7,18,0,1,4,11},
+    {'g',23,1,"Fred","Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,12},
+    {'r',24,3,"Rogue","Human","Rogue attacks",5,13,40,4,7,18,0,1,4,12},
+    {'t',25,5,"Ted",  "Tentacle_Worm","Squeezed you hard!",14,13,30,8,7,18,0,1,5,12},
+    {'h',26,7,"BadBoy", "Hell_Hound","Fire breed attack!",18,14,40,6,9,20,0,1,6,12},
+    {'m',27,1,"Max","Minotaur","Minotaur attacks!",8,14,30,4,7,18,0,3,8,13},
+    {'b',28,3,"Badok","Malboro","Malboro attacks",8,13,30,4,7,18,0,1,4,13},
+    {'c',29,5,"Baghun",  "Cúchulainn","Cúchulainn attacks!",14,13,30,8,7,18,0,2,10,13},
+    {'z',30,7,"Ziggy", "Zombie_Vampire","Vampire attacks!",4,14,40,6,9,20,0,1,6,13},
+    {'m',31,1,"Mini","Big Rat","Rat attacks!",4,14,30,4,7,18,0,1,4,16},
+    {'m',32,3,"Moe","Big Rat","Rat attacks!",4,14,30,4,7,18,0,1,3,16},
+    {'f',33,1,"Pixie","Floating_Eye","Eye attacks!",8,14,30,4,7,18,0,1,3,17},
+    {'n',34,3,"Nina","Dryad","Dryad attacks",4,13,40,4,7,18,0,1,4,17},
+    {'d',35,5,"Danny",  "Red_Dragon","eat you alive!",10,13,30,8,7,18,0,1,5,17},
+    {'z',36,7,"ZooZoo", "Zalera","Zalera attacks!",6,14,40,6,9,20,0,1,6,17},
+    {'g',37,1,"Red","Red_Goblin","Goblin attacks!",4,14,30,4,7,18,0,1,3,21},
+    {'b',38,3,"Boby","Bomb","Bomb attacks!",5,13,40,4,7,18,0,2,4,21},
+    {'t',39,5,"Tipy",  "Treant","Treant attacks!",14,13,30,8,7,18,0,1,5,21},
+    {'h',40,7,"Bixy", "Behemoth","Fire breed attack!",18,14,40,6,9,20,0,1,6,21},
 };
 
 

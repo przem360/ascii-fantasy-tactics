@@ -15,8 +15,8 @@
 const char alphabet[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
 
 char current_command[8];
-char selected_fighter[] = "nn";
-char selected_monster[] = "nn";
+int selected_fighter;
+int selected_monster;
 char output[1];
 int whoseturn = 1; /* Initiative selection */
 int player_or_monster = 1; /* 1 = player, 2 = monster */
@@ -37,6 +37,9 @@ int aiaction;
 int fid, mid; /* fighter id, monster id*/
 // int max_power;
 
+int legal_moves[MAX_MOV * MAX_MOV][3];
+int the_move[2];
+
 
 int side_panel_size = sizeof(side_panel)/sizeof(side_panel[0]);
 
@@ -50,18 +53,18 @@ int tb_read_command(void){
     return 0;
 }
 
-int get_array_index(char type, char id[2]){
+int get_array_index(char type, int id){
     int i;
     if (type == 'm') {
         for (i=0;i<amount_of_monsters;i++){
-            if ((monsters[i].id[0]==id[0])&&(monsters[i].id[1]==id[1])) {
+            if (monsters[i].id==id) {
                 return i;
             }
         }
     }
     if (type == 'f') {
         for (i=0;i<amount_of_fighters;i++){
-            if ((pcs[i].id[0]==id[0])&&(pcs[i].id[1]==id[1])){
+            if (pcs[i].id==id){
                 return i;
             }
         }
@@ -428,8 +431,8 @@ void chase_figters(int mnstr, int fightr){
     int fx, fy;
     int current_distance;
     int i, j, k;
-    int legal_moves[max_mov_fields][3];
-    int the_move[2];
+    // int legal_moves[max_mov_fields][3];
+    // int the_move[2];
     for (i=0;i<max_mov_fields;i++){
         legal_moves[i][0] = 0;
         legal_moves[i][1] = 0;
@@ -454,7 +457,7 @@ void chase_figters(int mnstr, int fightr){
     }
     if(DBG_MODE==1) printf("Found %d legal moves \n",k);
     // screen[mxp][myp] = monsters[i].letter;
-    for (i=0;i<max_mov_fields;i++){
+    for (i=0;i<k;i++){
         if ((legal_moves[i][0]>0)&&(legal_moves[i][1]>0)) {
             if (legal_moves[i][2]<current_distance) { 
                 if(DBG_MODE==1) printf("Current shortest is x: %d y: %d with distance: %d \n",legal_moves[i][0],legal_moves[i][1],legal_moves[i][2]);
@@ -468,8 +471,14 @@ void chase_figters(int mnstr, int fightr){
     
     // test legal_moves
     if(DBG_MODE==1) {
-        for (i=0;i<100;i++) {
-            if ((legal_moves[i][0]>0)&&(legal_moves[i][1]>0)) printf("Legal v: %d          legal h: %d          distance: %d\n",legal_moves[i][0],legal_moves[i][1],legal_moves[i][2]);
+        // for (i=0;i<100;i++) {
+        //     if ((legal_moves[i][0]>0)&&(legal_moves[i][1]>0)) printf("Legal v: %d          legal h: %d          distance: %d\n",legal_moves[i][0],legal_moves[i][1],legal_moves[i][2]);
+        // }
+        for (i=0;i<MAX_MOV*MAX_MOV;i++){
+            for (j=0;j<3;j++){
+                printf(" :: legal_moves[%d][%d] =  %d :: ",i,j,legal_moves[i][j]);
+            }
+            printf("\n");
         }
         printf("My target is: %c at [%d %d] \n",pcs[fightr].letter,fx,fy);
         printf("I decide to move to: [%d %d] \n",the_move[0],the_move[1]);
@@ -525,7 +534,7 @@ void clean_side_panel(){
     }
 }
 
-int ask_spells(char pid[2]){
+int ask_spells(int pid){
     /* print fields id and name, from array spells[3],
        based on spells[4][2] from array pcs */
     int i,y,z,amount_of_fighters_spells,sp_counter;
@@ -541,7 +550,7 @@ int ask_spells(char pid[2]){
     }
     /* Getting spells from fighter */
     for (i=0;i<amount_of_fighters;i++){
-        if((pcs[i].id[0] == pid[0])&&(pcs[i].id[1] == pid[1])) {
+        if(pcs[i].id == pid) {
             amount_of_fighters_spells = sizeof(pcs[i].spells);
             for(y=0;y<amount_of_fighters_spells;y++){
                 av_spells[y][0] = pcs[i].spells[y][0];
@@ -588,7 +597,7 @@ void print_stats_horisontal(char mode){
     if (mode == 'm'){
         for(i=0;i<amount_of_monsters;i++){
             if (monsters[i].name[0]) {
-                if((selected_monster[0] == monsters[i].id[0])&&(selected_monster[1] == monsters[i].id[1])){ printf(">[%c] HP:%d  ",monsters[i].letter,monsters[i].hp); }
+                if(selected_monster == monsters[i].id){ printf(">[%c] HP:%d  ",monsters[i].letter,monsters[i].hp); }
                 else {printf("[%c] HP:%d  ",monsters[i].letter,monsters[i].hp);}
             }
         }
@@ -596,7 +605,7 @@ void print_stats_horisontal(char mode){
     }
     else if (mode == 'f'){
         for(i=0;i<amount_of_fighters;i++){
-            if((selected_fighter[0] == pcs[i].id[0])&&(selected_fighter[1] == pcs[i].id[1])){ printf(">[%c] HP:%d  ",pcs[i].letter,pcs[i].hp); }
+            if(selected_fighter == pcs[i].id){ printf(">[%c] HP:%d  ",pcs[i].letter,pcs[i].hp); }
             else { printf("[%c] HP:%d  ",pcs[i].letter,pcs[i].hp); }
         }
         printf("\n");
@@ -615,7 +624,7 @@ void print_to_side_panel(){
     for(i=0;i<amount_of_monsters;i++){
         snprintf(monster_hp_string,3,"%d",monsters[i].hp);
         in_line_position = 3;
-        if((selected_monster[0] == monsters[i].id[0])&&(selected_monster[1] == monsters[i].id[1])){
+        if(selected_monster == monsters[i].id){
             side_panel[i][1] = '>';
         } else {
             side_panel[i][1] = ' ';
@@ -663,7 +672,7 @@ void print_to_side_panel(){
         snprintf(fighter_hp_string,3,"%d",pcs[i].hp);
         in_line_position = 3;
         // side_panel[i+free_lines+amount_of_monsters][1] = ' ';
-        if((selected_fighter[0] == pcs[i].id[0])&&(selected_fighter[1] == pcs[i].id[1])){
+        if(selected_fighter == pcs[i].id){
             side_panel[i+free_lines+amount_of_monsters][1] = '>';
         } else {
             side_panel[i+free_lines+amount_of_monsters][1] = ' ';
@@ -754,7 +763,7 @@ void ascii_battle_init(int arena_id) {
 //     int keypress;
 // }
 
-int resolve_spell(char pid[2],char taddr[3],char sid[2]){
+int resolve_spell(int pid,char taddr[3],char sid[2]){
     /* player id, target coords, spell id */
     /* 1) Attack throw: D20+bonuses vs. target's AC.
         If result is higher or equal to target's AC - success, proceed to 2).
@@ -854,7 +863,7 @@ int resolve_spell(char pid[2],char taddr[3],char sid[2]){
     return 0;
 }
 
-int resolve_attack(char pid[2],char taddr[3]){
+int resolve_attack(int pid,char taddr[3]){
     /*  player id, target coords */
     /*  Attack throw: D20+bonuses vs. target's AC.
         If result is higher or equal to target's AC - success, proceed to 2).
@@ -865,7 +874,7 @@ int resolve_attack(char pid[2],char taddr[3]){
     foundm=0;
     monster_hp = 0;
     printip("Resolving attack...",1);
-    draw_interface();
+    // draw_interface();
     adresstocoords(taddr);
     // printf("Read coords: %c %c resulting addr: %d %d \n",taddr[0],taddr[1],coords[0],coords[1]);
     // sleep(3);
@@ -958,14 +967,14 @@ int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3
     }
 }
 
-int player_action_move(char pid[2]){
+int player_action_move(int pid){
     int i, selected_x, selected_y, rad, arrnum, mv, addr_test;
     mv = 0;
     addr_test = 0;
     char fighter_letter;
     char addr[3];
     for(i=0;i<amount_of_fighters;i++){
-        if (pcs[i].id[0] == pid[0] && pcs[i].id[1] == pid[1]){
+        if (pcs[i].id == pid){
             selected_x = pcs[i].x_position;
             selected_y = pcs[i].y_position;
             fighter_letter = pcs[i].letter;
@@ -987,7 +996,7 @@ int player_action_move(char pid[2]){
     return mv;
 }
 
-int player_action_cast(char pid[2]){
+int player_action_cast(int pid){
     int i, s, selected_x, selected_y, rad, done;
     done = 0;
     char targetaddr[3];
@@ -1000,7 +1009,7 @@ int player_action_cast(char pid[2]){
         s--;
         rad = spells[s].range / 10;
         for(i=0;i<amount_of_fighters;i++){
-            if (pcs[i].id[0] == pid[0] && pcs[i].id[1] == pid[1] && rad>0){
+            if (pcs[i].id == pid && rad>0){
                 selected_x = pcs[i].x_position;
                 selected_y = pcs[i].y_position;
                 if (spells[s].recov > 0) {
@@ -1040,13 +1049,13 @@ int player_action_cast(char pid[2]){
     return done;
 }
 
-int player_action_attack(char pid[2]){
+int player_action_attack(int pid){
     int i, j, selected_x, selected_y, rad, done;
     char targetaddr[3];
     rad = 1;
     done = 0;
     for(i=0;i<amount_of_fighters;i++){
-        if (pcs[i].id[0] == pid[0] && pcs[i].id[1] == pid[1]){
+        if (pcs[i].id == pid){
             selected_x = pcs[i].x_position;
             selected_y = pcs[i].y_position;
             if ((pcs[i].weapon[0] == 'b')&&(pcs[i].weapon[1] == 'w')) {
@@ -1090,8 +1099,7 @@ int let_move(){
             }
         if (pcs[i].initiative == whoseturn){
             if (pcs[i].hp>0) {
-                selected_fighter[0] = pcs[i].id[0];
-                selected_fighter[1] = pcs[i].id[1]; 
+                selected_fighter = pcs[i].id;
                 player_or_monster = 1;
                 printip("Player\'s turn      ",1);
                 // return 0;
@@ -1107,8 +1115,7 @@ int let_move(){
             }
         if (monsters[i].initiative == whoseturn){
             // if (monsters[i].hp>0) {
-                selected_monster[0] = monsters[i].id[0];
-                selected_monster[1] = monsters[i].id[1]; 
+                selected_monster = monsters[i].id;
                 player_or_monster = 2;
                 printip("Monster\'s turn     ",1);
             // }
@@ -1122,7 +1129,7 @@ int let_move(){
 void monsters_action(){
     int i;
     for (i=0;i<amount_of_monsters;i++) {
-        if ((monsters[i].id[0] == selected_monster[0])&&(monsters[i].id[1] == selected_monster[1])){
+        if (monsters[i].id == selected_monster){
             if (monsters[i].hp<=0) {
                 printip("DEAD ONE :(        ",1);
                 draw_interface();
@@ -1137,7 +1144,7 @@ void monsters_action(){
     }
 }
 
-int ai_choose_action(char mid[2]) {
+int ai_choose_action(int ai_mid) {
     printip("Choosing action    ",1);
     int i,j, my_range,enemy_is_close, me_in_array, fighter_found_in_array;
     // int fighter_in_range,coin;
@@ -1148,7 +1155,7 @@ int ai_choose_action(char mid[2]) {
     int my_addr[2];
     // int current_field_to_check[2];
     for (i=0;i<amount_of_monsters;i++) {
-        if((monsters[i].id[0] == mid[0])&&(monsters[i].id[1] == mid[1])){
+        if(monsters[i].id == ai_mid){
             my_addr[0] = monsters[i].x_position;
             my_addr[1] = monsters[i].y_position;
             me_in_array = i;
@@ -1242,7 +1249,7 @@ void info_screen(void){
     printf("------------ FIGHTERS ------------\n");
     printf("\n");
     for (i=0;i<amount_of_fighters;i++) {
-        if ((pcs[i].id[0] == selected_fighter[0])&&(pcs[i].id[1] == selected_fighter[1])){
+        if (pcs[i].id == selected_fighter){
             printf(" > [%c] %6s  HP:%d/%d\n",pcs[i].letter,pcs[i].name,pcs[i].hp,pcs[i].max_hp);
         }
         else {
@@ -1360,6 +1367,7 @@ int play_battle(int enemy_location){
         if (player_or_monster == 2){
             /* monster's move */
             // draw_interface();
+            if (DBG_MODE == 1) {printf("Selected monster: %d", selected_monster);}
             mid = get_array_index('m',selected_monster);
             if (monsters[mid].hp > 0) {
                 aiaction = ai_choose_action(selected_monster);

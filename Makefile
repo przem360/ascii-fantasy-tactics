@@ -1,6 +1,6 @@
 # CFLAGS = -Wall -pedantic -fno-stack-protector
 CFLAGS = -Wall -pedantic
-# CFLAGS= -g
+# CFLAGS= -g -O0
 OBJS = helpers.o converters.o asciibattle.o textadventure.o main.o
 PROG = aft
 PROGT = advtest
@@ -16,7 +16,7 @@ $(PROG): $(OBJS)
 
 
 runtest:
-	gdb aft
+	gdb aft --command=battle.gdb
 
 wasm:
 	$(WCC) main.c -o $(PROGW)
@@ -42,4 +42,4 @@ helpers.o: settings.h helpers.h helpers.c
 	$(CXX) $(CFLAGS) -c helpers.c -o helpers.o # Helpers
 
 clean:
-	rm -f $(PROG) *.o save.aft *.out
+	rm -f $(PROG) *.o save.aft *.out gdb.output
