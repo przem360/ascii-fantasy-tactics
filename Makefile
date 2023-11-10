@@ -7,7 +7,9 @@ PROGT = advtest
 PROGW = adv.wasm
 CFLAGST = -Wall -pedantic -g
 CXX = gcc
-WCC=/opt/wasi-sdk/bin/clang --sysroot=/opt/wasi-sdk/share/wasi-sysroot -v -fuse-ld=lld
+WCC=/opt/wasi-sdk/bin/clang --sysroot=/opt/wasi-sdk/share/wasi-sysroot
+# CXX = $(WCC)
+# CFLAGS = -v -fuse-ld=lld
 
 all: $(PROG)
 

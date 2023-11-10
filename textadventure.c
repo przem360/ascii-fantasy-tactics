@@ -51,9 +51,9 @@ int save_state(void){
         printf("Error opening the file %s", filename);
         return -1;
     }
-    fprintf(fp, "CL:%d\n", current_location);
+    fprintf(fp, "%d\n", current_location);
     for (i=0; i<amount_of_locations; i++) {
-        fprintf(fp, "%d:%d\n", rooms[i].id, rooms[i].is_enemy);
+        fprintf(fp, "%d\n", rooms[i].is_enemy);
     }
     fclose(fp);
     return 0;

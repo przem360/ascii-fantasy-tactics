@@ -20,7 +20,7 @@ struct locations {
     int go_west;
 };
 
-// rewritten locations: 1 - 11, 22
+// rewritten locations: 1 - 13, 22
 
 struct locations rooms[36] = {
     {1,{4,6},"Entry hall","You entered between gray brick walls, old and torn,\nprotruding from the ground like the teeth of an ancient beast.\n\nIn the northern wall there is a passage leading to the corridor, in the southern wall there is a heavy door.\n\nThere are sounds of giggling and wild growling.", "These sounds are coming from the south.",0,0,0,0,/* a */0,/* c */102,0,2,0},
@@ -34,8 +34,8 @@ struct locations rooms[36] = {
     {9,{6,4},"Temple of forgotten gods","Even though the vault collapsed long ago,\nthe columns that once supported it are still standing.\nUnder the western wall you can see the remains of a wooden altar.",  "This place will be haunted forever.",1,0,1,0,/* a */1,/* c */0,109,101,0},
     {10,{3,3},"The mosaics chamber","A small room with one window. The walls are lined with ceramic mosaics depicting old magical rites.",  "There\'s nothing else here.",0,0,1,0,/* a */0,/* c */0,108,0,0},
     {11,{4,5},"The Tower","There used to be a tower here but it collapsed a long time ago.\nThe remains of a staircase leading to nowhere stick out of the ground.", "You hear a strange noises.",1,0,0,0,/* a */0,/* c */0,0,108,0},
-    {12,{4,4},"Bugbears","You see a group of hairy goblin-like humanoids as big as large men. \n They appear to be camping in this room",  "5 Bugbears attacks",1,0,0,0,/* a */0,/* c */0,112,113,109},
-    {13,{4,3},"Empty room","This room appears to be empty.", "Found 500 GP",0,1,0,0,/* a */0,/* c */0,113,0,0},
+    {12,{4,4},"Crossing","More or less in the middle of the room, from the floor to the ceiling, there is a huge spider's web.\n\nYou hear quiet scratching and rustling.",  "You can\'t see anything else, maybe it\'s better.",1,0,0,0,/* a */0,/* c */0,112,113,109},
+    {13,{4,3},"Chamber of the mist","There is fog in this room.\n\nYou can't see the floor you're walking on at all.\nYou can't see walls or doors.\nEach party member appears only as a barely noticeable shape.", "Maybe it's safer to retreat.",0,1,0,0,/* a */0,/* c */0,113,0,0},
     {14,{3,3},"Treasure room","There are ten bags piled in the corner of this room. \n They appear to be full.", "Found 1000 GP",0,1,0,0,/* a */0,/* c */0,0,116,113},
     {15,{3,3},"Room","This room appears empty save for a large chest centered against the far wall.", "Additional description yet to come",0,0,0,0,/* a */0,/* c */113,0,115,0},
     {16,{4,4},"Cristals","The walls of this room are covered with large lumps of crystals.", "You are surrounded by white, blue and pink light.",0,0,0,0,/* a */0,/* c */116,0,0,0},
