@@ -20,7 +20,7 @@ struct locations {
     int go_west;
 };
 
-// rewritten locations: 1 - 14, 22
+// rewritten locations: 1 - 15, 22
 
 struct locations rooms[36] = {
     {1,{4,6},"Entry hall","You entered between gray brick walls, old and torn,\nprotruding from the ground like the teeth of an ancient beast.\n\nIn the northern wall there is a passage leading to the corridor, in the southern wall there is a heavy door.\n\nThere are sounds of giggling and wild growling.", "These sounds are coming from the south.",0,0,0,0,/* a */0,/* c */102,0,2,0},
