@@ -5,6 +5,8 @@ Simple game in text mode, mix of text adventure and Tactics Battle.
 ## How to play
 
 Explore dungeon by using `go north`, `go east`, `go south` and `go west` commands, find the way out.  
+During exploration you can use `save` command to save state.  
+Loading state is available from welcome screen.  
 Hint: there is a [map of a dungeon](https://github.com/przem360/ascii-fantasy-tactics/blob/master/design/map.png). You start in room 1 and your goal is room 22.  
 Sometimes monsters will attack you, you will need to fight them. In battle mode you can always use `move` and `attack` commands, than choose coordinates in range, ie. `C8`.  
   

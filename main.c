@@ -27,6 +27,7 @@ void welcome_screen(){
     printf(" > ASCII FANTASY TACTICS <\n\n");
     printf("     [s] single  battle     \n");
     printf("     [a] adventure mode     \n");
+    printf("     [l] load adventure     \n");
     printf("     [q] quit game        \n\n");
     printf(" > ");
     // getcomm(mode_sel,2);

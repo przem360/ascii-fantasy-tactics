@@ -62,29 +62,40 @@ int save_state(void){
 
 int load_state(void){
     char *filename = SAVE_FILE;
-    char ch[4];
+    char info[4];
     int i;
     int is_monster;
+    int room_id;
     if (DBG_MODE == 1) {printf("Loading game...\n");sleep(2);}
 
     // opening the file for reading
     FILE *fp = fopen(filename, "r");
 
     if(fp != NULL) {
-        fread(ch, sizeof(int), 1, fp);
-        current_location = atoi(ch);
-        if (DBG_MODE == 1) {printf("Game loaded\ncurrent_location set to: %d\n",current_location);sleep(2);}
-        for (i=0; i<amount_of_locations; i++) {
-            fread(ch, sizeof(char), 1, fp);
-            is_monster = atoi(ch);
-            if (DBG_MODE == 1) {printf("\ngetting line: %d, is_monster: %d\n",i,is_monster); sleep(1);}
+        i=0;
+        while (fgets(info, sizeof(info), fp)) {
+        /* note that fgets don't strip the terminating \n, checking its
+           presence would allow to handle lines longer that sizeof(line) */
+        if (i==0) {
+            current_location = atoi(info);
+            if (DBG_MODE == 1) {printf("current_location: %d\n",current_location);sleep(2);}
+            }
+        else if (i>1 && ((info[0]=='0')||(info[0]=='1'))){
+            room_id = i-1;
+            is_monster = atoi(info);
+            if (DBG_MODE == 1) {printf("Room: %d monster: %d\n",room_id,is_monster);sleep(1);}
+            rooms[room_id].is_enemy = is_monster;
         }
+        i++; 
+    }
     }
     else {
         printf("Error opening the file %s", filename);
         return -1;
     }
     fclose(fp);
+    printf("\nGame loaded.\n");
+    sleep(1);
     return 0;
 }
 
