@@ -13,16 +13,36 @@
 #include "textadventure.h"
 #include "asciibattle.h"
 
+#define AMOUNT_OF_LOCATIONS 36
+
 // int invisible;
 int current_location;
 int attackers[MAX_MONSTERS_ATTACKING];
 int qresult;
 char command[12];
-int amount_of_locations = sizeof(rooms) / sizeof(rooms[0]);
+int was_i_here;
+// int amount_of_locations = sizeof(rooms) / sizeof(rooms[0]);
 
-void get_attackers(void){
+int location_history[AMOUNT_OF_LOCATIONS];
+
+int check_location_in_history(int loc){
+    // if loaction is found in location_history[amount_of_locations] return index
+    // else return -1
     int i;
-    for (i=0; i<MAX_MONSTERS_ATTACKING;i++){}
+    for (i=0;i<AMOUNT_OF_LOCATIONS;i++){
+        if (location_history[i] == loc) return i;
+    }
+    return -1;
+}
+void add_location_to_history(int loc){
+    // if (loc==0) printf("ERROR in textadventure.c add_location_to_history(): int loc zero value.");
+    int i;
+    for (i=0;i<AMOUNT_OF_LOCATIONS;i++){
+        if (location_history[i]==0) {
+            location_history[i] = loc;
+            break;
+        }
+    }
 }
 
 
@@ -53,7 +73,7 @@ int save_state(void){
         return -1;
     }
     fprintf(fp, "%d\n", current_location);
-    for (i=0; i<amount_of_locations; i++) {
+    for (i=0; i<AMOUNT_OF_LOCATIONS; i++) {
         fprintf(fp, "%d\n", rooms[i].is_enemy);
     }
     fclose(fp);
@@ -120,17 +140,16 @@ int compareST(char a[],char b[])
 }
 
 int get_location_by_id(int lid){
-    int amount_of_locations = sizeof(rooms)/sizeof(rooms[0]);
     int i;
-    for (i=0;i<amount_of_locations;i++){
+    for (i=0;i<AMOUNT_OF_LOCATIONS;i++){
         if(rooms[i].id == lid) return i;
     }
     return 99;
 }
 
 void show_intro(void){
-    char c;
     char ch;
+    clear_screen();
     if (COLOURS_ON == 1) {
         printf(DSC "%s" reset,intro_text);
         printf("Press any key to continue > ");
@@ -138,20 +157,30 @@ void show_intro(void){
         printf("%s", intro_text);
         printf("Press any key to continue > ");
     }
-    c = getchar();
+    ch = getchar();
     while ((ch = getchar()) != '\n' && ch != EOF) { }
 }
 
 int display_current_location(int loc){
     int cloc = get_location_by_id(loc);
-    // printf("\t\tASCII FANTASY TACTICS\n\t\t---------------------\nLocation: %s\n\n",rooms[cloc].name);
+    was_i_here = check_location_in_history(loc);
+        if (was_i_here<0){
+            add_location_to_history(loc);
+        }
+    printf("\t\tASCII FANTASY TACTICS\n\t\t---------------------\nLocation: %s\n\n",rooms[cloc].name);
     if (COLOURS_ON == 1){
         // printf(DSC "%s \n\n" reset,rooms[cloc].description);
         wprint(rooms[cloc].description,LIMIT_TXT_WIDH,1);
+        if (was_i_here>=0){
+            wprint("\nYou know, you have been here before.\n",LIMIT_TXT_WIDH,1);
+        }
     }
     else {
         // printf("%s \n\n",rooms[cloc].description);
         wprint(rooms[cloc].description,LIMIT_TXT_WIDH,0);
+        if (was_i_here>0){
+            wprint("\nYou know, you have been here before.\n",LIMIT_TXT_WIDH,0);
+        }
     }
     if (loc == FINAL_LOCATION) {
         printf("\t Press [ENTER] to quit...");
@@ -185,6 +214,7 @@ int explore_dungeon(void){
     int battle_result = 0;
     int previous_location = 0;
     qresult = 1;
+    was_i_here = 0;
     // clear_screen();
     while (qresult != 0 && game_mode == 2) {
         if (DBG_MODE == 1) {printf("game_mode: %d\nqresult: %d\n",game_mode,qresult);}

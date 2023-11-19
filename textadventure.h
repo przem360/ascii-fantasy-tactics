@@ -1,3 +1,5 @@
+int check_location_in_history(int loc);
+void add_location_to_history(int loc);
 int save_state(void);
 int load_state(void);
 int compareST(char a[],char b[]);
