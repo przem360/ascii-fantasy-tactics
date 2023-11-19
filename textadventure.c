@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h> /* for atoi(); */
 // #include "locations.h"
 
 #include <unistd.h> /* for pausing on POSIX */
@@ -17,6 +18,7 @@ int current_location;
 int attackers[MAX_MONSTERS_ATTACKING];
 int qresult;
 char command[12];
+int amount_of_locations = sizeof(rooms) / sizeof(rooms[0]);
 
 void get_attackers(void){
     int i;
@@ -41,7 +43,6 @@ char *getcomm(char *inpstr,int inpsiz) {
 
 int save_state(void){
     char *filename = SAVE_FILE;
-    int amount_of_locations = sizeof(rooms) / sizeof(rooms[0]);
     int i;
 
     // open the file for writing
@@ -61,34 +62,23 @@ int save_state(void){
 
 int load_state(void){
     char *filename = SAVE_FILE;
-    char ch;
-    int lines = 0;
-    int i = 0;
+    char ch[4];
+    int i;
+    int is_monster;
+    if (DBG_MODE == 1) {printf("Loading game...\n");sleep(2);}
 
     // opening the file for reading
     FILE *fp = fopen(filename, "r");
 
-    char the_line[6];
-
     if(fp != NULL) {
-        while(!feof(fp)) {
-            ch = fgetc(fp);
-            if(ch == '\n') {
-                lines++;
-                // i=0;
-            }
-            else {
-                the_line[i] = ch;
-                i++;
-            }
-            if (i>=6) {
-                i=0;
-                }
+        fread(ch, sizeof(int), 1, fp);
+        current_location = atoi(ch);
+        if (DBG_MODE == 1) {printf("Game loaded\ncurrent_location set to: %d\n",current_location);sleep(2);}
+        for (i=0; i<amount_of_locations; i++) {
+            fread(ch, sizeof(char), 1, fp);
+            is_monster = atoi(ch);
+            if (DBG_MODE == 1) {printf("\ngetting line: %d, is_monster: %d\n",i,is_monster); sleep(1);}
         }
-        if (DBG_MODE == 1) {
-            printf ("State file loaded, %d lines found. \n",lines);
-            printf ("Last line: %s \n",the_line);
-            }
     }
     else {
         printf("Error opening the file %s", filename);
@@ -128,18 +118,22 @@ int get_location_by_id(int lid){
 }
 
 void show_intro(void){
+    char c;
+    char ch;
     if (COLOURS_ON == 1) {
         printf(DSC "%s" reset,intro_text);
-        printf("Y/N? > ");
+        printf("Press any key to continue > ");
     } else {
         printf("%s", intro_text);
-        printf("Y/N? > ");
+        printf("Press any key to continue > ");
     }
+    c = getchar();
+    while ((ch = getchar()) != '\n' && ch != EOF) { }
 }
 
 int display_current_location(int loc){
     int cloc = get_location_by_id(loc);
-    printf("\t\tASCII FANTASY TACTICS\n\t\t---------------------\nLocation: %s\n\n",rooms[cloc].name);
+    // printf("\t\tASCII FANTASY TACTICS\n\t\t---------------------\nLocation: %s\n\n",rooms[cloc].name);
     if (COLOURS_ON == 1){
         // printf(DSC "%s \n\n" reset,rooms[cloc].description);
         wprint(rooms[cloc].description,LIMIT_TXT_WIDH,1);
@@ -180,16 +174,7 @@ int explore_dungeon(void){
     int battle_result = 0;
     int previous_location = 0;
     qresult = 1;
-    clear_screen();
-    while((strstr(command, "n") == NULL) && (strstr(command, "y") == NULL)){
-        show_intro();
-        while( (command[0] = getchar() != '\n') && (command[0] != EOF)); 
-        read_command();
-        // getcomm(int_sel,2);
-        if (command[0] == 'n') { qresult = 0; game_mode = 0; }
-        if (command[0] == 'y') { qresult = 1; game_mode = 2; }
-        if (DBG_MODE == 1) {printf("Command: %c\ngame_mode: %d\nqresult: %d\n",command[0],game_mode,qresult);}
-    }
+    // clear_screen();
     while (qresult != 0 && game_mode == 2) {
         if (DBG_MODE == 1) {printf("game_mode: %d\nqresult: %d\n",game_mode,qresult);}
         clear_screen();

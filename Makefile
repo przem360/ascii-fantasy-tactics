@@ -18,7 +18,8 @@ $(PROG): $(OBJS)
 
 
 runtest:
-	gdb aft --command=battle.gdb
+	# gdb aft --command=battle.gdb
+	gdb aft
 
 wasm:
 	$(WCC) main.c -o $(PROGW)

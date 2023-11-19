@@ -1,6 +1,6 @@
 #define FINAL_LOCATION 22
 
-char intro_text[] = "These are the ruins of Yaradow Castle,\nwhere Lord Agth ruled long ago.\nMany years after the sorcerer's death,\nnature is taking over what was left of his castle.\nThe brick walls have become overgrown with moss\nand the cracked remains of the floors are now covered\nwith a carpet of grass.\n\nRumors circulating among locals say that old Agth\nhas trapped a fragment of his soul somewhere here\nand now, as an undead demon, he drains the energy\nof unlucky people who wander into the area.\n\nWill you be brave enough to go deep into the Yaradow Castle\nand find the soul of Agth?\n\n";
+char intro_text[] = "These are the ruins of Yaradow Castle,\nwhere Lord Agth ruled long ago.\nMany years after the sorcerer's death,\nnature is taking over what was left of his castle.\nThe brick walls have become overgrown with moss\nand the cracked remains of the floors are now covered\nwith a carpet of grass.\n\nRumors circulating among locals say that old Agth\nhas trapped a fragment of his soul somewhere here\nand now, as an undead demon, he drains the energy\nof unlucky people who wander into the area.\n\nYou are the only hope for restoring peace to this area...\n\n";
 
 struct locations {
     int id; // number of room on map
@@ -20,7 +20,7 @@ struct locations {
     int go_west;
 };
 
-// rewritten locations: 1 - 15, 22
+// rewritten locations: 1 - 16, 22
 
 struct locations rooms[36] = {
     {1,{4,6},"Entry hall","You entered between gray brick walls, old and torn,\nprotruding from the ground like the teeth of an ancient beast.\n\nIn the northern wall there is a passage leading to the corridor, in the southern wall there is a heavy door.\n\nThere are sounds of giggling and wild growling.", "These sounds are coming from the south.",0,0,0,0,/* a */0,/* c */102,0,2,0},
@@ -38,7 +38,7 @@ struct locations rooms[36] = {
     {13,{4,3},"Chamber of the mist","There is fog in this room.\n\nYou can't see the floor you're walking on at all.\nYou can't see walls or doors.\nEach party member appears only as a barely noticeable shape.", "Maybe it's safer to retreat.",0,1,0,0,/* a */0,/* c */0,113,0,0},
     {14,{3,3},"Chamber of wandering souls","The room is empty.\n On the walls you see moving shadows in human shapes.\nThey walk silently along the surfaces of the walls.", "Do they know about our presence?",0,1,0,0,/* a */0,/* c */0,0,116,113},
     {15,{3,3},"Meat storage room","There are steel hooks hanging on the chains with dried blood on them.\nYou notice the smell of death in the air.", "There\'s a screech of metal in the distance.",0,0,0,0,/* a */0,/* c */113,0,115,0},
-    {16,{4,4},"Cristals","The walls of this room are covered with large lumps of crystals.", "You are surrounded by white, blue and pink light.",0,0,0,0,/* a */0,/* c */116,0,0,0},
+    {16,{4,4},"Ritual Chamber","You entered through the only door in this room.\nTorch holders stick out from the walls.\nOn the remains of the floor you can see symbols of ancient magic.", "Looks like there\'s nothing here.",0,0,0,0,/* a */0,/* c */116,0,0,0},
     {17,{7,5},"Statue gallery","This room is illuminated by magic. \n There are six finely crafted statues in two ranks across the room; they \n appear to be elven warriors in chainmail with swords upraised toward you.", "6 living statues attacks",0,0,0,0,/* a */0,/* c */120,0,118,117},
     {18,{4,3},"Sarcophagus","A large sarcophagus rests in the center of this room. \n A chill comes over you as the musty air of the room flows over you.", "You hear a moaning sound, faint and distant. \n It seems to be emanating from the sarcophagus.",0,0,0,0,/* a */0,/* c */118,0,0,0},
     {19,{4,5},"Mystery room","Cobwebs hang thickly from the ceiling in the far left corner of this room, partially covering the \n doorway there.\n A trail of blood leads from the center \n of the room to the door on the right.", "Nothing here!",0,0,0,0,/* a */0,/* c */0,117,0,0},

@@ -18,6 +18,6 @@
     LIMIT_TXT_WIDH amount of characters. */
 #define LIMIT_TXT_WIDH 0
 
-#define DBG_MODE 0
+#define DBG_MODE 1
 
 
