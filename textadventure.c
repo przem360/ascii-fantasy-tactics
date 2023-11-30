@@ -15,7 +15,7 @@
 
 #define AMOUNT_OF_LOCATIONS 36
 
-// int invisible;
+extern int invisible;
 int current_location;
 int attackers[MAX_MONSTERS_ATTACKING];
 int qresult;
@@ -150,6 +150,7 @@ int get_location_by_id(int lid){
 void show_intro(void){
     char ch;
     clear_screen();
+    current_location = 1;
     if (COLOURS_ON == 1) {
         printf(DSC "%s" reset,intro_text);
         printf("Press any key to continue > ");

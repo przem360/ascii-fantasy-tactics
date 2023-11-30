@@ -8,14 +8,9 @@
 #include "textadventure.h"
 
 int invisible;
-int max_power;
-// int current_location = 1;
 int selected_arena = 0;
 int game_mode = 0;
 int game_loaded;
-// char selected_fighter[] = "nn"; /* asciibattle.c is storing id of selected fighter here */
-// char command[COMMAND_LENGHT];
-// char command_code[2]; /* what analyse_command things about user input?*/
 
 
 void welcome_screen(){
@@ -51,7 +46,7 @@ int main (int argc, char *argv[]){
         if (game_mode == 0) welcome_screen();
         if (game_mode == 1) {invisible = 0; play_battle(2);}
         if (game_mode == 2) {
-            if (game_loaded == 0) {current_location = 1; show_intro();}
+            if (game_loaded == 0) { show_intro(); }
             explore_dungeon();
         }
     }
