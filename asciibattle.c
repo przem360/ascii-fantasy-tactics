@@ -14,6 +14,8 @@
 
 const char alphabet[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
 
+// int game_mode;
+
 char current_command[8];
 int selected_fighter;
 int selected_monster;
@@ -163,6 +165,7 @@ void draw_interface(){
 }
 
 void place_figures(){
+    if (DBG_MODE) printf("\nPlacing figures\n");
     int i, pxp, pyp, mxp, myp;
     pxp = 0;
     pyp = 0;
@@ -192,6 +195,7 @@ void place_figures(){
 }
 
 void clear_range(){
+    if (DBG_MODE) printf("\nClearing range\n");
     int i,y;
     int lines = sizeof(screen)/sizeof(screen[0]);
     int chars = sizeof(screen[0]); 
@@ -210,137 +214,35 @@ void clear_range(){
 }
 
 void draw_range(int xpos, int ypos, int radius, char mode){
+    /* mode: m - move, c (or a) - cast, attack
+       in the move mode range is drawn only on BASE_CHAR
+       in c or a enemy letters are replaced with TARGET_CHAR*/
     // adresstocoords(id);
-    int address_x = xpos;
-    int address_y = ypos;
-    int i, rad, m;
-    clear_range();
+    int i, j, ofst;
+    int t; /* for counting targets */
+    // clear_range();
     if (mode == 'm') {
-    for (rad=radius;rad>=0;rad--){
-    for(i=0;i<=radius;i++) {
-        if((address_y-i)>=0){
-            if (screen[address_y-i][address_x] == BASE_CHAR){
-                screen[address_y-i][address_x] = RANGE_CHAR;
+        for (i = ypos - radius; i <= ypos + radius; i++) {
+            ofst = (i - ypos) > 0 ? (i - ypos) : (ypos - i);
+            for (j = xpos - radius + ofst; j <= xpos + radius - ofst; j++) {
+                if ((i<(SCREEN_HEIGHT))&&(j<(SCREEN_WIDTH))&&(radius-i<0)){ if (screen[i][j] == BASE_CHAR) { screen[i][j] = RANGE_CHAR; } }
             }
         }
-        if((address_y+i)<=SCREEN_HEIGHT){
-            if (screen[address_y+i][address_x] == BASE_CHAR){
-                screen[address_y+i][address_x] = RANGE_CHAR;
-            }
-        }
-    }
-    /* drawing radius to the right side */
-    /* up */
-    for(i=0;i<=rad;i++) {
-        if((address_y-i)>=0 && (address_x-rad+radius)>=0 && (address_x-rad+radius)<=SCREEN_WIDTH){
-            if (screen[address_y-i][address_x-rad+radius] == BASE_CHAR){
-                screen[address_y-i][address_x-rad+radius] = RANGE_CHAR;
-            }
-        }
-        if((address_y-i)>=0 && (address_y-i)<=SCREEN_HEIGHT && (address_x-rad+radius)>=0 && (address_x-rad+radius)<=SCREEN_WIDTH){
-            /* down */
-            if (screen[address_y-i+rad][address_x-rad+radius] == BASE_CHAR){
-                screen[address_y-i+rad][address_x-rad+radius] = RANGE_CHAR;
-            }
-        }
-    }
-    }
-    /* drawing radius to the left side */
-    // for (rad=0,side_step=0;rad<=radius,side_step<radius;rad++,side_step++){
-    for (rad=0;rad<radius;rad++){
-        /* down */
-        for(i=radius;i>0;i--){
-            if((address_x-i+rad)>=0){
-                if (screen[address_y+rad][address_x-i+rad] == BASE_CHAR && (rad-i<0)){
-                    screen[address_y+rad][address_x-i+rad] = RANGE_CHAR;
-                }
-            }
-                /* up */
-            if((address_x-i+rad)>=0){
-                if (screen[address_y-rad][address_x-i+rad] == BASE_CHAR && (rad-i<0)){
-                    screen[address_y-rad][address_x-i+rad] = RANGE_CHAR;
-                }
-            }
-        }
-    }
     } /* end if(mode=='m')*/
-    if (mode == 'c') {
-    for (rad=radius;rad>=0;rad--){
-    for(i=0;i<=radius;i++) {
-        if (screen[address_y-i][address_x] == BASE_CHAR){
-            screen[address_y-i][address_x] = RANGE_CHAR;
-        } else {
-            for (m=0;m<amount_of_monsters;m++){
-                if ((screen[address_y-i][address_x] == monsters[m].letter)&&(monsters[m].letter != DEAD_BODY_CHAR)){
-                    screen[address_y-i][address_x] = TARGET_CHAR;
-                }
-            }
-        }
-        if (screen[address_y+i][address_x] == BASE_CHAR){
-            screen[address_y+i][address_x] = RANGE_CHAR;
-        } else {
-            for (m=0;m<amount_of_monsters;m++){
-                if ((screen[address_y+i][address_x] == monsters[m].letter)&&(monsters[m].letter != DEAD_BODY_CHAR)){
-                    screen[address_y+i][address_x] = TARGET_CHAR;
-                }
-            }
-        }
-    }
-    /* drawing radius to the right side */
-    /* up */
-    for(i=0;i<=rad;i++) {
-        if (screen[address_y-i][address_x-rad+radius] == BASE_CHAR){
-            screen[address_y-i][address_x-rad+radius] = RANGE_CHAR;
-        } else {
-            for (m=0;m<amount_of_monsters;m++){
-                if ((screen[address_y-i][address_x-rad+radius] == monsters[m].letter)&&(monsters[m].letter != DEAD_BODY_CHAR)){
-                    screen[address_y-i][address_x-rad+radius] = TARGET_CHAR;
-                }
-            }
-        }
-        /* down */
-        if (screen[address_y-i+rad][address_x-rad+radius] == BASE_CHAR){
-            screen[address_y-i+rad][address_x-rad+radius] = RANGE_CHAR;
-        } else {
-            for (m=0;m<amount_of_monsters;m++){
-                if ((screen[address_y-i+rad][address_x-rad+radius] == monsters[m].letter)&&(monsters[m].letter != DEAD_BODY_CHAR)){
-                    screen[address_y-i+rad][address_x-rad+radius] = TARGET_CHAR;
-                }
-            }
-        }
-    }
-    }
-    /* drawing radius to the left side */
-    // for (rad=0,side_step=0;rad<=radius,side_step<radius;rad++,side_step++){
-    for (rad=0;rad<radius;rad++){
-        /* down */
-        for(i=radius;i>0;i--){
-            if((address_x-i+rad)>=0){
-                if (screen[address_y+rad][address_x-i+rad] == BASE_CHAR && (rad-i<0)){
-                    screen[address_y+rad][address_x-i+rad] = RANGE_CHAR;
-                }
-                else {
-                for (m=0;m<amount_of_monsters;m++){
-                    if (screen[address_y+rad][address_x-i+rad] == monsters[m].letter && (monsters[m].letter != DEAD_BODY_CHAR) && (rad-i<0)){
-                        screen[address_y+rad][address_x-i+rad] = TARGET_CHAR;
+    if ((mode == 'c')||(mode == 'a')) {
+        for (i = ypos - radius; i <= ypos + radius; i++) {
+            ofst = (i - ypos) > 0 ? (i - ypos) : (ypos - i);
+            for (j = xpos - radius + ofst; j <= xpos + radius - ofst; j++) {
+                if ((i<(SCREEN_HEIGHT))&&(j<(SCREEN_WIDTH))&&(j>0)){
+                    if (screen[i][j] == BASE_CHAR) { screen[i][j] = RANGE_CHAR; }
+                    for(t=0;t<amount_of_monsters;t++){
+                        if ((screen[i][j] == monsters[t].letter)&&(monsters[t].letter != DEAD_BODY_CHAR)){
+                            screen[i][j] = TARGET_CHAR;
+                        }
                     }
                 }
-                }
-            }
-            /* up */
-            if((address_x-i+rad)>=0){
-                if (screen[address_y-rad][address_x-i+rad] == BASE_CHAR && (rad-i<0)){
-                    screen[address_y-rad][address_x-i+rad] = RANGE_CHAR;
-                } else {
-                for (m=0;m<amount_of_monsters;m++){
-                    if (screen[address_y-rad][address_x-i+rad] == monsters[m].letter && (monsters[m].letter != DEAD_BODY_CHAR) && (rad-i<0)){
-                        screen[address_y-rad][address_x-i+rad] = TARGET_CHAR;
-                    }
-                }
-                }
             }
         }
-    }
     } /* end if((mode=='a')||(mode=='c'))*/
 }
 
@@ -716,7 +618,7 @@ void print_to_side_panel(){
     }
 }
 
-void ascii_battle_init(int arena_id) {
+void ascii_battle_init(int current_location, int arena_id) {
     killed = 0;
     died = 0;
     int amount_of_beasts = sizeof(beasts) / sizeof(beasts[0]);
@@ -1211,6 +1113,7 @@ int ai_choose_action(int ai_mid) {
         draw_interface();
         sleep(2);
         resolve_monster_attack(me_in_array,fighter_found_in_array);
+        // tookaction = 1;
         // clear_range();
         // if(DBG_MODE==1) printf("Cleaned range because enemy is close \n");
         draw_interface();
@@ -1235,6 +1138,7 @@ int ai_choose_action(int ai_mid) {
         //     }
         // }
         chase_figters(me_in_array, monsters[me_in_array].target_index);
+        // wasmoved = 1;
         clear_range();
         return 2;
     }
@@ -1283,7 +1187,16 @@ void restore_fighters_hp(void) {
     }
 }
 
-int play_battle(int enemy_location){
+// void fix_monster_letters(){
+//     int monsters_on_board;
+//     monsters_on_board = 0;
+//     int i;
+//     for (i=0;i<amount_of_monsters;i++){
+//         if (monsters[i].letter == TARGET_CHAR){}
+//     }
+// }
+
+int play_battle(int enemy_location, int selected_arena, int mode){
     // problem: po wygranej w adventure wyrzuca do ekranu głównego
     int amount_of_beasts = sizeof(beasts) / sizeof(beasts[0]);
     int amount_of_monsters_in_room = 0;
@@ -1291,8 +1204,8 @@ int play_battle(int enemy_location){
     for (i=0;i<amount_of_beasts;i++){
         if (beasts[i].location == enemy_location) amount_of_monsters_in_room++;
     }
-    current_location = enemy_location;
-    ascii_battle_init(selected_arena);
+    // current_location = enemy_location;
+    ascii_battle_init(enemy_location, selected_arena);
     while(killed<amount_of_monsters_in_room && died<amount_of_fighters && command_code[0] != 'q'){
         if ((wasmoved > 0)&&(tookaction > 0)){
             wasmoved = 0;
@@ -1320,7 +1233,7 @@ int play_battle(int enemy_location){
         /* check here if selected pcs hp <=0 */
         clear_screen();
         printf("ASCII FANTASY TACTICS \n");
-        place_figures();
+        // place_figures();
         let_move();
         draw_interface();
         // printf("\nPOM value 1: %d TURN: %d\n",player_or_monster,whoseturn);
@@ -1342,6 +1255,7 @@ int play_battle(int enemy_location){
                 if (tookaction == 0) {
                     printip("ATTACKING          ",1);
                     tookaction = player_action_attack(selected_fighter);
+                    // sleep(1);
                     // draw_interface();
                 }
             }
@@ -1406,27 +1320,28 @@ int play_battle(int enemy_location){
         }
 
         if (command_code[0] == 'q') {
-            game_mode = 0;
-            if (DBG_MODE == 1) {printf("[q] pressed, quitting...\ngame_mode: %d\n", game_mode);}
+            // game_mode = 0;
+            // if (DBG_MODE == 1) {printf("[q] pressed, quitting...\ngame_mode: %d\n", game_mode);}
             return 0;
         }
         
         if (died >= amount_of_fighters){
-            game_mode = 3;
+            // game_mode = 3;
             restore_fighters_hp();
             clear_screen();
             printf("You lost! \n");
             sleep(2);
-            if (game_mode == 1) { game_mode = 0; }
-            return 2;
+            // if (game_mode == 1) { game_mode = 0; }
+            if (mode == 1) return 0;
+            else return 2;
         }
         if (killed >= amount_of_monsters || killed >= amount_of_monsters_in_room){
-            game_mode = 2;
+            // game_mode = 2;
             clear_screen();
             printf("You won! \n");
             sleep(2);
-            if (game_mode == 1) { game_mode = 0; }
-            return 1;
+            if (mode == 1) return 0;
+            else return 4;
         }
     return 0;
 }

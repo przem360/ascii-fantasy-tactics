@@ -16,6 +16,8 @@
 #define AMOUNT_OF_LOCATIONS 36
 
 extern int invisible;
+
+
 int current_location;
 int attackers[MAX_MONSTERS_ATTACKING];
 int qresult;
@@ -119,25 +121,6 @@ int load_state(void){
     return 0;
 }
 
-int compareST(char a[],char b[])  
-{  
-    int flag=0,i=0;  // integer variables declaration  
-    while(a[i]!='\0' &&b[i]!='\0')  // do until the end of one string 
-    {  
-       if(a[i]!=b[i])  
-       {  
-           flag=1;  
-           break;  
-       }  
-       i++;  
-    } 
-    if(a[i]!='\0'||b[i]!='\0')
-       return 1;
-    if(flag==0)  
-    return 0;  
-    else  
-    return 1;  
-}
 
 int get_location_by_id(int lid){
     int i;
@@ -197,7 +180,6 @@ int display_current_location(int loc){
     if (DBG_MODE == 1) {
         printf("\nroom number: %d\n",rooms[cloc].id);
         printf("  Invisible: %d\n",invisible);
-        printf("  game_mode: %d\n", game_mode);
     }
     return 0;
 }
@@ -217,14 +199,12 @@ int explore_dungeon(void){
     qresult = 1;
     was_i_here = 0;
     // clear_screen();
-    while (qresult != 0 && game_mode == 2) {
-        if (DBG_MODE == 1) {printf("game_mode: %d\nqresult: %d\n",game_mode,qresult);}
+    while (1) {
         clear_screen();
         if(rooms[cloc].is_enemy == 1 && invisible == 0){
-            selected_arena = rooms[cloc].arena;
-            battle_result = play_battle(current_location);
-            if (game_mode != 2) {break;} /* re-checking: play_battle(); can change game_mode */
-            if (battle_result == 1) rooms[cloc].is_enemy = 0;
+            battle_result = play_battle(current_location, rooms[cloc].arena, 2);
+            // if (game_mode != 2) {break;} /* re-checking: play_battle(); can change game_mode */
+            if (battle_result == 4) rooms[cloc].is_enemy = 0;
             if (battle_result == 2) {
                 current_location = previous_location;
                 }
@@ -232,11 +212,10 @@ int explore_dungeon(void){
         display_current_location(current_location);
         if (current_location == FINAL_LOCATION) {
             read_command();
-            game_mode = 0;
-            break;
+            return 0;
         }
         read_command();
-        qresult = compareST(command, "quit");
+        if (strstr(command,"quit") !=NULL) {return 0;}
         if (strstr(command, "save") != NULL) { save_state(); }
         if (command[0]=='g'&&command[1]=='o'){
             if (strstr(command, "north") != NULL) {
@@ -283,7 +262,7 @@ int explore_dungeon(void){
 
     if (qresult == 0){
         printf("\nQuitting exploration mode\n");
-        game_mode = 0;
+        return 0;
     }
 
     return 0;

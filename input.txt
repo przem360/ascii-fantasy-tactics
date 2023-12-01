@@ -1,3 +1,7 @@
-s
-q
-q
+a
+y
+go north
+go west
+go south
+go west
+move f11

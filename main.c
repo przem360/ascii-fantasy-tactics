@@ -3,14 +3,14 @@
 #include <unistd.h>
 #include "helpers.h"
 #include "settings.h"
-#include "globals.h"
+// extern int game_mode;
 #include "asciibattle.h"
 #include "textadventure.h"
 
 int invisible;
-int selected_arena = 0;
-int game_mode = 0;
 int game_loaded;
+int game_mode = 0;
+int intro_triggered = 0;
 
 
 void welcome_screen(){
@@ -33,7 +33,7 @@ void welcome_screen(){
     while ((ch = getchar()) != '\n' && ch != EOF) { }
     if (mode_sel == 's') game_mode = 1;
     if (mode_sel == 'a') game_mode = 2;
-    if (mode_sel == 'q') game_mode = 4;
+    if (mode_sel == 'q') game_mode = 3;
     if (mode_sel == 'i') invisible = 1;
     if (mode_sel == 'l') {game_loaded = 1; load_state();}
     if (mode_sel == 'p') cheat_max_hp();
@@ -44,10 +44,10 @@ int main (int argc, char *argv[]){
     game_loaded = 0;
     while(game_mode<3){
         if (game_mode == 0) welcome_screen();
-        if (game_mode == 1) {invisible = 0; play_battle(2);}
-        if (game_mode == 2) {
-            if (game_loaded == 0) { show_intro(); }
-            explore_dungeon();
+        if (game_mode == 1) {invisible = 0; game_mode = play_battle(2,1,1);}
+        if (game_mode == 2 || game_mode == 4) { /*play_battle() can return 4 if player won the battle*/
+            if ((game_loaded == 0)&&(intro_triggered == 0)) { intro_triggered = 1; show_intro(); }
+            game_mode = explore_dungeon();
         }
     }
     if (game_mode == 3) {
