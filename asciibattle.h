@@ -1,9 +1,7 @@
 int get_array_index(char type, int id);
 void print_screen(void);
 void place_figures(void);
-void draw_range(int xpos, int ypos,int radius, char mode);
-void draw_monster_range(int xpos, int ypos,int radius);
-// void draw_white_magic_range(int xpos, int ypos,int radius);
+void draw_range(char actor, int xpos, int ypos,int radius, char mode);
 void chase_figters(int mnstr, int fightr);
 void clear_range();
 void clear_screen(void);

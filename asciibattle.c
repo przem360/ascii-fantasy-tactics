@@ -213,19 +213,22 @@ void clear_range(){
     place_figures();
 }
 
-void draw_range(int xpos, int ypos, int radius, char mode){
-    /* mode: m - move, c (or a) - cast, attack
+void draw_range(char actor, int xpos, int ypos, int radius, char mode){
+    /* 
+        actor: f - fighter/player; m - monster;
+        mode: m - move, c (or a) - cast, attack
        in the move mode range is drawn only on BASE_CHAR
        in c or a enemy letters are replaced with TARGET_CHAR*/
     // adresstocoords(id);
     int i, j, ofst;
     int t; /* for counting targets */
-    // clear_range();
+    clear_range();
     if (mode == 'm') {
+        if (DBG_MODE) {printf("\nDrawing movement for %c, from position X:%d Y:%d with range: %d\n",actor,xpos,ypos,radius);}
         for (i = ypos - radius; i <= ypos + radius; i++) {
             ofst = (i - ypos) > 0 ? (i - ypos) : (ypos - i);
             for (j = xpos - radius + ofst; j <= xpos + radius - ofst; j++) {
-                if ((i<(SCREEN_HEIGHT))&&(j<(SCREEN_WIDTH))&&(radius-i<0)){ if (screen[i][j] == BASE_CHAR) { screen[i][j] = RANGE_CHAR; } }
+                if ((i<(SCREEN_HEIGHT))&&(j<(SCREEN_WIDTH))&&(j>0)){ if (screen[i][j] == BASE_CHAR) { screen[i][j] = RANGE_CHAR; } }
             }
         }
     } /* end if(mode=='m')*/
@@ -235,98 +238,24 @@ void draw_range(int xpos, int ypos, int radius, char mode){
             for (j = xpos - radius + ofst; j <= xpos + radius - ofst; j++) {
                 if ((i<(SCREEN_HEIGHT))&&(j<(SCREEN_WIDTH))&&(j>0)){
                     if (screen[i][j] == BASE_CHAR) { screen[i][j] = RANGE_CHAR; }
-                    for(t=0;t<amount_of_monsters;t++){
-                        if ((screen[i][j] == monsters[t].letter)&&(monsters[t].letter != DEAD_BODY_CHAR)){
-                            screen[i][j] = TARGET_CHAR;
-                        }
+                    if (actor == 'f'){
+                        for(t=0;t<amount_of_monsters;t++){
+                            if ((screen[i][j] == monsters[t].letter)&&(monsters[t].letter != DEAD_BODY_CHAR)){
+                                screen[i][j] = TARGET_CHAR;
+                            }
+                    }
+                    }
+                    else if (actor == 'm'){
+                        for(t=0;t<amount_of_fighters;t++){
+                            if ((screen[i][j] == pcs[t].letter)&&(pcs[t].letter != DEAD_BODY_CHAR)){
+                                screen[i][j] = TARGET_CHAR;
+                            }
+                    }
                     }
                 }
             }
         }
     } /* end if((mode=='a')||(mode=='c'))*/
-}
-
-void draw_monster_range(int xpos, int ypos,int radius) {
-    int i, rad, m;
-    /* lest flip x and y values just for test */
-    clear_range();
-    for (rad=radius;rad>=0;rad--){
-    for(i=0;i<=radius;i++) {
-        // printf("ypos-i: %d",ypos-i);
-        if (screen[ypos-i][xpos] == BASE_CHAR){
-            screen[ypos-i][xpos] = RANGE_CHAR;
-        } else {
-            for (m=0;m<amount_of_fighters;m++){
-                if ((screen[ypos-i][xpos] == pcs[m].letter)&&(pcs[m].letter != DEAD_BODY_CHAR)){
-                    screen[ypos-i][xpos] = TARGET_CHAR;
-                }
-            }
-        }
-        if (screen[ypos+i][xpos] == BASE_CHAR){
-            screen[ypos+i][xpos] = RANGE_CHAR;
-        } else {
-            for (m=0;m<amount_of_monsters;m++){
-                if ((screen[ypos+i][xpos] == pcs[m].letter)&&(pcs[m].letter != DEAD_BODY_CHAR)){
-                    screen[ypos+i][xpos] = TARGET_CHAR;
-                }
-            }
-        }
-    }
-    /* drawing radius to the right side */
-    /* up */
-    for(i=0;i<=rad;i++) {
-        if (screen[ypos-i][xpos-rad+radius] == BASE_CHAR){
-            screen[ypos-i][xpos-rad+radius] = RANGE_CHAR;
-        } else {
-            for (m=0;m<amount_of_monsters;m++){
-                if ((screen[ypos-i][xpos-rad+radius] == pcs[m].letter)&&(pcs[m].letter != DEAD_BODY_CHAR)){
-                    screen[ypos-i][xpos-rad+radius] = TARGET_CHAR;
-                }
-            }
-        }
-        /* down */
-        if (screen[ypos-i+rad][xpos-rad+radius] == BASE_CHAR){
-            screen[ypos-i+rad][xpos-rad+radius] = RANGE_CHAR;
-        } else {
-            for (m=0;m<amount_of_monsters;m++){
-                if ((screen[ypos-i+rad][xpos-rad+radius] == pcs[m].letter)&&(pcs[m].letter != DEAD_BODY_CHAR)){
-                    screen[ypos-i+rad][xpos-rad+radius] = TARGET_CHAR;
-                }
-            }
-        }
-    }
-    }
-    /* drawing radius to the left side */
-    // for (rad=0,side_step=0;rad<=radius,side_step<radius;rad++,side_step++){
-    for (rad=0;rad<radius;rad++){
-        /* down */
-        for(i=radius;i>0;i--){
-            if((xpos-i+rad)>=0){
-                if (screen[ypos+rad][xpos-i+rad] == BASE_CHAR && (rad-i<0)){
-                    screen[ypos+rad][xpos-i+rad] = RANGE_CHAR;
-                }
-                else {
-                for (m=0;m<amount_of_monsters;m++){
-                    if (screen[ypos+rad][xpos-i+rad] == pcs[m].letter && (pcs[m].letter != DEAD_BODY_CHAR) && (rad-i<0)){
-                        screen[ypos+rad][xpos-i+rad] = TARGET_CHAR;
-                    }
-                }
-                }
-            }
-            /* up */
-            if((xpos-i+rad)>=0){
-                if (screen[ypos-rad][xpos-i+rad] == BASE_CHAR && (rad-i<0)){
-                    screen[ypos-rad][xpos-i+rad] = RANGE_CHAR;
-                } else {
-                for (m=0;m<amount_of_monsters;m++){
-                    if (screen[ypos-rad][xpos-i+rad] == pcs[m].letter && (pcs[m].letter != DEAD_BODY_CHAR) && (rad-i<0)){
-                        screen[ypos-rad][xpos-i+rad] = TARGET_CHAR;
-                    }
-                }
-                }
-            }
-        }
-    }
 }
 
 void chase_figters(int mnstr, int fightr){
@@ -882,7 +811,7 @@ int player_action_move(int pid){
             rad = pcs[i].mov / 10;
             arrnum = i;
             printip("Specify address... ",1);
-            draw_range(selected_y,selected_x,rad,'m');
+            draw_range('f',selected_y,selected_x,rad,'m');
         }
     }
     draw_interface();
@@ -916,11 +845,12 @@ int player_action_cast(int pid){
                 if (spells[s].recov > 0) {
                     /* using monster range for white magic spells */
                     // printf("White spell: %s, s: %d",spells[s].id,s);
-                    draw_monster_range(selected_y,selected_x,rad);
+                    if (DBG_MODE == 1) {printf("\nDrawing call at: 931\n");}
+                    draw_range('m',selected_x,selected_y,rad,'c');
                 }
                 else {
                     // printf("Black spell: %s, s: %d",spells[s].id,s);
-                    draw_range(selected_y,selected_x,rad,'c');
+                    draw_range('f',selected_x,selected_y,rad,'c');
                 }
                 printip("Spell target       ",1);
                 /* Spell target selection here */
@@ -966,7 +896,7 @@ int player_action_attack(int pid){
                     }
                 }
             }
-            draw_range(selected_y,selected_x,rad,'c');
+            draw_range('f',selected_y,selected_x,rad,'c');
             printip("Choose target      ",1);
             draw_interface();
             scanf("%s",targetaddr);
@@ -1109,7 +1039,8 @@ int ai_choose_action(int ai_mid) {
     if(enemy_is_close>0){
         /* attack the first fighter who is close */
         if(DBG_MODE==1) printf("Found enemy very close, I will stay and attack \n");
-        draw_monster_range(my_addr[1],my_addr[0],my_range);
+        if (DBG_MODE == 1) {printf("\nDrawing call at: 1125\n");}
+        draw_range('m',my_addr[1],my_addr[0],my_range,'c');
         draw_interface();
         sleep(2);
         resolve_monster_attack(me_in_array,fighter_found_in_array);
@@ -1122,7 +1053,8 @@ int ai_choose_action(int ai_mid) {
     else {
         // coin = dice(10);
         if(DBG_MODE==1) printf("No enemy nowhere near \n");
-        draw_monster_range(my_addr[1],my_addr[0],my_range);
+        if (DBG_MODE == 1) {printf("\nDrawing call at: 1140\n");}
+        draw_range('m',my_addr[1],my_addr[0],my_range,'m');
         draw_interface();
         sleep(2);
         // if (coin<5) {
@@ -1294,7 +1226,8 @@ int play_battle(int enemy_location, int selected_arena, int mode){
                 }
                 if (wasmoved == 0) {
                     // fid = get_array_index('f',);
-                    draw_monster_range(monsters[mid].y_position,monsters[mid].y_position,monsters[mid].mov/10);
+                    if (DBG_MODE == 1) {printf("\nDrawing call at: 1310\n");}
+                    draw_range('m',monsters[mid].y_position,monsters[mid].x_position,monsters[mid].mov/10,'m');
                     chase_figters(mid,monsters[mid].target_index);
                     clear_range();
                     // chase_figters(me_in_array, monsters[me_in_array].target_index)
