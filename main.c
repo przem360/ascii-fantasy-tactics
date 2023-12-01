@@ -3,7 +3,6 @@
 #include <unistd.h>
 #include "helpers.h"
 #include "settings.h"
-// extern int game_mode;
 #include "asciibattle.h"
 #include "textadventure.h"
 

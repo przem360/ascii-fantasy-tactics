@@ -8,7 +8,6 @@
 #include "settings.h"
 #include "colors.h"
 #include "helpers.h"
-#include "globals.h"
 #include "locations.h"
 #include "textadventure.h"
 #include "asciibattle.h"
