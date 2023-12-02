@@ -216,7 +216,7 @@ int explore_dungeon(void){
         read_command();
         if (strstr(command,"quit") !=NULL) {return 0;}
         if (strstr(command, "save") != NULL) { save_state(); }
-        if (command[0]=='g'&&command[1]=='o'){
+        if (strstr(command, "go") != NULL){
             if (strstr(command, "north") != NULL) {
                 if (rooms[cloc].go_north > 0) {
                     printf("\n Going north... \n");

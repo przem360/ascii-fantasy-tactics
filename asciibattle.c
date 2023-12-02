@@ -164,7 +164,6 @@ void draw_interface(){
 }
 
 void place_figures(){
-    if (DBG_MODE) printf("\nPlacing figures\n");
     int i, pxp, pyp, mxp, myp;
     pxp = 0;
     pyp = 0;
@@ -194,7 +193,6 @@ void place_figures(){
 }
 
 void clear_range(){
-    if (DBG_MODE) printf("\nClearing range\n");
     int i,y;
     int lines = sizeof(screen)/sizeof(screen[0]);
     int chars = sizeof(screen[0]); 
@@ -299,25 +297,24 @@ void chase_figters(int mnstr, int fightr){
         }
     }
     
-    // test legal_moves
-    if(DBG_MODE==1) {
-        // for (i=0;i<100;i++) {
-        //     if ((legal_moves[i][0]>0)&&(legal_moves[i][1]>0)) printf("Legal v: %d          legal h: %d          distance: %d\n",legal_moves[i][0],legal_moves[i][1],legal_moves[i][2]);
-        // }
-        for (i=0;i<MAX_MOV*MAX_MOV;i++){
-            for (j=0;j<3;j++){
-                printf(" :: legal_moves[%d][%d] =  %d :: ",i,j,legal_moves[i][j]);
-            }
-            printf("\n");
-        }
-        printf("My target is: %c at [%d %d] \n",pcs[fightr].letter,fx,fy);
-        printf("I decide to move to: [%d %d] \n",the_move[0],the_move[1]);
-    }
+    // if(DBG_MODE==1) {
+    //     // for (i=0;i<100;i++) {
+    //     //     if ((legal_moves[i][0]>0)&&(legal_moves[i][1]>0)) printf("Legal v: %d          legal h: %d          distance: %d\n",legal_moves[i][0],legal_moves[i][1],legal_moves[i][2]);
+    //     // }
+    //     for (i=0;i<MAX_MOV*MAX_MOV;i++){
+    //         for (j=0;j<3;j++){
+    //             printf(" :: legal_moves[%d][%d] =  %d :: ",i,j,legal_moves[i][j]);
+    //         }
+    //         printf("\n");
+    //     }
+    //     printf("My target is: %c at [%d %d] \n",pcs[fightr].letter,fx,fy);
+    //     printf("I decide to move to: [%d %d] \n",the_move[0],the_move[1]);
+    // }
 
     screen[monsters[mnstr].x_position][monsters[mnstr].y_position] = BASE_CHAR;
     monsters[mnstr].x_position = the_move[0];
     monsters[mnstr].y_position = the_move[1];
-    if(DBG_MODE==1) printf("Now I am at: [%d %d] \n",monsters[mnstr].x_position,monsters[mnstr].y_position);
+    // if(DBG_MODE==1) printf("Now I am at: [%d %d] \n",monsters[mnstr].x_position,monsters[mnstr].y_position);
 }
 
 char analyse_command(char comm[6]) {
@@ -334,12 +331,8 @@ char analyse_command(char comm[6]) {
     }
     for (y=0;y<=amount_of_available_commands;y++){
         if(strcmp(av_commands[y], comml)){
-            cleanip();
-            printip("Command found!     ",1);
-            /* make it return the letter of command*/
             return comml[0];
         }   
-        // printf("Command %s does not math available command %s",comml,av_commands[y]);
     }
     return 'k';
     }
@@ -549,11 +542,14 @@ void print_to_side_panel(){
 void ascii_battle_init(int current_location, int arena_id) {
     killed = 0;
     died = 0;
+    command_code[0] = 'r';
     int amount_of_beasts = sizeof(beasts) / sizeof(beasts[0]);
     int i,j;
     for (i=0;i<amount_of_fighters;i++){
         pcs[i].x_position = pcs[i].start_x_position;
         pcs[i].y_position = pcs[i].start_y_position;
+        if (DBG_MODE){pcs[i].x_position = 5;}
+        pcs[i].hp = pcs[i].max_hp;
     }
     if (current_location > 0){
         j = 0;
@@ -580,6 +576,7 @@ void ascii_battle_init(int current_location, int arena_id) {
         printf("current_location: %d\n",current_location);
         printf("amount_of_monsters: %d\nfirst monster: %c\n",amount_of_monsters,monsters[0].letter);
     }
+    place_figures();
     draw_interface();
 }
 
@@ -859,8 +856,6 @@ int player_action_cast(int pid){
                 // clear_range();
                 /* check if target in range before resolving spell */
                 adresstocoords(targetaddr);
-                // printf("Checking %d,%d \n",coords[0],coords[1]);
-                // printf("Found char: %c \n",screen[coords[0]][coords[1]]);
                 if (screen[coords[0]][coords[1]]!=TARGET_CHAR) {
                     printip("NOT IN RANGE!      ",0);
                     done = 0;
@@ -922,33 +917,41 @@ int player_action_attack(int pid){
 
 int let_move(){
     int i;
-    for (i=0;i<amount_of_fighters;i++){
-        if (pcs[i].hp<=0) {
-            pcs[i].letter = DEAD_BODY_CHAR;
-            pcs[i].hp = 0;
-            }
-        if (pcs[i].initiative == whoseturn){
-            if (pcs[i].hp>0) {
-                selected_fighter = pcs[i].id;
-                player_or_monster = 1;
-                printip("Player\'s turn      ",1);
-                // return 0;
+    int found = 0;
+    while(found==0){
+        for (i=0;i<amount_of_fighters;i++){
+            if (pcs[i].hp<=0) {
+                pcs[i].letter = DEAD_BODY_CHAR;
+                pcs[i].hp = 0;
+                }
+            if (pcs[i].initiative == whoseturn){
+                if (pcs[i].hp<=0) {found = 0;}
+                if (pcs[i].hp>0) {
+                    found = 1;
+                    selected_fighter = pcs[i].id;
+                    player_or_monster = 1;
+                    printip("Player\'s turn      ",1);
+                    // return 0;
+                }
             }
         }
-    }
-    for (i=0;i<amount_of_monsters;i++){
-        if (monsters[i].hp<=0) {
-            monsters[i].letter = DEAD_BODY_CHAR;
-            monsters[i].hp = 0;
-            // monsters[i].initiative = 0;
-            // whoseturn++; <- utter nonsense
+        for (i=0;i<amount_of_monsters;i++){
+            if (monsters[i].hp<=0) {
+                monsters[i].letter = DEAD_BODY_CHAR;
+                monsters[i].hp = 0;
+                }
+            if (monsters[i].initiative == whoseturn){
+                if (monsters[i].hp<=0) {found = 0;}
+                if (monsters[i].hp>0) {
+                    found = 1;
+                    selected_monster = monsters[i].id;
+                    player_or_monster = 2;
+                    printip("Monster\'s turn     ",1);
+                }
             }
-        if (monsters[i].initiative == whoseturn){
-            // if (monsters[i].hp>0) {
-                selected_monster = monsters[i].id;
-                player_or_monster = 2;
-                printip("Monster\'s turn     ",1);
-            // }
+        }
+        if (found==0) {
+            whoseturn++;
         }
     }
     return 0;
@@ -977,13 +980,11 @@ void monsters_action(){
 int ai_choose_action(int ai_mid) {
     printip("Choosing action    ",1);
     int i,j, my_range,enemy_is_close, me_in_array, fighter_found_in_array;
-    // int fighter_in_range,coin;
-    //fighter_in_range = 99;
+    int new_target = 0;
     my_range = 0;
     enemy_is_close = 0;
     fighter_found_in_array = 0;
     int my_addr[2];
-    // int current_field_to_check[2];
     for (i=0;i<amount_of_monsters;i++) {
         if(monsters[i].id == ai_mid){
             my_addr[0] = monsters[i].x_position;
@@ -994,13 +995,14 @@ int ai_choose_action(int ai_mid) {
     }
     /* retargetting if current monster's target is already dead */
     if (pcs[monsters[me_in_array].target_index].hp <=0) {
-        if (monsters[me_in_array].target_index+1 < amount_of_monsters) {
-            monsters[me_in_array].target_index = monsters[me_in_array].target_index+1;
-        }
-        else {
-            monsters[me_in_array].target_index = monsters[me_in_array].target_index-1;
-        }
         printip("Retargetting       ",1);
+        for (i=0;i<amount_of_fighters;i++){
+            if (pcs[i].hp>0){
+                new_target = 1;
+                monsters[me_in_array].target_index = i;
+            }
+        }
+        if(new_target==0){wasmoved = 1; tookaction = 1;}
         draw_interface();
         sleep(1);
     }
@@ -1035,42 +1037,29 @@ int ai_choose_action(int ai_mid) {
             }
         }
     }
-    if(enemy_is_close>0){
+    if(enemy_is_close>0 && tookaction==0){
         /* attack the first fighter who is close */
         if(DBG_MODE==1) printf("Found enemy very close, I will stay and attack \n");
-        if (DBG_MODE == 1) {printf("\nDrawing call at: 1125\n");}
         draw_range('m',my_addr[1],my_addr[0],my_range,'c');
         draw_interface();
         sleep(2);
         resolve_monster_attack(me_in_array,fighter_found_in_array);
         // tookaction = 1;
         // clear_range();
-        // if(DBG_MODE==1) printf("Cleaned range because enemy is close \n");
         draw_interface();
         return 1;
     }
     else {
         // coin = dice(10);
-        if(DBG_MODE==1) printf("No enemy nowhere near \n");
-        if (DBG_MODE == 1) {printf("\nDrawing call at: 1140\n");}
-        draw_range('m',my_addr[1],my_addr[0],my_range,'m');
-        draw_interface();
-        sleep(2);
-        // if (coin<5) {
-        //     for (i=0;i<SCREEN_HEIGHT;i++){
-        //         for (j=0;j<SCREEN_WIDTH;j++){
-        //             if (screen[i][j]==TARGET_CHAR) {
-        //                 fighter_in_range = get_fighter_by_position(i,j);
-        //                 chase_figters(me_in_array,fighter_in_range);
-        //                 clear_range();
-        //                 return 2;
-        //             }
-        //         }
-        //     }
-        // }
-        chase_figters(me_in_array, monsters[me_in_array].target_index);
-        // wasmoved = 1;
-        clear_range();
+        if(DBG_MODE==1) printf("No enemy nowhere near or cant take action \n");
+        if(wasmoved==0){
+            draw_range('m',my_addr[1],my_addr[0],my_range,'m');
+            draw_interface();
+            sleep(2);
+            chase_figters(me_in_array, monsters[me_in_array].target_index);
+            // wasmoved = 1;
+            clear_range();
+        }
         return 2;
     }
 }
@@ -1118,24 +1107,13 @@ void restore_fighters_hp(void) {
     }
 }
 
-// void fix_monster_letters(){
-//     int monsters_on_board;
-//     monsters_on_board = 0;
-//     int i;
-//     for (i=0;i<amount_of_monsters;i++){
-//         if (monsters[i].letter == TARGET_CHAR){}
-//     }
-// }
-
 int play_battle(int enemy_location, int selected_arena, int mode){
-    // problem: po wygranej w adventure wyrzuca do ekranu głównego
     int amount_of_beasts = sizeof(beasts) / sizeof(beasts[0]);
     int amount_of_monsters_in_room = 0;
     int i = 0;
     for (i=0;i<amount_of_beasts;i++){
         if (beasts[i].location == enemy_location) amount_of_monsters_in_room++;
     }
-    // current_location = enemy_location;
     ascii_battle_init(enemy_location, selected_arena);
     while(killed<amount_of_monsters_in_room && died<amount_of_fighters && command_code[0] != 'q'){
         if ((wasmoved > 0)&&(tookaction > 0)){
@@ -1143,37 +1121,24 @@ int play_battle(int enemy_location, int selected_arena, int mode){
             tookaction = 0;
             whoseturn++;
         }
-        // check if fighter of monster with geaven whoseturn (initiative) egzists, if not increase whoseturn
-        int found;
-        found = 0;
-        for (i=0;i<amount_of_monsters;i++){
-            if ((monsters[i].initiative == whoseturn) || (pcs[i].initiative == whoseturn)) {
-                // printf("\nNo turn number: %d ",whoseturn);
-                // whoseturn++;
-                // printf(" turn increased to: %d \n",whoseturn);
-                found = 1;
-            }
-        }
-        if (found == 0) whoseturn++;
-
         if (whoseturn>(amount_of_fighters+amount_of_monsters)){
             wasmoved = 0;
             tookaction = 0;
             whoseturn = 1;
         }
-        /* check here if selected pcs hp <=0 */
         clear_screen();
-        printf("ASCII FANTASY TACTICS \n");
+        // printf("ASCII FANTASY TACTICS \n");
         // place_figures();
         let_move();
         draw_interface();
-        // printf("\nPOM value 1: %d TURN: %d\n",player_or_monster,whoseturn);
         if (player_or_monster == 1){
+            if (pcs[selected_fighter].hp <= 0){
+                wasmoved = 1;
+                tookaction = 1;
+                // draw_interface();
+            }
             /* Player's move */
             clear_range();
-            // printf("Command > ");
-            // fgets(command,COMMAND_LENGHT,stdin);
-            // scanf("%s", tb_command);
             tb_read_command();
             command_code[0] = analyse_command(tb_command);
             if (command_code[0] == 'm'){
@@ -1211,27 +1176,22 @@ int play_battle(int enemy_location, int selected_arena, int mode){
         if (player_or_monster == 2){
             /* monster's move */
             // draw_interface();
-            if (DBG_MODE == 1) {printf("Selected monster: %d", selected_monster);}
             mid = get_array_index('m',selected_monster);
             if (monsters[mid].hp > 0) {
                 aiaction = ai_choose_action(selected_monster);
                 if (aiaction == 1) {
                     tookaction = 1;
-                    wasmoved = 0;
+                    // wasmoved = 0;
                 }
                 if (aiaction == 2) {
-                    tookaction = 0;
+                    // tookaction = 0;
                     wasmoved = 1;
                 }
                 if (wasmoved == 0) {
-                    // fid = get_array_index('f',);
-                    if (DBG_MODE == 1) {printf("\nDrawing call at: 1310\n");}
                     draw_range('m',monsters[mid].y_position,monsters[mid].x_position,monsters[mid].mov/10,'m');
                     chase_figters(mid,monsters[mid].target_index);
                     clear_range();
-                    // chase_figters(me_in_array, monsters[me_in_array].target_index)
                     wasmoved = 1;
-                    // printf("fid: %d",fid);
                 }
                 if (tookaction == 0) {
                     tookaction = 1; /* for now */
@@ -1243,32 +1203,26 @@ int play_battle(int enemy_location, int selected_arena, int mode){
                 // sleep(1);
             }
             else {
-                monsters_action();
+                //monsters_action();
                 wasmoved = 1;
                 tookaction = 1;
-                draw_interface();
+                // draw_interface();
             }
         }
         }
 
         if (command_code[0] == 'q') {
-            // game_mode = 0;
-            // if (DBG_MODE == 1) {printf("[q] pressed, quitting...\ngame_mode: %d\n", game_mode);}
             return 0;
         }
-        
         if (died >= amount_of_fighters){
-            // game_mode = 3;
             restore_fighters_hp();
             clear_screen();
             printf("You lost! \n");
             sleep(2);
-            // if (game_mode == 1) { game_mode = 0; }
             if (mode == 1) return 0;
             else return 2;
         }
         if (killed >= amount_of_monsters || killed >= amount_of_monsters_in_room){
-            // game_mode = 2;
             clear_screen();
             printf("You won! \n");
             sleep(2);
