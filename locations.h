@@ -20,7 +20,6 @@ struct locations {
     int go_west;
 };
 
-// rewritten locations: 1 - 16, 22
 
 struct locations rooms[36] = {
     {1,{4,6},"Entry hall","You entered between gray brick walls, old and torn,\nprotruding from the ground like the teeth of an ancient beast.\n\nIn the northern wall there is a passage leading to the corridor, in the southern wall there is a heavy door.\n\nThere are sounds of giggling and wild growling.", "These sounds are coming from the south.",0,0,0,0,/* a */0,/* c */102,0,2,0},
@@ -39,11 +38,11 @@ struct locations rooms[36] = {
     {14,{3,3},"Chamber of wandering souls","The room is empty.\n On the walls you see moving shadows in human shapes.\nThey walk silently along the surfaces of the walls.", "Do they know about our presence?",0,1,0,0,/* a */0,/* c */0,0,116,113},
     {15,{3,3},"Meat storage room","There are steel hooks hanging on the chains with dried blood on them.\nYou notice the smell of death in the air.", "There\'s a screech of metal in the distance.",0,0,0,0,/* a */0,/* c */113,0,115,0},
     {16,{4,4},"Ritual Chamber","You entered through the only door in this room.\nTorch holders stick out from the walls.\nOn the remains of the floor you can see symbols of ancient magic.", "Looks like there\'s nothing here.",0,0,0,0,/* a */0,/* c */116,0,0,0},
-    {17,{7,5},"Statue gallery","This room is illuminated by magic. \n There are six finely crafted statues in two ranks across the room; they \n appear to be elven warriors in chainmail with swords upraised toward you.", "6 living statues attacks",0,0,0,0,/* a */0,/* c */120,0,118,117},
-    {18,{4,3},"Sarcophagus","A large sarcophagus rests in the center of this room. \n A chill comes over you as the musty air of the room flows over you.", "You hear a moaning sound, faint and distant. \n It seems to be emanating from the sarcophagus.",0,0,0,0,/* a */0,/* c */118,0,0,0},
-    {19,{4,5},"Mystery room","Cobwebs hang thickly from the ceiling in the far left corner of this room, partially covering the \n doorway there.\n A trail of blood leads from the center \n of the room to the door on the right.", "Nothing here!",0,0,0,0,/* a */0,/* c */0,117,0,0},
-    {20,{5,4},"Midden","A faint odor of ancient foulness fills the air of this room. \n The top and part of the sides of the piles are covered in mushrooms, \n from the size of your hand up to the size of your head.",  "This room was used as a midden, an area for waste disposal.",0,0,0,0,/* a */0,/* c */0,21,120,0}, // traps!
-    {21,{5,4},"Dread altar","There is an altar against the left wall of this room and an unusual blue flame \n burns in a small brazier in the center.",  "Nothing here...",0,0,0,0,/* a */0,/* c */0,121,0,20},
+    {17,{7,5},"Well of voices","This room is a large hall with a stone well in the center.\nA soft singing comes from inside the well.", "When you look into the well, you see a surface of clean water.",0,0,0,0,/* a */3,/* c */120,0,118,117},
+    {18,{4,3},"Decaying room","The walls of this empty room are bent inwards, as if they wanted to crush anyone who dares to stay here.", "You hear a creaking sound coming from the walls, as if old bricks were slowly moving.",0,0,0,0,/* a */0,/* c */118,0,0,0},
+    {19,{4,5},"The chamber of eyes","The eyes carved in the walls seem to be watching you.\nYou even feel like they\'re moving.", "They are watching...",0,0,0,0,/* a */0,/* c */0,117,0,0},
+    {20,{5,4},"Cocoons","Human-sized cocoons hang from the burnt beams of the ceiling.\nThey vibrate and crackle, you feel like something is trying to get out of them.",  "It\'s better to leave this place",0,0,0,0,/* a */0,/* c */0,21,120,0}, // traps!
+    {21,{5,4},"Empty hall","Looks like there\'s nothing here.\nYou feel a gentle breeze of fresh air.",  "Nothing here...",0,0,0,0,/* a */0,/* c */0,121,0,20},
     {22,{2,3},"The Chamber of immortality","\t\t CONGRATULATIONS !\n\nYou entered a small, dark room.\nIt's empty here, except for the decorated plinth in the middle.\nOn the pedestal there is a glass vessel with opalescent contents.\nHere you have found the soul of a demon.\n\nBy breaking the vessel, you bring death to Agth.\n\nYour mission has been completed.",  "The nightmare is over.",0,0,0,0,/* a */0,/* c */0,0,0,121},
     /* corridors */
     {101,{10,1},"Corridor","This corridor crossing leads east, west and north, there are doors on the southern wall.", "Nothing to do here.",0,0,0,0,/* a */0,/* c */9,102,3,8},

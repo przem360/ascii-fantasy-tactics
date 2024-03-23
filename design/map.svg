@@ -27,8 +27,8 @@
      inkscape:document-units="mm"
      showgrid="true"
      inkscape:zoom="1.4823794"
-     inkscape:cx="449.27771"
-     inkscape:cy="515.38764"
+     inkscape:cx="741.71295"
+     inkscape:cy="289.3996"
      inkscape:window-width="1920"
      inkscape:window-height="1008"
      inkscape:window-x="0"
@@ -452,14 +452,14 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:7.00975px;line-height:1.25;font-family:sans-serif;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.175;stroke-miterlimit:4;stroke-dasharray:none"
-       x="208.2627"
-       y="77.29113"
+       x="203.60847"
+       y="59.484127"
        id="text1605-6-3-7-2-9-5"><tspan
          sodipodi:role="line"
          id="tspan1603-7-6-5-8-7-47"
          style="stroke-width:0.175;stroke-miterlimit:4;stroke-dasharray:none"
-         x="208.2627"
-         y="77.29113">17</tspan></text>
+         x="203.60847"
+         y="59.484127">17</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:7.00975px;line-height:1.25;font-family:sans-serif;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.175;stroke-miterlimit:4;stroke-dasharray:none"
@@ -688,41 +688,11 @@
          x="92.290627"
          y="92.623093">9</tspan></text>
     <circle
-       style="display:inline;fill:#ffffff;stroke:#000000;stroke-width:0.175"
-       id="path13825"
-       cx="205.56744"
-       cy="59.931473"
-       r="2.5" />
-    <circle
-       style="display:inline;fill:#ffffff;stroke:#000000;stroke-width:0.175"
-       id="path13825-2"
-       cx="220.30618"
-       cy="59.931473"
-       r="2.5" />
-    <circle
-       style="display:inline;fill:#ffffff;stroke:#000000;stroke-width:0.175"
-       id="path13825-0"
-       cx="205.53799"
-       cy="70.126358"
-       r="2.5" />
-    <circle
-       style="display:inline;fill:#ffffff;stroke:#000000;stroke-width:0.175"
-       id="path13825-2-6"
-       cx="220.27673"
-       cy="70.126358"
-       r="2.5" />
-    <circle
-       style="display:inline;fill:#ffffff;stroke:#000000;stroke-width:0.175"
-       id="path13825-1"
-       cx="205.94858"
-       cy="79.951935"
-       r="2.5" />
-    <circle
-       style="display:inline;fill:#ffffff;stroke:#000000;stroke-width:0.175"
-       id="path13825-2-5"
-       cx="220.68732"
-       cy="79.951935"
-       r="2.5" />
+       style="display:inline;fill:#ffffff;stroke:#000000;stroke-width:0.929;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path13825-2-3"
+       cx="212.90553"
+       cy="67.419205"
+       r="6.1240673" />
     <rect
        style="display:inline;fill:#ffffff;fill-rule:evenodd;stroke:#1a1a1a;stroke-width:0.676769;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect31-3-2-9"

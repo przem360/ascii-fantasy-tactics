@@ -5,7 +5,7 @@ OBJS = helpers.o converters.o asciibattle.o textadventure.o main.o
 PROG = aft
 PROGT = advtest
 PROGW = adv.wasm
-CFLAGST = -Wall -pedantic -g
+# CFLAGST = -Wall -pedantic -g
 CXX = gcc
 WCC=/opt/wasi-sdk/bin/clang --sysroot=/opt/wasi-sdk/share/wasi-sysroot
 # CXX = $(WCC)
