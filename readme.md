@@ -10,7 +10,10 @@ Loading state is available from welcome screen.
 Hint: there is a [map of a dungeon](https://github.com/przem360/ascii-fantasy-tactics/blob/master/design/map.png). You start in room 1 and your goal is room 22.  
 Sometimes monsters will attack you, you will need to fight them. In battle mode you can always use `move` and `attack` commands, than choose coordinates in range, ie. `C8`.  
   
-![alt text](https://github.com/przem360/ascii-fantasy-tactics/blob/master/screenshot.png?raw=true)
+![alt text](screenshots/scr1.png)
+![alt text](screenshots/scr2.png)
+
+![alt text](screenshots/scr3.png)
 
 Fighters with *Mage* class have spells, you can cast them by using `cast` command than specify ID of a spell, i.e. `fb` for Fire Ball.  
 You can also `skip` if you like.  
