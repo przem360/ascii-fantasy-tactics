@@ -150,7 +150,7 @@ int display_current_location(int loc){
         if (was_i_here<0){
             add_location_to_history(loc);
         }
-    printf("\t\tASCII FANTASY TACTICS\n\t\t---------------------\nLocation: %s\n\n",rooms[cloc].name);
+    printf("%s\n%s\nLocation: %s\n\n",TITLE_1,TITLE_2,rooms[cloc].name);
     if (COLOURS_ON == 1){
         // printf(DSC "%s \n\n" reset,rooms[cloc].description);
         wprint(rooms[cloc].description,LIMIT_TXT_WIDH,1);
@@ -195,18 +195,33 @@ int explore_dungeon(void){
     int cloc = get_location_by_id(current_location);
     int battle_result = 0;
     int previous_location = 0;
+    int room_content = 0;
+    int encounter = 0;
     qresult = 1;
     was_i_here = 0;
     // clear_screen();
     while (1) {
         clear_screen();
+        battle_result = 0;
         if(rooms[cloc].is_enemy == 1 && invisible == 0){
-            battle_result = play_battle(current_location, rooms[cloc].arena, 2);
+            var_log("sds","Predefined enemy found in this room (",cloc,").");
+            encounter = 1;
+            battle_result = play_battle(current_location, rooms[cloc].arena, 2, 0);
             // if (game_mode != 2) {break;} /* re-checking: play_battle(); can change game_mode */
             if (battle_result == 4) rooms[cloc].is_enemy = 0;
             if (battle_result == 2) {
                 current_location = previous_location;
                 }
+        }
+        else {
+            var_log("sds","No predefined enemy in this room (",cloc,").");
+            room_content = dice(12);
+            var_log("sd","Room content:", room_content);
+            if ((encounter==0)&&((room_content == 6)||(room_content == 7)||(room_content == 8)||(room_content == 10)||(room_content == 11))) {
+                var_log("s","Random encounter.");
+                encounter = 1;
+                battle_result = play_battle(current_location, rooms[cloc].arena, 2, 1);
+            }
         }
         display_current_location(current_location);
         if (current_location == FINAL_LOCATION) {
@@ -220,6 +235,7 @@ int explore_dungeon(void){
             if (strstr(command, "north") != NULL) {
                 if (rooms[cloc].go_north > 0) {
                     printf("\n Going north... \n");
+                    encounter = 0;
                     previous_location = current_location;
                     current_location = rooms[cloc].go_north;
                     cloc = get_location_by_id(current_location);
@@ -229,6 +245,7 @@ int explore_dungeon(void){
             else if (strstr(command, "east") != NULL) {
                 if (rooms[cloc].go_east > 0) {
                     printf("\n Going east... \n");
+                    encounter = 0;
                     previous_location = current_location;
                     current_location = rooms[cloc].go_east;
                     cloc = get_location_by_id(current_location);
@@ -238,6 +255,7 @@ int explore_dungeon(void){
             else if (strstr(command, "south") != NULL) {
                 if (rooms[cloc].go_south > 0) {
                     printf("\n Going south... \n");
+                    encounter = 0;
                     previous_location = current_location;
                     current_location = rooms[cloc].go_south;
                     cloc = get_location_by_id(current_location);
@@ -247,6 +265,7 @@ int explore_dungeon(void){
             else if (strstr(command, "west") != NULL) {
                 if (rooms[cloc].go_west > 0) {
                     printf("\n Going west... \n");
+                    encounter = 0;
                     previous_location = current_location;
                     current_location = rooms[cloc].go_west;
                     cloc = get_location_by_id(current_location);

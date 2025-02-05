@@ -1,4 +1,3 @@
-# CFLAGS = -Wall -pedantic -fno-stack-protector
 CFLAGS = -Wall -pedantic
 # CFLAGS= -g -O0
 OBJS = helpers.o converters.o asciibattle.o textadventure.o main.o
@@ -25,6 +24,8 @@ wasm:
 	$(WCC) main.c -o $(PROGW)
 
 
+run: $(PROG)
+	./$(PROG)
 
 
 
@@ -45,4 +46,4 @@ helpers.o: settings.h helpers.h helpers.c
 	$(CXX) $(CFLAGS) -c helpers.c -o helpers.o # Helpers
 
 clean:
-	rm -f $(PROG) *.o save.aft *.out gdb.output
+	rm -f $(PROG) *.o save.aft *.out gdb.output *.log

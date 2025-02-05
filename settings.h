@@ -1,4 +1,7 @@
-#define SCREEN_HEIGHT 14
+#define TITLE_1         "\t\tASCII FANTASY TACTICS"
+#define TITLE_2         "\t\t---------------------"
+#define VERSION_N       "0.0.1-alpha"
+#define SCREEN_HEIGHT   14
 #define SCREEN_WIDTH  22
 #define COMMAND_LENGHT 12
 #define WALL_CHAR '#'
@@ -17,7 +20,8 @@
 /*  If LIMIT_TXT_WIDH is greater that 0 text adventure will break line after
     LIMIT_TXT_WIDH amount of characters. */
 #define LIMIT_TXT_WIDH 0
-
+extern int log_on;
+extern int use_colors;
 #define DBG_MODE 0
 
 

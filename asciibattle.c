@@ -33,7 +33,8 @@ int max_mov_fields = MAX_MOV * MAX_MOV;
 char command_code[2]; /* what analyse_command things about user input?*/
 int wasmoved = 0;
 int tookaction = 0;
-char tb_command[12] = {'c','o','d','e','e','\0'};
+// char tb_command[12] = {'n','o','d','e','e','\0'};
+char tb_command[12] = {'\n'};
 int aiaction;
 int fid, mid; /* fighter id, monster id*/
 // int max_power;
@@ -47,6 +48,7 @@ int side_panel_size = sizeof(side_panel)/sizeof(side_panel[0]);
 
 int tb_read_command(void){
     // while( (tb_command[0] = getchar() != '\n') && (tb_command[0] != EOF));
+    printf("\n");
     printf("Command > ");
     fgets(tb_command,12,stdin);
     char *p = strchr(tb_command, '\n');
@@ -151,7 +153,8 @@ void printip(char txt[20], int line_number){
 
 void draw_interface(){
     clear_screen();
-    printf("\t\tASCII FANTASY TACTICS \n\n");
+    printf(TITLE_1);
+    printf("\n\n");
     if (NO_SIDEPANEL) {
         print_stats_horisontal('m');
         printf("\n");
@@ -221,7 +224,6 @@ void draw_range(char actor, int xpos, int ypos, int radius, char mode){
     int t; /* for counting targets */
     clear_range();
     if (mode == 'm') {
-        if (DBG_MODE) {printf("\nDrawing movement for %c, from position X:%d Y:%d with range: %d\n",actor,xpos,ypos,radius);}
         for (i = ypos - radius; i <= ypos + radius; i++) {
             ofst = (i - ypos) > 0 ? (i - ypos) : (ypos - i);
             for (j = xpos - radius + ofst; j <= xpos + radius - ofst; j++) {
@@ -341,7 +343,6 @@ int  dice(int maxv) {
     int lower = 1;
     int upper = maxv;
     int rnum;
-    srand(time(0));
     rnum = (rand() % (upper-lower+1))+lower;
     return rnum;
 }
@@ -539,19 +540,21 @@ void print_to_side_panel(){
     }
 }
 
-void ascii_battle_init(int current_location, int arena_id) {
+void ascii_battle_init(int current_location, int arena_id, int random) {
+    var_log("sd", "    [ascii_battle_init] ::  Initializing with random:",random);
     killed = 0;
     died = 0;
+    int random_y_pos[] = {3,4,5,6};
     command_code[0] = 'r';
     int amount_of_beasts = sizeof(beasts) / sizeof(beasts[0]);
-    int i,j;
+    int i,j, beast_index;
     for (i=0;i<amount_of_fighters;i++){
         pcs[i].x_position = pcs[i].start_x_position;
         pcs[i].y_position = pcs[i].start_y_position;
         if (DBG_MODE){pcs[i].x_position = 5;}
         pcs[i].hp = pcs[i].max_hp;
     }
-    if (current_location > 0){
+    if ((current_location > 0)&&(random == 0)){
         j = 0;
         for (i=0;i<amount_of_beasts;i++){
             if (beasts[i].location == current_location){
@@ -559,6 +562,14 @@ void ascii_battle_init(int current_location, int arena_id) {
                 printf("Copying %s to index %d\n",beasts[i].name,j);
                 j++;
             }
+        }
+    }
+    else if (random > 0) {
+        for (i=0;i<4;i++) {
+            beast_index = dice(amount_of_beasts);
+            monsters[i] = beasts[beast_index]; 
+            monsters[i].y_position = random_y_pos[i];
+            var_log("sssssd","Selected randomly:",monsters[i].name,"(",monsters[i].race,"):",beast_index);
         }
     }
     for (i=0;i<SCREEN_HEIGHT;i++){
@@ -814,7 +825,11 @@ int player_action_move(int pid){
     /* need to validate if addr is an address, not some random stuff */
     while (addr_test == 0) {
         addr[0] = '\0';
-        scanf("%3s",addr);
+        // scanf("%3s",addr);
+        fgets(addr,3,stdin);
+        char *p = strchr(addr, '\n');
+        if (p) *p = 0;
+
         addr_test = validate_coords(addr);
     }
     mv = move_fighter(arrnum,fighter_letter,selected_x,selected_y,addr);
@@ -840,13 +855,10 @@ int player_action_cast(int pid){
                 selected_y = pcs[i].y_position;
                 if (spells[s].recov > 0) {
                     /* using monster range for white magic spells */
-                    // printf("White spell: %s, s: %d",spells[s].id,s);
-                    if (DBG_MODE == 1) {printf("\nDrawing call at: 931\n");}
-                    draw_range('m',selected_x,selected_y,rad,'c');
+                    draw_range('m',selected_y,selected_x,rad,'c');
                 }
                 else {
-                    // printf("Black spell: %s, s: %d",spells[s].id,s);
-                    draw_range('f',selected_x,selected_y,rad,'c');
+                    draw_range('f',selected_y,selected_x,rad,'c');
                 }
                 printip("Spell target       ",1);
                 /* Spell target selection here */
@@ -1068,7 +1080,7 @@ void info_screen(void){
     int i,j;
     char key[1];
     clear_screen();
-    getchar();
+    // getchar();
     printf("------------ FIGHTERS ------------\n");
     printf("\n");
     for (i=0;i<amount_of_fighters;i++) {
@@ -1107,14 +1119,19 @@ void restore_fighters_hp(void) {
     }
 }
 
-int play_battle(int enemy_location, int selected_arena, int mode){
-    int amount_of_beasts = sizeof(beasts) / sizeof(beasts[0]);
+int play_battle(int enemy_location, int selected_arena, int mode, int random){
     int amount_of_monsters_in_room = 0;
+    int amount_of_beasts = sizeof(beasts) / sizeof(beasts[0]);
     int i = 0;
-    for (i=0;i<amount_of_beasts;i++){
-        if (beasts[i].location == enemy_location) amount_of_monsters_in_room++;
+    if (!random) { var_log("sdsds","    [play_battle] ::  Starting battle in location", enemy_location, "on arena", selected_arena, "with predefined enemy."); }
+    else { 
+        amount_of_monsters_in_room = 4;
+        var_log("sdsds","    [play_battle] ::  Starting battle in location", enemy_location, "on arena", selected_arena, "as random encounter.");
     }
-    ascii_battle_init(enemy_location, selected_arena);
+    for (i=0;i<amount_of_beasts;i++){
+        if (beasts[i].location == enemy_location) { amount_of_monsters_in_room++; }
+    }
+    ascii_battle_init(enemy_location, selected_arena, random);
     while(killed<amount_of_monsters_in_room && died<amount_of_fighters && command_code[0] != 'q'){
         if ((wasmoved > 0)&&(tookaction > 0)){
             wasmoved = 0;
@@ -1215,6 +1232,7 @@ int play_battle(int enemy_location, int selected_arena, int mode){
             return 0;
         }
         if (died >= amount_of_fighters){
+            var_log("sdsd","Battle lost",died,"fighters died out of total",amount_of_fighters);
             restore_fighters_hp();
             clear_screen();
             printf("You lost! \n");
@@ -1222,8 +1240,10 @@ int play_battle(int enemy_location, int selected_arena, int mode){
             if (mode == 1) return 0;
             else return 2;
         }
-        if (killed >= amount_of_monsters || killed >= amount_of_monsters_in_room){
+        if (killed >= amount_of_monsters_in_room){
+            var_log("sdsd","Battle won",killed,"monsters killed out of total",amount_of_monsters_in_room, "monsters in the room");
             clear_screen();
+            restore_fighters_hp();
             printf("You won! \n");
             sleep(2);
             if (mode == 1) return 0;
