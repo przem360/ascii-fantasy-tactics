@@ -6,10 +6,13 @@
 #include <time.h> /* for seeding rand() with time */
 #include "settings.h"
 #include "colors.h"
-#include "converters.h"
-#include "asciibattle.h"
+#include "convert.h"
+#include "abattle.h"
 #include "helpers.h"
-#include "resources.h"
+#include "res.h"
+#if !defined(SYSTEM)
+#define SYSTEM "LIN" 
+#endif
 
 const char alphabet[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
 
@@ -1079,22 +1082,27 @@ int ai_choose_action(int ai_mid) {
 void info_screen(void){
     int i,j;
     char key[1];
+    char collumn = 'A';
     clear_screen();
     // getchar();
     printf("------------ FIGHTERS ------------\n");
     printf("\n");
     for (i=0;i<amount_of_fighters;i++) {
+        collumn = numbers_to_letters(pcs[i].y_position);
         if (pcs[i].id == selected_fighter){
-            printf(" > [%c] %6s  HP:%d/%d\n",pcs[i].letter,pcs[i].name,pcs[i].hp,pcs[i].max_hp);
+            printf(" > [%c] %6s  HP:%d/%d at %c%d\n",pcs[i].letter,pcs[i].name,pcs[i].hp,pcs[i].max_hp, collumn, pcs[i].x_position);
         }
         else {
-            printf("   [%c] %6s  HP:%d/%d\n",pcs[i].letter,pcs[i].name,pcs[i].hp,pcs[i].max_hp);
+            printf("   [%c] %6s  HP:%d/%d at %c%d\n",pcs[i].letter,pcs[i].name,pcs[i].hp,pcs[i].max_hp, collumn, pcs[i].x_position);
         }
     }
     printf("\n\n------------ MONSTERS ------------\n");
     printf("\n");
     for (j=0;j<amount_of_monsters;j++) {
-        printf(" [%c] %6s %14s  HP:%d\n",monsters[j].letter,monsters[j].name,monsters[j].race, monsters[j].hp);
+        if (monsters[j].hp>0) {
+            collumn = numbers_to_letters(monsters[j].y_position);
+            printf(" [%c] %6s %14s  HP:%d at %c%d\n",monsters[j].letter,monsters[j].name,monsters[j].race, monsters[j].hp, collumn, monsters[j].x_position);
+        }
     }
     printf("\n\n----------------------------------\n");
     printf("\n");

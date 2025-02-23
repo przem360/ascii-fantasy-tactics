@@ -4,7 +4,7 @@
 #include <time.h>  /* for seeding rand() with time */
 #include <ctype.h> /* for checking if char is a letter or a number */
 #include <string.h>
-#include "converters.h"
+#include "convert.h"
 
 int coords[2];
 
@@ -127,6 +127,11 @@ int letters_to_numbers(char letter) {
             break;
         }
     return number;
+}
+
+char numbers_to_letters(int num) {
+    char all_letters[20] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T'};
+    return all_letters[num-1];
 }
 
 int string_to_number(char* str){

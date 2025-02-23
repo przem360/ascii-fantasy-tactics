@@ -6,6 +6,9 @@
 #include "settings.h"
 #include "colors.h"
 #define LOGFILE "aft.log"
+#if !defined(SYSTEM)
+#define SYSTEM "LIN" 
+#endif
 
 int var_log(const char *format, ...) {
     if (log_on == 0) { return 0; }

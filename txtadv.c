@@ -8,9 +8,9 @@
 #include "settings.h"
 #include "colors.h"
 #include "helpers.h"
-#include "locations.h"
-#include "textadventure.h"
-#include "asciibattle.h"
+#include "locs.h"
+#include "txtadv.h"
+#include "abattle.h"
 
 #define AMOUNT_OF_LOCATIONS 36
 

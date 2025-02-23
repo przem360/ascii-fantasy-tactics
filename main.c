@@ -5,8 +5,11 @@
 #include <time.h>
 #include "helpers.h"
 #include "settings.h"
-#include "asciibattle.h"
-#include "textadventure.h"
+#include "abattle.h"
+#include "txtadv.h"
+#if !defined(SYSTEM)
+#define SYSTEM "LIN" 
+#endif
 
 int invisible;
 int game_loaded;
@@ -55,7 +58,7 @@ void command_line(int argc, char *argv[]) {
 }
 
 int main (int argc, char *argv[]){
-    var_log("ss","Game session started", VERSION_N);
+    var_log("ssss","Game session started", VERSION_N, " /",SYSTEM);
     srand(time(0));
     game_loaded = 0;
     command_line(argc, argv);

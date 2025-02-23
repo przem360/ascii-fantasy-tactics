@@ -1,5 +1,6 @@
 void adresstocoords(char addr[3]);
 int letters_to_numbers(char letter);
+char numbers_to_letters(int num);
 int string_to_number(char* str);
 char *strtolower(char *str, int len);
 int startswith(const char *a, const char *b);

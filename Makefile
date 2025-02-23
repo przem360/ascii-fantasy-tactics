@@ -1,6 +1,6 @@
 CFLAGS = -Wall -pedantic
 # CFLAGS= -g -O0
-OBJS = helpers.o converters.o asciibattle.o textadventure.o main.o
+OBJS = helpers.o convert.o abattle.o txtadv.o main.o
 PROG = aft
 PROGT = advtest
 PROGW = adv.wasm
@@ -30,17 +30,17 @@ run: $(PROG)
 
 
 
-main.o: asciibattle.h textadventure.h main.c
+main.o: abattle.h txtadv.h main.c
 	$(CXX) $(CFLAGS) -c main.c -o main.o # Main
 
-asciibattle.o: settings.h colors.h resources.h asciibattle.h asciibattle.c
-	$(CXX) $(CFLAGS) -c asciibattle.c -o asciibattle.o # Ascii Battle
+abattle.o: settings.h colors.h res.h abattle.h abattle.c
+	$(CXX) $(CFLAGS) -c abattle.c -o abattle.o # Ascii Battle
 
-textadventure.o: settings.h locations.h colors.h textadventure.h asciibattle.h textadventure.c
-	$(CXX) $(CFLAGS) -c textadventure.c -o textadventure.o # Text Adventure
+txtadv.o: settings.h locs.h colors.h txtadv.h abattle.h txtadv.c
+	$(CXX) $(CFLAGS) -c txtadv.c -o txtadv.o # Text Adventure
 
-converters.o: converters.h converters.c
-	$(CXX) $(CFLAGS) -c converters.c -o converters.o # Converters
+convert.o: convert.h convert.c
+	$(CXX) $(CFLAGS) -c convert.c -o convert.o # Converters
 
 helpers.o: settings.h helpers.h helpers.c
 	$(CXX) $(CFLAGS) -c helpers.c -o helpers.o # Helpers
