@@ -1,16 +1,10 @@
 CFLAGS = -Wall -pedantic
-# CFLAGS= -g -O0
 OBJS = helpers.o convert.o abattle.o txtadv.o main.o
-PROG = aft
+PROG = aft.exe
 PROGT = advtest
-PROGW = adv.wasm
-# CFLAGST = -Wall -pedantic -g
 CXX = gcc
-WCC=/opt/wasi-sdk/bin/clang --sysroot=/opt/wasi-sdk/share/wasi-sysroot
-# CXX = $(WCC)
-# CFLAGS = -v -fuse-ld=lld
-SYS = -DSYSTEM='"LINUX"'
-RM = rm -f
+SYS = -DSYSTEM='"DOS"'
+RM = del
 
 all: $(PROG)
 
@@ -21,9 +15,6 @@ $(PROG): $(OBJS)
 runtest:
 	# gdb aft --command=battle.gdb
 	gdb aft
-
-wasm:
-	$(WCC) main.c -o $(PROGW)
 
 
 run: $(PROG)
@@ -48,4 +39,9 @@ helpers.o: settings.h helpers.h helpers.c
 	$(CXX) $(CFLAGS) -c helpers.c -o helpers.o $(SYS)
 
 clean:
-	$(RM) $(PROG) *.o *.O $(PROG).EXE save.aft *.out gdb.output *.log *.LOG
+	$(RM) $(PROG)
+	$(RM) *.o
+	$(RM) save.aft
+	$(RM) *.out
+	$(RM) gdb.output
+	$(RM) *.log

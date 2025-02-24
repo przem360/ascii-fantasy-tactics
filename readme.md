@@ -23,8 +23,12 @@ Type `i` and then `a` on welcome screen to triger invisibility - you can explore
 Type `p` on welcome screen, before selecting game mode to set HP values of your team members to 99.  
 
 ## Build
-
-The game was tested on Linux but since there is no any *weird* dependencies, should also compile on Mac. Just make sure that `build-essential` package is installed and use `make` to build.  
+  
+### Linux
+Just make sure that `build-essential` package is installed and use `make` to build.  
+  
+### DOS
+Install [DJGPP](https://www.delorie.com/djgpp/) and use `make -f make_dos.mk`.  
 
 ## Command line options
 `-no-log` - turns off logs.  
