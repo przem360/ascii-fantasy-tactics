@@ -24,4 +24,11 @@ Type `p` on welcome screen, before selecting game mode to set HP values of your 
 
 ## Build
 
-The game was tested on Linux but since there is no any *weird* dependencies, should also compile on Mac. Just make sure that `build-essential` package is installed and use `make` to build. 
+The game was tested on Linux but since there is no any *weird* dependencies, should also compile on Mac. Just make sure that `build-essential` package is installed and use `make` to build.  
+
+## Command line options
+`-no-log` - turns off logs.  
+`-no-color` - turns off colors.  
+`-pow-99` - sets HP of all party members to 99. Same as pressing `p` on title screen.  
+`-invis` - no random encounters. Same as pressing `i` on title screen.  
+Important - if you would like to turn off logs and colors, specify `-no-log` option first.  

@@ -7,6 +7,7 @@
 #define WALL_CHAR '#'
 /* set visible RANGE_CHAR if COLOURS_ON is set to 0 */
 #define RANGE_CHAR ' '
+#define NO_COLOR_RANGE_CHAR '+'
 #define BASE_CHAR '.'
 #define TARGET_CHAR 'x'
 #define DEAD_BODY_CHAR '&'

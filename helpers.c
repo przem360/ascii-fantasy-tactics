@@ -50,6 +50,7 @@ int clean_log(void) {
 
 void clear_screen(void){
     if (DBG_MODE == 0){
+        if (strcmp("DOS",SYSTEM) != 0) {} // 0 when strings are equal
         printf("\033[1;1H\033[2J");
         system("clear"); //*nix
         // system("cls"); //windows

@@ -130,7 +130,7 @@ struct enemy {
     int id;         // id is must be unique, since we could have multiple figures with the same letter.
     int initiative;
     char name[10];
-    char race[14];
+    char race[15];
     char attack_description[40];
     int hp;
     int ac; /*Armor Class*/

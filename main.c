@@ -39,29 +39,30 @@ void welcome_screen(){
     // if (q) *q = 0;
     mode_sel = getchar();
     while ((ch = getchar()) != '\n' && ch != EOF) { }
-    if (mode_sel == 's') game_mode = 1;
-    if (mode_sel == 'a') game_mode = 2;
-    if (mode_sel == 'q') game_mode = 3;
-    if (mode_sel == 'i') invisible = 1;
-    if (mode_sel == 'l') {game_loaded = 1; load_state();}
-    if (mode_sel == 'p') cheat_max_hp();
-    if (DBG_MODE == 1) {printf("selection: %c, game_mode: %d \n",mode_sel, game_mode);}
+    if (mode_sel == 's') { game_mode = 1;   var_log("s","[welcome_screen]: single ballte");    }
+    if (mode_sel == 'a') { game_mode = 2;   var_log("s","[welcome_screen]: adventure mode");   }
+    if (mode_sel == 'q') { game_mode = 3;   var_log("s","[welcome_screen]: quit");             }
+    if (mode_sel == 'i') { invisible = 1;   var_log("s","[welcome_screen]: CHEAT: invisible"); }
+    if (mode_sel == 'l') { game_loaded = 1; load_state();                                      }
+    if (mode_sel == 'p') { cheat_max_hp();  var_log("s","[welcome_screen]: CHEAT: HP:99");     }
 }
 
 void command_line(int argc, char *argv[]) {
     for (int i = 0; i < argc; ++i)
     {
-        if (!strcmp(argv[i],"-no-color")) { use_colors = 0;           var_log("s","[cli] Colors turned off.");            }
         if (!strcmp(argv[i],"-no-log")  ) { log_on = 0;               var_log("s","[cli] Log turned off.");               } /* ... this will never be loged. */
-        if (!strcmp(argv[i],"-pow-99")  ) { cheat_pow_99 = 1;         var_log("s","[cli] CHEAT: Max power.");             }
+        if (!strcmp(argv[i],"-no-color")) { use_colors = 0;           var_log("s","[cli] Colors turned off.");            }
+        if (!strcmp(argv[i],"-pow-99")  ) { cheat_max_hp();           var_log("s","[cli] CHEAT: Power set to 99.");       }
+        if (!strcmp(argv[i],"-invis")   ) { invisible = 1;            var_log("s","[cli] CHEAT: invisible set to 1.");    }
     }
 }
 
 int main (int argc, char *argv[]){
+    clean_log();
+    command_line(argc, argv);
     var_log("ssss","Game session started", VERSION_N, " /",SYSTEM);
     srand(time(0));
     game_loaded = 0;
-    command_line(argc, argv);
     while(game_mode<3){
         if (game_mode == 0) welcome_screen();
         if (game_mode == 1) {invisible = 0; game_mode = play_battle(2,1,1,0);}
@@ -72,7 +73,6 @@ int main (int argc, char *argv[]){
     }
     if (game_mode == 3) {
         clear_screen();
-        clean_log();
         return 0;
     }
     }

@@ -103,13 +103,16 @@ void print_screen() {
         }
         nums++;
         for (y=0;y<rows; y++){
-            if (COLOURS_ON == 1) {
-                if (screen[i][y] == DEAD_BODY_CHAR)  {printf(RED  "%c" reset,screen[i][y]);}
-                else if (screen[i][y] == WATER_CHAR) {printf(BLUB "%c" reset,screen[i][y]);}
-                else if (screen[i][y] == RANGE_CHAR) {printf(BLUB "%c" reset,screen[i][y]);}
+            if ((COLOURS_ON == 1)&&(use_colors == 1)) {
+                if (screen[i][y] == DEAD_BODY_CHAR)  { printf(RED  "%c" reset,screen[i][y]); }
+                else if (screen[i][y] == WATER_CHAR) { printf(BLUB "%c" reset,screen[i][y]); }
+                else if (screen[i][y] == RANGE_CHAR) { printf(BLUB "%c" reset,screen[i][y]); }
                 else printf(GRNB "%c" reset,screen[i][y]);
                 }
-            else {printf("%c",screen[i][y]); }
+            else {
+                    if (screen[i][y] == NO_COLOR_RANGE_CHAR) { printf("%c" reset,screen[i][y]); }
+                    else { printf("%c",screen[i][y]); } 
+                }
         }
         if (i<side_panel_size){ 
             for(z=0;z<sizeof(side_panel[0]);z++){
@@ -204,7 +207,7 @@ void clear_range(){
     int chars = sizeof(screen[0]); 
     for(i=0;i<lines;i++){
         for(y=0;y<chars;y++){
-            if (screen[i][y] == RANGE_CHAR){
+            if ((screen[i][y] == RANGE_CHAR)||(screen[i][y] == NO_COLOR_RANGE_CHAR)){
                 screen[i][y] =  BASE_CHAR;
             }
             /* have to remove target marks before placing figures */
@@ -230,7 +233,12 @@ void draw_range(char actor, int xpos, int ypos, int radius, char mode){
         for (i = ypos - radius; i <= ypos + radius; i++) {
             ofst = (i - ypos) > 0 ? (i - ypos) : (ypos - i);
             for (j = xpos - radius + ofst; j <= xpos + radius - ofst; j++) {
-                if ((i<(SCREEN_HEIGHT))&&(j<(SCREEN_WIDTH))&&(j>0)){ if (screen[i][j] == BASE_CHAR) { screen[i][j] = RANGE_CHAR; } }
+                if ((COLOURS_ON == 1)&&(use_colors == 1)) {
+                    if ((i<(SCREEN_HEIGHT))&&(j<(SCREEN_WIDTH))&&(j>0)){ if (screen[i][j] == BASE_CHAR) { screen[i][j] = RANGE_CHAR; } }
+                }
+                else {
+                    if ((i<(SCREEN_HEIGHT))&&(j<(SCREEN_WIDTH))&&(j>0)){ if (screen[i][j] == BASE_CHAR) { screen[i][j] = NO_COLOR_RANGE_CHAR; } }
+                }
             }
         }
     } /* end if(mode=='m')*/
@@ -239,7 +247,12 @@ void draw_range(char actor, int xpos, int ypos, int radius, char mode){
             ofst = (i - ypos) > 0 ? (i - ypos) : (ypos - i);
             for (j = xpos - radius + ofst; j <= xpos + radius - ofst; j++) {
                 if ((i<(SCREEN_HEIGHT))&&(j<(SCREEN_WIDTH))&&(j>0)){
-                    if (screen[i][j] == BASE_CHAR) { screen[i][j] = RANGE_CHAR; }
+                    if ((COLOURS_ON == 1)&&(use_colors == 1)) {
+                        if (screen[i][j] == BASE_CHAR) { screen[i][j] = RANGE_CHAR; }
+                    }
+                    else {
+                        if (screen[i][j] == BASE_CHAR) { screen[i][j] = NO_COLOR_RANGE_CHAR; }
+                    }
                     if (actor == 'f'){
                         for(t=0;t<amount_of_monsters;t++){
                             if ((screen[i][j] == monsters[t].letter)&&(monsters[t].letter != DEAD_BODY_CHAR)){
@@ -279,7 +292,7 @@ void chase_figters(int mnstr, int fightr){
     current_distance = 1000;/* just some high value */
     for (i=0; i<SCREEN_HEIGHT; i++) {
         for (j=0; j<SCREEN_WIDTH; j++) {
-            if (screen[i][j] == RANGE_CHAR) {
+            if ((screen[i][j] == RANGE_CHAR) || (screen[i][j] == NO_COLOR_RANGE_CHAR)) {
                 legal_moves[k][0] = i;
                 legal_moves[k][1] = j;
                 legal_moves[k][2] = (abs(i - fx)+abs(j - fy));
@@ -548,6 +561,7 @@ void ascii_battle_init(int current_location, int arena_id, int random) {
     killed = 0;
     died = 0;
     int random_y_pos[] = {3,4,5,6};
+    int monster_initiative[] = {1,3,5,7};
     command_code[0] = 'r';
     int amount_of_beasts = sizeof(beasts) / sizeof(beasts[0]);
     int i,j, beast_index;
@@ -562,7 +576,7 @@ void ascii_battle_init(int current_location, int arena_id, int random) {
         for (i=0;i<amount_of_beasts;i++){
             if (beasts[i].location == current_location){
                 monsters[j] = beasts[i];
-                printf("Copying %s to index %d\n",beasts[i].name,j);
+                // printf("Copying %s to index %d\n",beasts[i].name,j);
                 j++;
             }
         }
@@ -572,7 +586,8 @@ void ascii_battle_init(int current_location, int arena_id, int random) {
             beast_index = dice(amount_of_beasts);
             monsters[i] = beasts[beast_index]; 
             monsters[i].y_position = random_y_pos[i];
-            var_log("sssssd","Selected randomly:",monsters[i].name,"(",monsters[i].race,"):",beast_index);
+            monsters[i].initiative = monster_initiative[i]; 
+            // var_log("sssssd","Selected randomly:",monsters[i].name,"(",monsters[i].race,"):",beast_index);
         }
     }
     for (i=0;i<SCREEN_HEIGHT;i++){
@@ -789,7 +804,7 @@ int move_fighter(int number_in_array, char letter, int fx, int fy, char target[3
     adresstocoords(target);
     /* make move */
     screen[fx][fy] = BASE_CHAR;
-    if (screen[coords[0]][coords[1]] == RANGE_CHAR){
+    if ((screen[coords[0]][coords[1]] == RANGE_CHAR) || (screen[coords[0]][coords[1]] == NO_COLOR_RANGE_CHAR )){
         // screen[coords[0]][coords[1]] = letter;
         pcs[number_in_array].x_position = coords[0];
         pcs[number_in_array].y_position = coords[1];

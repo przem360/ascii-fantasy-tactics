@@ -9,6 +9,8 @@ CXX = gcc
 WCC=/opt/wasi-sdk/bin/clang --sysroot=/opt/wasi-sdk/share/wasi-sysroot
 # CXX = $(WCC)
 # CFLAGS = -v -fuse-ld=lld
+SYS = -DSYSTEM='"LINUX"'
+RM = rm -f
 
 all: $(PROG)
 
@@ -31,7 +33,7 @@ run: $(PROG)
 
 
 main.o: abattle.h txtadv.h main.c
-	$(CXX) $(CFLAGS) -c main.c -o main.o # Main
+	$(CXX) $(CFLAGS) -c main.c -o main.o $(SYS) # Main
 
 abattle.o: settings.h colors.h res.h abattle.h abattle.c
 	$(CXX) $(CFLAGS) -c abattle.c -o abattle.o # Ascii Battle
@@ -43,7 +45,7 @@ convert.o: convert.h convert.c
 	$(CXX) $(CFLAGS) -c convert.c -o convert.o # Converters
 
 helpers.o: settings.h helpers.h helpers.c
-	$(CXX) $(CFLAGS) -c helpers.c -o helpers.o # Helpers
+	$(CXX) $(CFLAGS) -c helpers.c -o helpers.o $(SYS) # Helpers
 
 clean:
-	rm -f $(PROG) *.o save.aft *.out gdb.output *.log
+	$(RM) $(PROG) *.o save.aft *.out gdb.output *.log

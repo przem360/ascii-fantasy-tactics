@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h> /* for atoi(); */
-// #include "locations.h"
-
 #include <unistd.h> /* for pausing on POSIX */
 // #include <dos.h> /* for pausing on Windows */
 #include "settings.h"
@@ -133,7 +131,7 @@ void show_intro(void){
     char ch;
     clear_screen();
     current_location = 1;
-    if (COLOURS_ON == 1) {
+    if ((COLOURS_ON == 1)&&(use_colors == 1)) {
         printf(DSC "%s" reset,intro_text);
         printf("Press any key to continue > ");
     } else {
@@ -151,7 +149,7 @@ int display_current_location(int loc){
             add_location_to_history(loc);
         }
     printf("%s\n%s\nLocation: %s\n\n",TITLE_1,TITLE_2,rooms[cloc].name);
-    if (COLOURS_ON == 1){
+    if ((COLOURS_ON == 1)&&(use_colors == 1)){
         // printf(DSC "%s \n\n" reset,rooms[cloc].description);
         wprint(rooms[cloc].description,LIMIT_TXT_WIDH,1);
         if (was_i_here>=0){
@@ -216,8 +214,8 @@ int explore_dungeon(void){
         else {
             var_log("sds","No predefined enemy in this room (",cloc,").");
             room_content = dice(12);
-            var_log("sd","Room content:", room_content);
-            if ((encounter==0)&&((room_content == 6)||(room_content == 7)||(room_content == 8)||(room_content == 10)||(room_content == 11))) {
+            // var_log("sd","Room content:", room_content);
+            if ((encounter==0)&&(rooms[cloc].id<100)&&((room_content == 6)||(room_content == 7)||(room_content == 8)||(room_content == 10)||(room_content == 11))) {
                 var_log("s","Random encounter.");
                 encounter = 1;
                 battle_result = play_battle(current_location, rooms[cloc].arena, 2, 1);
