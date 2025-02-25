@@ -11,7 +11,7 @@
 #include "helpers.h"
 #include "res.h"
 #if !defined(SYSTEM)
-#define SYSTEM "LIN" 
+#define SYSTEM "LINUX" 
 #endif
 
 const char alphabet[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
@@ -731,17 +731,10 @@ int resolve_attack(int pid,char taddr[3]){
     printip("Resolving attack...",1);
     // draw_interface();
     adresstocoords(taddr);
-    // printf("Read coords: %c %c resulting addr: %d %d \n",taddr[0],taddr[1],coords[0],coords[1]);
-    // sleep(3);
     for (i=0; i<amount_of_monsters;i++){
-        // clear_screen();
-        // printf("I: %d ",i);
-        // sleep(5);
         if((monsters[i].x_position == coords[0])&&(monsters[i].y_position == coords[1])){
             target_in_array = i;
             foundm = 1;
-            // printf("Found in position %d \n",target_in_array);
-            // sleep(3);
         }
     }
     if (foundm == 0) {
@@ -1166,7 +1159,7 @@ int play_battle(int enemy_location, int selected_arena, int mode, int random){
             tookaction = 0;
             whoseturn = 1;
         }
-        clear_screen();
+        // clear_screen();
         // printf("ASCII FANTASY TACTICS \n");
         // place_figures();
         let_move();

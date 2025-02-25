@@ -1,14 +1,10 @@
 CFLAGS = -Wall -pedantic
-# CFLAGS= -g -O0
 OBJS = helpers.o convert.o abattle.o txtadv.o main.o
 PROG = aft
 PROGT = advtest
 PROGW = adv.wasm
 # CFLAGST = -Wall -pedantic -g
 CXX = gcc
-WCC=/opt/wasi-sdk/bin/clang --sysroot=/opt/wasi-sdk/share/wasi-sysroot
-# CXX = $(WCC)
-# CFLAGS = -v -fuse-ld=lld
 SYS = -DSYSTEM='"LINUX"'
 RM = rm -f
 
