@@ -1159,16 +1159,12 @@ int play_battle(int enemy_location, int selected_arena, int mode, int random){
             tookaction = 0;
             whoseturn = 1;
         }
-        // clear_screen();
-        // printf("ASCII FANTASY TACTICS \n");
-        // place_figures();
         let_move();
         draw_interface();
         if (player_or_monster == 1){
             if (pcs[selected_fighter].hp <= 0){
                 wasmoved = 1;
                 tookaction = 1;
-                // draw_interface();
             }
             /* Player's move */
             clear_range();
@@ -1184,23 +1180,18 @@ int play_battle(int enemy_location, int selected_arena, int mode, int random){
                 if (tookaction == 0) {
                     printip("ATTACKING          ",1);
                     tookaction = player_action_attack(selected_fighter);
-                    // sleep(1);
-                    // draw_interface();
                 }
             }
             if (command_code[0] == 'c'){
                 if (tookaction == 0) {
                     printip("CAST SPELL         ",1);
                     tookaction = player_action_cast(selected_fighter);
-                    // draw_interface();
                 }
             }
             if (command_code[0] == 's'){
-                // player_action_move(selected_fighter);
                 printip("SKIPPING           ",1);
                 wasmoved = 1;
                 tookaction = 1;
-                // whoseturn++;
             }
             if (command_code[0] == 'i'){
                 info_screen();
@@ -1214,10 +1205,8 @@ int play_battle(int enemy_location, int selected_arena, int mode, int random){
                 aiaction = ai_choose_action(selected_monster);
                 if (aiaction == 1) {
                     tookaction = 1;
-                    // wasmoved = 0;
                 }
                 if (aiaction == 2) {
-                    // tookaction = 0;
                     wasmoved = 1;
                 }
                 if (wasmoved == 0) {
